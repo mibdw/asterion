@@ -1,4 +1,6 @@
 .grunt
 *.sublime-workspace
 *.sublime-project
+sketch
+import
 node_modules
