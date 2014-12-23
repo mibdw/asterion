@@ -4,3 +4,5 @@
 sketch
 import
 node_modules
+scripts/angular
+scripts/libs
