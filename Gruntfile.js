@@ -8,7 +8,7 @@ module.exports = function (grunt) {
 					compress: true,
 				},
 				files: {
-					"public/asterion.min.css": "styles/main.less"
+					"public/asterion.css": "styles/main.less"
 				}
 			}
 		},
@@ -32,6 +32,7 @@ module.exports = function (grunt) {
 					'scripts/libs/moment-with-locales.js', 
 					'scripts/libs/socket.io.js', 
 					'scripts/annotated.js', 
+					'scripts/custom.js',
 				],
 				dest: 'public/asterion.js',
 			},

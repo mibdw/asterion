@@ -1,0 +1,30 @@
+
+
+.item { padding: 1em 15em 1em 9em; border-bottom: 1px solid #ddd; position: relative; min-height: 13em;	}
+.item:before, .item:after { content: ""; display: table; }
+.item:after { clear: both; }
+.item:last-child { border-bottom-width: 0; }
+.item input[type="checkbox"] { position: absolute; top: 1.5em; left: 1em;}
+.item img { width: 6em; position: absolute; top: 1em; left: 2em; }
+.item-sidebar { position: absolute; top: 0; right: 0; width: 12em; padding: 1em; }
+.item-title { font-size: 1.25em; font-weight: bold; text-decoration: none; color: #000; }
+.item-detail { text-decoration: none; }
+.item-detail:hover .item-title { text-decoration: underline; color: #00f; }
+.item-author { color: #aaa; margin-bottom: 1em; }
+.item:hover .item-author { color: #000; }
+.item-price { margin-bottom: 1em; text-align: right }
+.item-price strong { font-size: 1.25em;}
+.item-meta { color: #aaa; }
+.item-meta dt { float: left; width: 20% ; }
+.item-meta dd { float: left; width: 80%; }
+.item:hover .item-meta { color: #000; }
+.item-sidebar button { width: 100%; background-color: #fff; border: 2px solid #ccc; font-size: 1.1em; border-radius: 2px; margin-bottom: .25em; color: #aaa;}
+.item-sidebar button.cart:hover { color: #000; border-color: #0000CD; }
+.item-sidebar button.wish:hover { color: #000; border-color: #FFD700; }
+.item:hover button { color: #000; }
+.item-links { list-style-type: none; margin-top: 1em; }
+.item-links li { text-align: right }
+.item-links li a { color: #aaa; text-decoration: none; }
+.item-links li a:hover { text-decoration: underline; }
+.item:hover .item-links li a { color: #00f; }
+.item .alert { background-color: #ffffe0; position: absolute; left: 0; right: 0; bottom: 0; padding: .5em 1em; }
