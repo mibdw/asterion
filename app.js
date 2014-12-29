@@ -1,21 +1,29 @@
+// Setup 
+
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var port = process.env.PORT || 4242;
+var moment = require('moment');
 
+app.engine('html', require('ejs').renderFile);
 app.use(express.static(__dirname + '/public')); 
 
-app.get('/', function (req, res) {
+// Routes
 
-	res.sendFile(__dirname + '/views/index.html');
+app.use('/', require(__dirname + '/handlers/routes.js').router);
 
-});
+// Database
 
-var server = http.listen(3000, function () {
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/asterion');
 
-	var host = server.address().address;
-	var port = server.address().port;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function (callback) { console.log(moment().format('DD-MM-YYYY HH:mm:ss') + ' - Database connected bitch') });
 
-	console.log('Getting jiggy at http://%s:%s', host, port);
+// Go go go!
 
+http.listen(port, function () {
+	console.log('\n========\nASTERION\n========\n\n' + moment().format('DD-MM-YYYY HH:mm:ss') + ' - Getting jiggy at port %s', port);
 });

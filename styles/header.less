@@ -1,8 +1,69 @@
+.dropdown { 
+	display: none;
+	position: absolute; 
+	top: @h-height / 2 + 1; 
+	font-size: @f-size; 
+	line-height: 1.4em; 
+	padding: (@h-height / 2) 0;
+	list-style-type: none; 
+	
+	li { 
+		border-width: 0 1px; 
+		border-color: @vague; 
+		border-style: solid; 
+
+		&:first-child { 
+			padding-top: .5em; 
+			background-color: @back; 
+		}
+
+		&:last-child { 
+			padding-bottom: .5em; 
+			border-bottom-width: 1px; 
+			background-color: @back; 
+		}
+		
+		&.divider { 
+			height: 1em; 
+			position: relative; 
+			background-color: @back;
+
+			&:after { 
+				content: ""; 
+				display: block; 
+				width: 100%; 
+				height: 1px; 
+				background-color: @vague; 
+				position: absolute; 
+				top: 50%;
+			}
+		}
+		
+		a { 
+			display: block; 
+			background-color: @back; 
+			padding: .2em .8em; 
+			text-decoration: none; 
+			color: @text; 
+			
+			&:hover { 
+				background-color: @h-back; 
+				color: @h-text;
+			}
+		}
+	}
+}
+
 header { 
 	height: @h-height; 
 	background-color: @h-back; 
 	color: @h-text; 
-	border-bottom: 1px solid @h-line; 
+	border-bottom: 4px solid @h-line; 
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1111;
 }
 
 .masthead { 
@@ -55,7 +116,9 @@ nav {
 		.dropdown { 
 			display: block; 
 			left: -1em; 
-			min-width: 16em; 
+			min-width: 16em;
+			opacity: 1; 
+			margin-top: 0;
 		}
 	}
 }
@@ -77,8 +140,7 @@ nav {
 		font-size: 1.3em; 
 		color: @h-text; 
 		padding: 0 .5em; 
-
-		&::-moz-placeholder { color: @h-vague;  }
+		.placeholder (@h-vague);
 	}
 
 	&:hover {
@@ -148,63 +210,6 @@ nav {
 			display: block; 
 			right: 0; 
 			min-width: 8em;
-		}
-	}
-}
-
-.dropdown { 
-	display: none; 
-	position: absolute; 
-	top: @h-height / 2; 
-	font-size: @f-size; 
-	line-height: 1.4em; 
-	padding: (@h-height / 2) 0; 
-	list-style-type: none; 
-	z-index: 999; 
-	
-	li { 
-		border-width: 0 1px; 
-		border-color: @vague; 
-		border-style: solid; 
-
-		&:first-child { 
-			padding-top: .5em; 
-			background-color: @back; 
-		}
-
-		&:last-child { 
-			padding-bottom: .5em; 
-			border-bottom-width: 1px; 
-			background-color: @back; 
-		}
-		
-		&.divider { 
-			height: 1em; 
-			position: relative; 
-			background-color: @back;
-
-			&:after { 
-				content: ""; 
-				display: block; 
-				width: 100%; 
-				height: 1px; 
-				background-color: @vague; 
-				position: absolute; 
-				top: 50%;
-			}
-		}
-		
-		a { 
-			display: block; 
-			background-color: @back; 
-			padding: .2em .8em; 
-			text-decoration: none; 
-			color: @text; 
-			
-			&:hover { 
-				background-color: @h-back; 
-				color: @h-text;
-			}
 		}
 	}
 }

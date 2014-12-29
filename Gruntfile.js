@@ -19,7 +19,8 @@ module.exports = function (grunt) {
 					'scripts/annotated.js': [
 						'scripts/angular/angular.min.js',
 						'scripts/angular/angular-route.min.js',
-						'scripts/angular/angular-cookies.min.js'					
+						'scripts/angular/angular-cookies.min.js',
+						'scripts/global.js',					
 					]
 				}
 			}
@@ -28,11 +29,10 @@ module.exports = function (grunt) {
 		concat: {
 			yossarian: {
 				src: [
-					'scripts/libs/jquery-1.11.2.js',
+					'scripts/libs/jquery-1.11.1.js',
 					'scripts/libs/moment-with-locales.js', 
 					'scripts/libs/socket.io.js', 
 					'scripts/annotated.js', 
-					'scripts/custom.js',
 				],
 				dest: 'public/asterion.js',
 			},

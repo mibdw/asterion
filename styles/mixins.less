@@ -1,9 +1,32 @@
 .clearfix {
-
-	&:before, &:after { 
-		content: ""; 
-		display: table; 
-	}
-
+	&:before, &:after { content: ""; display: table; }
 	&:after { clear: both; }
+}
+
+.placeholder (@color) {
+	&:-moz-placeholder { color: @color; opacity: 1; }
+	&::-moz-placeholder { color: @color; opacity: 1; }
+	&:-ms-input-placeholder { color: @color; opacity: 1; }
+	&::-webkit-input-placeholder { color: @color; opacity: 1; }
+}
+
+.transition (@transition) {
+	-webkit-transition: @transition;
+	-moz-transition: @transition;
+	-o-transition: @transition;
+	transition: @transition;
+}
+
+.rotate (@degrees) {
+	-webkit-transform: rotate(@degrees);
+	-moz-transform: rotate(@degrees);
+	-ms-transform: rotate(@degrees);
+	-o-transform: rotate(@degrees);
+	transform: rotate(@degrees);
+}
+
+.text-truncate () {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
