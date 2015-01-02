@@ -74,18 +74,32 @@ header {
 	height: @h-height; 
 	padding: 0 .5em; 
 	font-size: 1.6em; 
-	line-height: @h-height; 
+	line-height: @h-height - 4; 
 	border-right: 1px solid @h-line; 
 	background-color: @h-back;
 
 	&:hover { 
 		background-color: @h-hover; 
-		text-decoration: none; 
+		text-decoration: none;
+
+		i { color: @h-text; } 
 	}
 	
 	img { 
 		height: 30px; 
 		margin-top: .5em; 
+	}
+
+	i {
+		display: inline-block;
+		height: @h-height / 1.4;
+		width: @h-height / 1.4;
+		border-radius: (@h-height / 1.4) / 2; 	
+		background-color: @h-vague;
+		color: @h-back;
+		font-size: .8em;
+		text-align: center;
+		line-height: @h-height - 15px;
 	}
 }
 
@@ -147,6 +161,20 @@ nav {
 		background-color: @h-hover;
 
 		label { color: @h-text }
+	}
+
+	a {
+		float: right;
+		color: @h-vague;
+		font-size: 1.5em;
+		line-height: @h-height;
+		cursor: pointer;
+		margin-right: .75em;
+
+		&:hover { 
+			color: @h-text;
+			text-decoration: none; 
+		}
 	}
 } 
 

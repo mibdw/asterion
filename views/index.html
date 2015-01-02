@@ -2,20 +2,24 @@
 <html lang="en" ng-app="asterion" ng-controller="global">
 <head>
 	<meta charset="UTF-8">
-	<title>Asterion</title>
+	<title ng-bind-template="{{titleLine}}">Asterion</title>
 
 	<link rel="stylesheet" href="/asterion.css">
+	<link rel="shortcut icon" href="/favicon.ico">
+
 	<script src="/asterion.js"></script>
 
 </head>
 <body>
 	<header>
-		<a href="" class="masthead">
-			<img src="http://www.erasmusbooks.nl/wp-content/themes/erasmus4/img/logo-erasmus2.png">
+		
+		<a href="/" class="masthead">
+			<!-- <img src="http://www.erasmusbooks.nl/wp-content/themes/erasmus4/img/logo-erasmus2.png"> -->
+			<i class="fa fa-bookmark"></i>
 		</a>
 
 		<nav>
-			<i class="icon-bars"></i> Menu
+			<i class="fa fa-bars"></i> Menu
 			<ul class="dropdown">
 				<li><a href="">Advanced search</a></li>
 				<li><a href="">Order outside database</a></li>
@@ -30,7 +34,7 @@
 			</ul>
 		</nav>
 
-		<div class="user"><i class="icon-user"></i>
+		<div class="user"><i class="fa fa-user"></i>
 			<ul class="dropdown">
 				<li><a href="">Profile</a></li>
 				<li><a href="">Settings</a></li>
@@ -41,14 +45,15 @@
 		</div>
 
 		<div class="carts">
-			<i class="icon-shopping-cart"></i>
+			<i class="fa fa-shopping-cart"></i>
 			<div class="cart-title">Shopping cart title</div><br>
 			<div class="cart-meta">99 items / EUR 999.99</div>
 		</div>
 		
-		<form class="search" ng-submit="quickSearch()">
-			<label for="search"><i class="icon-search"></i></label>
+		<form class="search" ng-submit="quickSearch(searchTerm)">
+			<label for="search"><i class="fa fa-search"></i></label>
 			<input type="text" id="search" placeholder="Search by title, author, ISBN..." autocomplete="off" ng-model="searchTerm">
+			<a href="" ng-show="searchTerm" ng-click="searchTerm = ''" class="fa fa-remove" title="Clear search"></a>
 		</form>
 
 	</header>

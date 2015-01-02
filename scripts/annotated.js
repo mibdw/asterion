@@ -240,25 +240,162 @@ function(){return{}}});n.directive("ngView",x);n.directive("ngView",z);x.$inject
 ["$cookies",function(e){return{get:function(b){return(b=e[b])?f.fromJson(b):b},put:function(b,c){e[b]=f.toJson(c)},remove:function(b){delete e[b]}}}])})(window,window.angular);
 //# sourceMappingURL=angular-cookies.min.js.map
 
-var app = angular.module('asterion', ['ngRoute', 'ngCookies'	]);
+/*
+ AngularJS v1.2.28
+ (c) 2010-2014 Google, Inc. http://angularjs.org
+ License: MIT
+*/
+(function(q,g,r){'use strict';function F(a){var d=[];t(d,g.noop).chars(a);return d.join("")}function l(a){var d={};a=a.split(",");var c;for(c=0;c<a.length;c++)d[a[c]]=!0;return d}function G(a,d){function c(a,b,c,h){b=g.lowercase(b);if(u[b])for(;f.last()&&v[f.last()];)e("",f.last());w[b]&&f.last()==b&&e("",b);(h=x[b]||!!h)||f.push(b);var n={};c.replace(H,function(a,b,d,c,e){n[b]=s(d||c||e||"")});d.start&&d.start(b,n,h)}function e(a,b){var c=0,e;if(b=g.lowercase(b))for(c=f.length-1;0<=c&&f[c]!=b;c--);
+if(0<=c){for(e=f.length-1;e>=c;e--)d.end&&d.end(f[e]);f.length=c}}"string"!==typeof a&&(a=null===a||"undefined"===typeof a?"":""+a);var b,k,f=[],n=a,h;for(f.last=function(){return f[f.length-1]};a;){h="";k=!0;if(f.last()&&y[f.last()])a=a.replace(RegExp("(.*)<\\s*\\/\\s*"+f.last()+"[^>]*>","i"),function(a,b){b=b.replace(I,"$1").replace(J,"$1");d.chars&&d.chars(s(b));return""}),e("",f.last());else{if(0===a.indexOf("\x3c!--"))b=a.indexOf("--",4),0<=b&&a.lastIndexOf("--\x3e",b)===b&&(d.comment&&d.comment(a.substring(4,
+b)),a=a.substring(b+3),k=!1);else if(z.test(a)){if(b=a.match(z))a=a.replace(b[0],""),k=!1}else if(K.test(a)){if(b=a.match(A))a=a.substring(b[0].length),b[0].replace(A,e),k=!1}else L.test(a)&&((b=a.match(B))?(b[4]&&(a=a.substring(b[0].length),b[0].replace(B,c)),k=!1):(h+="<",a=a.substring(1)));k&&(b=a.indexOf("<"),h+=0>b?a:a.substring(0,b),a=0>b?"":a.substring(b),d.chars&&d.chars(s(h)))}if(a==n)throw M("badparse",a);n=a}e()}function s(a){if(!a)return"";var d=N.exec(a);a=d[1];var c=d[3];if(d=d[2])p.innerHTML=
+d.replace(/</g,"&lt;"),d="textContent"in p?p.textContent:p.innerText;return a+d+c}function C(a){return a.replace(/&/g,"&amp;").replace(O,function(a){var c=a.charCodeAt(0);a=a.charCodeAt(1);return"&#"+(1024*(c-55296)+(a-56320)+65536)+";"}).replace(P,function(a){return"&#"+a.charCodeAt(0)+";"}).replace(/</g,"&lt;").replace(/>/g,"&gt;")}function t(a,d){var c=!1,e=g.bind(a,a.push);return{start:function(a,k,f){a=g.lowercase(a);!c&&y[a]&&(c=a);c||!0!==D[a]||(e("<"),e(a),g.forEach(k,function(c,f){var m=
+g.lowercase(f),k="img"===a&&"src"===m||"background"===m;!0!==Q[m]||!0===E[m]&&!d(c,k)||(e(" "),e(f),e('="'),e(C(c)),e('"'))}),e(f?"/>":">"))},end:function(a){a=g.lowercase(a);c||!0!==D[a]||(e("</"),e(a),e(">"));a==c&&(c=!1)},chars:function(a){c||e(C(a))}}}var M=g.$$minErr("$sanitize"),B=/^<((?:[a-zA-Z])[\w:-]*)((?:\s+[\w:-]+(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)\s*(>?)/,A=/^<\/\s*([\w:-]+)[^>]*>/,H=/([\w:-]+)(?:\s*=\s*(?:(?:"((?:[^"])*)")|(?:'((?:[^'])*)')|([^>\s]+)))?/g,L=/^</,
+K=/^<\//,I=/\x3c!--(.*?)--\x3e/g,z=/<!DOCTYPE([^>]*?)>/i,J=/<!\[CDATA\[(.*?)]]\x3e/g,O=/[\uD800-\uDBFF][\uDC00-\uDFFF]/g,P=/([^\#-~| |!])/g,x=l("area,br,col,hr,img,wbr");q=l("colgroup,dd,dt,li,p,tbody,td,tfoot,th,thead,tr");r=l("rp,rt");var w=g.extend({},r,q),u=g.extend({},q,l("address,article,aside,blockquote,caption,center,del,dir,div,dl,figure,figcaption,footer,h1,h2,h3,h4,h5,h6,header,hgroup,hr,ins,map,menu,nav,ol,pre,script,section,table,ul")),v=g.extend({},r,l("a,abbr,acronym,b,bdi,bdo,big,br,cite,code,del,dfn,em,font,i,img,ins,kbd,label,map,mark,q,ruby,rp,rt,s,samp,small,span,strike,strong,sub,sup,time,tt,u,var")),
+y=l("script,style"),D=g.extend({},x,u,v,w),E=l("background,cite,href,longdesc,src,usemap"),Q=g.extend({},E,l("abbr,align,alt,axis,bgcolor,border,cellpadding,cellspacing,class,clear,color,cols,colspan,compact,coords,dir,face,headers,height,hreflang,hspace,ismap,lang,language,nohref,nowrap,rel,rev,rows,rowspan,rules,scope,scrolling,shape,size,span,start,summary,target,title,type,valign,value,vspace,width")),p=document.createElement("pre"),N=/^(\s*)([\s\S]*?)(\s*)$/;g.module("ngSanitize",[]).provider("$sanitize",
+function(){this.$get=["$$sanitizeUri",function(a){return function(d){var c=[];G(d,t(c,function(c,b){return!/^unsafe/.test(a(c,b))}));return c.join("")}}]});g.module("ngSanitize").filter("linky",["$sanitize",function(a){var d=/((ftp|https?):\/\/|(mailto:)?[A-Za-z0-9._%+-]+@)\S*[^\s.;,(){}<>"]/,c=/^mailto:/;return function(e,b){function k(a){a&&m.push(F(a))}function f(a,c){m.push("<a ");g.isDefined(b)&&(m.push('target="'),m.push(b),m.push('" '));m.push('href="',a.replace('"',"&quot;"),'">');k(c);m.push("</a>")}
+if(!e)return e;for(var n,h=e,m=[],l,p;n=h.match(d);)l=n[0],n[2]==n[3]&&(l="mailto:"+l),p=n.index,k(h.substr(0,p)),f(l,n[0].replace(c,"")),h=h.substring(p+n[0].length);k(h);return a(m.join(""))}}])})(window,window.angular);
+//# sourceMappingURL=angular-sanitize.min.js.map
 
-app.config(['$routeProvider', '$locationProvider', function ($routeProvider) {
+var app = angular.module('asterion', ['ngRoute', 'ngCookies', 'ngSanitize', 'highlighter']);
+
+app.config(['$routeProvider', function ($routeProvider) {
 	$routeProvider.when('/', {
-		templateUrl: 'partials/search/results'
+		templateUrl: 'partials/dashboard/main',
+		controller: 'dashboardController'
+	})
+	.when('/search', {
+		templateUrl: 'partials/search/results',
+		controller: 'searchController'
 	})
 	.otherwise({
 		redirectTo: '/'
 	});
 }]);
 
-app.controller('global', ['$scope', '$rootScope', '$http',
-	function ($scope, $rootScope, $http) {
-		$rootScope.pageTitle = 'Search results';
-		$rootScope.pageSubtitle = '';
+app.controller('global', ['$scope', '$rootScope', '$http', '$location', '$route',
+	function ($scope, $rootScope, $http, $location, $route) {
+		$rootScope.masthead = 'Asterion';
+		$rootScope.titleSep1 = ' \u2014 ';
+		$rootScope.titleSep2 = ' \u00BB ';
+		$rootScope.titleLine = 'Bookselling like a pro' + $rootScope.titleSep1 + $rootScope.masthead;
 
+		$rootScope.searchTerm;
 
-		$scope.quickSearch = function () {
-			alert($scope.searchTerm);
+		$scope.quickSearch = function (searchTerm) {
+			if ($location.path() == '/search') $route.reload();
+
+			$location.path('/search');
 		}
 	}
 ]);
+
+app.controller('dashboardController', ['$scope', '$rootScope', '$http', '$location',
+	function ($scope, $rootScope, $http, $location) {
+		$rootScope.pageSlug = 'dashboard'
+		$rootScope.pageTitle = 'Dashboard';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
+	}	
+]);
+
+app.controller('searchController', ['$scope', '$rootScope', '$http', '$location', '$cookies',
+	function ($scope, $rootScope, $http, $location, $cookies) {
+		$rootScope.pageSlug = 'search'
+		$rootScope.pageTitle = 'Search';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
+
+		$scope.searchLoading = true;
+		$scope.noResults = false;
+		$scope.searchedFor = '';
+
+		$scope.sortMethods = [
+			{ 'slug': 'relevance', 'name': 'Relevance' }, 
+			{ 'slug': 'title', 'name': 'Title' }, 
+			{ 'slug': 'author', 'name': 'Author' }, 
+			{ 'slug': 'publisher', 'name': 'Publisher' }, 
+			{ 'slug': 'isbn', 'name': 'ISBN' }, 
+		];
+
+		$scope.pagination = {
+			'page': 0,
+			'limit': 12,
+			'pages': 0,
+		};
+
+		$scope.currentSortMethod = $scope.sortMethods[0];
+		if ($cookies.currentSortMethod) $scope.currentSortMethod = $scope.sortMethods[$cookies.currentSortMethod];
+
+		$scope.sortOrder = 'asc';
+		if ($cookies.sortOrder) $scope.sortOrder = $cookies.sortOrder;
+
+		$scope.getResults = function (searchTerm) {
+			if (!searchTerm) return $location.path('/');
+			$scope.noResults = false;
+			$scope.searchedFor = searchTerm;
+
+			$http.post('/search/results', { 
+				'search': searchTerm, 
+				'page': $scope.pagination.page, 
+				'limit': $scope.pagination.limit,
+				'sort': $scope.currentSortMethod.slug,
+				'order': $scope.sortOrder
+			}).success(function (results) {
+				$scope.searchLoading = false;
+				if (results.hits.total < 1) $scope.noResults = true;
+
+				$scope.searchResults = results;
+				$scope.pagination.pages = Math.ceil(results.hits.total / $scope.pagination.limit); 
+
+				$rootScope.titleLine = 'Search results for \"' + searchTerm + '\"' + $rootScope.titleSep1 + $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
+			});
+		};
+
+		$scope.searchPage = function (arg, searchTerm) {
+			$scope.searchLoading = true;
+			if (arg == 'next') $scope.pagination.page = $scope.pagination.page + 1;
+			if (arg == 'prev') $scope.pagination.page = $scope.pagination.page - 1;
+			if (arg == 'first') $scope.pagination.page = 0;
+			if (arg == 'last') $scope.pagination.page = $scope.pagination.pages - 1;
+ 			$scope.getResults(searchTerm);
+		};
+
+		$scope.sortResults = function (index, searchTerm) {
+			$scope.currentSortMethod = $scope.sortMethods[index];
+			$cookies.currentSortMethod = index;
+
+			$scope.searchLoading = true;
+ 			$scope.getResults(searchTerm);
+		};
+
+		$scope.sortDirection = function (arg, searchTerm) {
+			$scope.sortOrder = arg;
+			$cookies.sortOrder = $scope.sortOrder;
+
+			$scope.searchLoading = true;
+ 			$scope.getResults(searchTerm);
+		};
+	}
+]);
+
+angular.module('highlighter',[]).filter('highlight', function () {
+	return function (text, search, caseSensitive) {
+		text = text.toString();
+		search = search.toString();
+		search = search.split(' ');
+
+		for (i in search) {
+			if (text && (search[i] || angular.isNumber(search[i]))) {
+				if (caseSensitive) {
+					text = text.split(search[i]).join('<mark>' + search[i] + '</mark>');
+				} else {
+					text = text.replace(new RegExp(search[i], 'gi'), '<mark>$&</mark>');
+				}
+			} else {
+				text = text;
+			}
+
+			if (i ==  search.length - 1) return text;
+		}
+	};
+});

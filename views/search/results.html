@@ -1,29 +1,32 @@
-<div id="main" style="width: 75%">
-	<div class="item">
+<div id="main" style="width: 70%" ng-init="getResults(searchTerm)">
+
+	<div ng-show="searchLoading == true" class="loading">
+		<i class="fa fa-refresh fa-spin"></i>
+	</div>
+	
+	<div ng-show="searchLoading == false" ng-repeat="item in searchResults.hits.hits" class="item">
 		<input type="checkbox">
 		<a href="" class="item-detail">
-			<img src="http://www.smashingmagazine.com/images/book-covers/book-covers-18.jpg" alt="">
-			<div class="item-title">A Clockwork Orange.</div>
+			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{item._source.isbn}}" alt="{{item._source.title}}">
+			<div class="item-title" ng-bind-html="item._source.title | highlight: searchedFor">Title</div>
 		</a>
-		<div class="item-author">Burgess, Anthony</div>
-
+		<div class="item-author" ng-show="item._source.author" ng-bind-html="item._source.author | highlight: searchedFor">Item author(s)</div>
+	
 		<dl class="item-meta">
 			<dt>Publisher:</dt>
-			<dd>Uitgeverij Publisher Editions, 1999</dd>
+			<dd><span ng-bind-html="item._source.publisher | highlight: searchedFor"></span>, {{item._source.date}}</dd>
 			<dt>ISBN:</dt>
-			<dd>9781234567890</dd>
+			<dd><span ng-bind-html="item._source.isbn | highlight: searchedFor"></span><span ng-hide="item._source.isbn">&nbsp;</span></dd>
 			<dt>Binding:</dt>
-			<dd>Hardback, 999 pages</dd>
-			<dt>Edition:</dt>
-			<dd>2nd</dd>
+			<dd>XXX, {{item._source.pages}} pages</dd>
 			<dt>Availability:</dt>
 			<dd><i class="available"></i> Available</dd>
 		</dl>
 		
 		<div class="item-sidebar">
-			<div class="item-price"><strong>99.99</strong> EUR</div>
+			<div class="item-price"><strong>{{item._source.price}}</strong> EUR</div>
 			<button class="cart">Shopping cart</button>
-
+	
 			<ul class="item-links">
 				<li><a href="">More information</a></li>
 				<li><a href="">Order references</a></li>
@@ -31,407 +34,56 @@
 		</div>
 	</div>
 
-	<div class="item">
-		<input type="checkbox">
-		<a href="" class="item-detail">
-			<img src="http://www.smashingmagazine.com/images/book-covers/book-covers-19.jpg" alt="">
-			<div class="item-title">Brave New World.</div>
-		</a>
-		<div class="item-author">Huxley, Aldous</div>
-
-		<dl class="item-meta">
-			<dt>Publisher:</dt>
-			<dd>Uitgeverij Publisher Editions, 1999</dd>
-			<dt>ISBN:</dt>
-			<dd>9781234567890</dd>
-			<dt>Binding:</dt>
-			<dd>Hardback, 999 pages</dd>
-			<dt>Edition:</dt>
-			<dd>2nd</dd>
-			<dt>Availability:</dt>
-			<dd><i class="oop"></i> Out of print</dd>
-		</dl>
-		
-		<div class="item-sidebar">
-			<div class="item-price"><strong>99.99</strong> EUR</div>
-			<button class="cart">Shopping cart</button>
-
-			<ul class="item-links">
-				<li><a href="">More information</a></li>
-				<li><a href="">Order references</a></li>
-			</ul>
-		</div>
-
-		<div class="alert danger">
-			<i class="icon-chevron-up"></i>
-			<div class="alert-content">
-				There is something wrong with this title!
-			</div>
-				
-		</div>
-	</div>
-
-	<div class="item">
-		<input type="checkbox">
-		<a href="" class="item-detail">
-			<img src="http://www.smashingmagazine.com/images/book-covers/book-covers-76.jpg" alt="">
-			<div class="item-title">Disorders of memory and learning.</div>
-		</a>
-		<div class="item-author">Talland, George A.</div>
-
-		<dl class="item-meta">
-			<dt>Publisher:</dt>
-			<dd>Uitgeverij Publisher Editions, 1999</dd>
-			<dt>ISBN:</dt>
-			<dd>9781234567890</dd>
-			<dt>Binding:</dt>
-			<dd>Hardback, 999 pages</dd>
-			<dt>Edition:</dt>
-			<dd>2nd</dd>
-			<dt>Availability:</dt>
-			<dd><i class="available"></i> Available</dd>
-		</dl>
-		
-		<div class="item-sidebar">
-			<div class="item-price"><strong>99.99</strong> EUR</div>
-			<button class="cart">Shopping cart</button>
-
-			<ul class="item-links">
-				<li><a href="">More information</a></li>
-				<li><a href="">Order references</a></li>
-			</ul>
-		</div>
-	</div>
-
-	<div class="item">
-		<input type="checkbox">
-		<a href="" class="item-detail">
-			<img src="http://www.smashingmagazine.com/images/book-covers/book-covers-78.jpg" alt="">
-			<div class="item-title">The end of inequality? Stratification under state socialism.</div>
-		</a>
-		<div class="item-author">Lane, David</div>
-
-		<dl class="item-meta">
-			<dt>Publisher:</dt>
-			<dd>Uitgeverij Publisher Editions, 1999</dd>
-			<dt>ISBN:</dt>
-			<dd>9781234567890</dd>
-			<dt>Binding:</dt>
-			<dd>Hardback, 999 pages</dd>
-			<dt>Edition:</dt>
-			<dd>2nd</dd>
-			<dt>Availability:</dt>
-			<dd><i class="available"></i> Available</dd>
-		</dl>
-		
-		<div class="item-sidebar">
-			<div class="item-price"><strong>99.99</strong> EUR</div>
-			<button class="cart">Shopping cart</button>
-
-			<ul class="item-links">
-				<li><a href="">More information</a></li>
-				<li><a href="">Order references</a></li>
-			</ul>
-		</div>
-	</div>
-			<div class="item">
-		<input type="checkbox">
-		<a href="" class="item-detail">
-			<img src="http://www.smashingmagazine.com/images/book-covers/book-covers-18.jpg" alt="">
-			<div class="item-title">A Clockwork Orange.</div>
-		</a>
-		<div class="item-author">Burgess, Anthony</div>
-
-		<dl class="item-meta">
-			<dt>Publisher:</dt>
-			<dd>Uitgeverij Publisher Editions, 1999</dd>
-			<dt>ISBN:</dt>
-			<dd>9781234567890</dd>
-			<dt>Binding:</dt>
-			<dd>Hardback, 999 pages</dd>
-			<dt>Edition:</dt>
-			<dd>2nd</dd>
-			<dt>Availability:</dt>
-			<dd><i class="available"></i> Available</dd>
-		</dl>
-		
-		<div class="item-sidebar">
-			<div class="item-price"><strong>99.99</strong> EUR</div>
-			<button class="cart">Shopping cart</button>
-
-			<ul class="item-links">
-				<li><a href="">More information</a></li>
-				<li><a href="">Order references</a></li>
-			</ul>
-		</div>
-	</div>
-
-	<div class="item">
-		<input type="checkbox">
-		<a href="" class="item-detail">
-			<img src="http://www.smashingmagazine.com/images/book-covers/book-covers-19.jpg" alt="">
-			<div class="item-title">Brave New World.</div>
-		</a>
-		<div class="item-author">Huxley, Aldous</div>
-
-		<dl class="item-meta">
-			<dt>Publisher:</dt>
-			<dd>Uitgeverij Publisher Editions, 1999</dd>
-			<dt>ISBN:</dt>
-			<dd>9781234567890</dd>
-			<dt>Binding:</dt>
-			<dd>Hardback, 999 pages</dd>
-			<dt>Edition:</dt>
-			<dd>2nd</dd>
-			<dt>Availability:</dt>
-			<dd><i class="oop"></i> Out of print</dd>
-		</dl>
-		
-		<div class="item-sidebar">
-			<div class="item-price"><strong>99.99</strong> EUR</div>
-			<button class="cart">Shopping cart</button>
-
-			<ul class="item-links">
-				<li><a href="">More information</a></li>
-				<li><a href="">Order references</a></li>
-			</ul>
-		</div>
-	</div>
-
-	<div class="item">
-		<input type="checkbox">
-		<a href="" class="item-detail">
-			<img src="http://www.smashingmagazine.com/images/book-covers/book-covers-76.jpg" alt="">
-			<div class="item-title">Disorders of memory and learning.</div>
-		</a>
-		<div class="item-author">Talland, George A.</div>
-
-		<dl class="item-meta">
-			<dt>Publisher:</dt>
-			<dd>Uitgeverij Publisher Editions, 1999</dd>
-			<dt>ISBN:</dt>
-			<dd>9781234567890</dd>
-			<dt>Binding:</dt>
-			<dd>Hardback, 999 pages</dd>
-			<dt>Edition:</dt>
-			<dd>2nd</dd>
-			<dt>Availability:</dt>
-			<dd><i class="available"></i> Available</dd>
-		</dl>
-		
-		<div class="item-sidebar">
-			<div class="item-price"><strong>99.99</strong> EUR</div>
-			<button class="cart">Shopping cart</button>
-
-			<ul class="item-links">
-				<li><a href="">More information</a></li>
-				<li><a href="">Order references</a></li>
-			</ul>
-		</div>
-	</div>
-
-	<div class="item">
-		<input type="checkbox">
-		<a href="" class="item-detail">
-			<img src="http://www.smashingmagazine.com/images/book-covers/book-covers-78.jpg" alt="">
-			<div class="item-title">The end of inequality? Stratification under state socialism.</div>
-		</a>
-		<div class="item-author">Lane, David</div>
-
-		<dl class="item-meta">
-			<dt>Publisher:</dt>
-			<dd>Uitgeverij Publisher Editions, 1999</dd>
-			<dt>ISBN:</dt>
-			<dd>9781234567890</dd>
-			<dt>Binding:</dt>
-			<dd>Hardback, 999 pages</dd>
-			<dt>Edition:</dt>
-			<dd>2nd</dd>
-			<dt>Availability:</dt>
-			<dd><i class="available"></i> Available</dd>
-		</dl>
-		
-		<div class="item-sidebar">
-			<div class="item-price"><strong>99.99</strong> EUR</div>
-			<button class="cart">Shopping cart</button>
-
-			<ul class="item-links">
-				<li><a href="">More information</a></li>
-				<li><a href="">Order references</a></li>
-			</ul>
-		</div>
-	</div>
-		<div class="item">
-		<input type="checkbox">
-		<a href="" class="item-detail">
-			<img src="http://www.smashingmagazine.com/images/book-covers/book-covers-18.jpg" alt="">
-			<div class="item-title">A Clockwork Orange.</div>
-		</a>
-		<div class="item-author">Burgess, Anthony</div>
-
-		<dl class="item-meta">
-			<dt>Publisher:</dt>
-			<dd>Uitgeverij Publisher Editions, 1999</dd>
-			<dt>ISBN:</dt>
-			<dd>9781234567890</dd>
-			<dt>Binding:</dt>
-			<dd>Hardback, 999 pages</dd>
-			<dt>Edition:</dt>
-			<dd>2nd</dd>
-			<dt>Availability:</dt>
-			<dd><i class="available"></i> Available</dd>
-		</dl>
-		
-		<div class="item-sidebar">
-			<div class="item-price"><strong>99.99</strong> EUR</div>
-			<button class="cart">Shopping cart</button>
-
-			<ul class="item-links">
-				<li><a href="">More information</a></li>
-				<li><a href="">Order references</a></li>
-			</ul>
-		</div>
-
-		<div class="alert warn">
-			<i class="icon-chevron-up"></i>
-			<div class="alert-content">
-				A stern warning about this title
-			</div>
-				
-		</div>
-	</div>
-
-	<div class="item">
-		<input type="checkbox">
-		<a href="" class="item-detail">
-			<img src="http://www.smashingmagazine.com/images/book-covers/book-covers-19.jpg" alt="">
-			<div class="item-title">Brave New World.</div>
-		</a>
-		<div class="item-author">Huxley, Aldous</div>
-
-		<dl class="item-meta">
-			<dt>Publisher:</dt>
-			<dd>Uitgeverij Publisher Editions, 1999</dd>
-			<dt>ISBN:</dt>
-			<dd>9781234567890</dd>
-			<dt>Binding:</dt>
-			<dd>Hardback, 999 pages</dd>
-			<dt>Edition:</dt>
-			<dd>2nd</dd>
-			<dt>Availability:</dt>
-			<dd><i class="oop"></i> Out of print</dd>
-		</dl>
-		
-		<div class="item-sidebar">
-			<div class="item-price"><strong>99.99</strong> EUR</div>
-			<button class="cart">Shopping cart</button>
-
-			<ul class="item-links">
-				<li><a href="">More information</a></li>
-				<li><a href="">Order references</a></li>
-			</ul>
-		</div>
-	</div>
-
-	<div class="item">
-		<input type="checkbox">
-		<a href="" class="item-detail">
-			<img src="http://www.smashingmagazine.com/images/book-covers/book-covers-76.jpg" alt="">
-			<div class="item-title">Disorders of memory and learning.</div>
-		</a>
-		<div class="item-author">Talland, George A.</div>
-
-		<dl class="item-meta">
-			<dt>Publisher:</dt>
-			<dd>Uitgeverij Publisher Editions, 1999</dd>
-			<dt>ISBN:</dt>
-			<dd>9781234567890</dd>
-			<dt>Binding:</dt>
-			<dd>Hardback, 999 pages</dd>
-			<dt>Edition:</dt>
-			<dd>2nd</dd>
-			<dt>Availability:</dt>
-			<dd><i class="available"></i> Available</dd>
-		</dl>
-		
-		<div class="item-sidebar">
-			<div class="item-price"><strong>99.99</strong> EUR</div>
-			<button class="cart">Shopping cart</button>
-
-			<ul class="item-links">
-				<li><a href="">More information</a></li>
-				<li><a href="">Order references</a></li>
-			</ul>
-		</div>
-	</div>
-
-	<div class="item">
-		<input type="checkbox">
-		<a href="" class="item-detail">
-			<img src="http://www.smashingmagazine.com/images/book-covers/book-covers-78.jpg" alt="">
-			<div class="item-title">The end of inequality? Stratification under state socialism.</div>
-		</a>
-		<div class="item-author">Lane, David</div>
-
-		<dl class="item-meta">
-			<dt>Publisher:</dt>
-			<dd>Uitgeverij Publisher Editions, 1999</dd>
-			<dt>ISBN:</dt>
-			<dd>9781234567890</dd>
-			<dt>Binding:</dt>
-			<dd>Hardback, 999 pages</dd>
-			<dt>Edition:</dt>
-			<dd>2nd</dd>
-			<dt>Availability:</dt>
-			<dd><i class="available"></i> Available</dd>
-		</dl>
-		
-		<div class="item-sidebar">
-			<div class="item-price"><strong>99.99</strong> EUR</div>
-			<button class="cart">Shopping cart</button>
-
-			<ul class="item-links">
-				<li><a href="">More information</a></li>
-				<li><a href="">Order references</a></li>
-			</ul>
-		</div>
-
-		<div class="alert info">
-			<i class="icon-chevron-up"></i>
-			<div class="alert-content">
-				Some useful information about this title
-			</div>
-				
-		</div>
-	</div>
 </div>
 
-<aside style="width: 25%">
+<aside ng-show="noResults == false" style="width: 30%">
 	<div class="pagination">
-		<a href="" class="prev">&laquo; Previous</a>
-		2 of 99
-		<a href="" class="next">Next &raquo;</a>
+		<a href="" class="prev" ng-show="pagination.page > 0" ng-click="searchPage('first', searchedFor)">
+			<i class="fa fa-angle-double-left"></i>First
+		</a>
+		<a href="" class="prev" ng-show="pagination.page > 1" ng-click="searchPage('prev', searchedFor)">
+			<i class="fa fa-angle-left"></i>Previous
+		</a>
+
+		<span ng-hide="searchResults">
+			<i class="fa fa-refresh fa-spin"></i>
+		</span>
+		<span ng-show="searchResults">
+			{{pagination.page + 1}} of {{pagination.pages}}
+		</span>
+		
+		<a href="" class="next" ng-show="pagination.page + 1 < pagination.pages" ng-click="searchPage('last', searchedFor)">
+			Last<i class="fa fa-angle-double-right"></i>
+		</a>
+		<a href="" class="next" ng-show="pagination.page + 2 < pagination.pages" ng-click="searchPage('next', searchedFor)">
+			Next<i class="fa fa-angle-right"></i>
+		</a>
 	</div>
 
 	<dl class="page-details">
 		<dt>Criteria:</dt>
-		<dd>Search term(s)</dd>
+		<dd><em>{{searchedFor}}</em><span ng-hide="searchedFor">&nbsp;</span></dd>
 		<dt>Results:</dt>
-		<dd>999</dd>
+		<dd>{{searchResults.hits.total}}<span ng-hide="searchResults.count">&nbsp;</span></dd>
 		<dt>Sort by:</dt>
 		<dd>
-			<span href="" class="hover-menu"><a>Title</a>
+			<span href="" class="hover-menu"><a>{{currentSortMethod.name}}</a>
 				<ul>
-					<li><a href="">Title</a></li>
-					<li><a href="">Author</a></li>
-					<li><a href="">Publisher</a></li>
-					<li><a href="">ISBN</a></li>
+					<li ng-repeat="method in sortMethods">
+						<a href="" ng-class="{active: method.slug == currentSortMethod.slug}" ng-click="sortResults($index, searchedFor)">{{method.name}}</a>
+					</li>
 				</ul>
-			</span> / 
-			<span href="" class="hover-menu"><a>Descending</a>
+			</span>
+			<span href="" class="hover-menu" ng-hide="currentSortMethod.slug == 'relevance'"> / 
+				<a ng-show="sortOrder == 'asc'">Ascending</a>
+				<a ng-show="sortOrder == 'desc'">Descending</a>
 				<ul>
-					<li><a href="">Ascending</a></li>
-					<li><a href="">Descending</a></li>
+					<li>
+						<a href="" ng-class="{active: sortOrder == 'asc'}" ng-click="sortDirection('asc', searchedFor)">Ascending</a>
+					</li>
+					<li>
+						<a href="" ng-class="{active: sortOrder == 'desc'}" ng-click="sortDirection('desc', searchedFor)">Descending</a>
+					</li>
 				</ul>
 			</span>
 		</dd>
@@ -439,7 +91,7 @@
 		<dd>
 			<span href="" class="hover-menu"><a>Original</a>
 				<ul>
-					<li><a href="">Original</a></li>
+					<li><a href="" class="active">Original</a></li>
 					<li><a href="">EUR</a></li>
 					<li><a href="">USD</a></li>
 					<li><a href="">GBP</a></li>
@@ -455,7 +107,7 @@
 
 	<div class="filters">
 		<div class="filter open">
-			<h3><i class="icon-chevron-down"></i> Availability</h3>
+			<h3><i class="fa fa-chevron-down"></i> Availability</h3>
 			<ul>
 				<li><label><input type="checkbox"> <i class="available"></i> Available (99)</label></li>
 				<li><label><input type="checkbox"> <i class="oop"></i> Out of print (99)</label></li>
@@ -465,20 +117,24 @@
 		</div>
 
 		<div class="filter closed">
-			<h3><i class="icon-chevron-up"></i> Product type</h3>
+			<h3><i class="fa fa-chevron-up"></i> Product type</h3>
 		</div>
 
 		<div class="filter closed">
-			<h3><i class="icon-chevron-up"></i> Publication year</h3>
+			<h3><i class="fa fa-chevron-up"></i> Publication year</h3>
 		</div>
 
 		<div class="filter closed">
-			<h3><i class="icon-chevron-up"></i> Data sources</h3>
+			<h3><i class="fa fa-chevron-up"></i> Data sources</h3>
 		</div>
 
 		<div class="filter closed">
-			<h3><i class="icon-chevron-up"></i> Classification</h3>
+			<h3><i class="fa fa-chevron-up"></i> Classification</h3>
 		</div>
 	</div>
 
 </aside>
+
+<div ng-show="noResults == true" class="no-results">
+	No results for <em>{{searchedFor}}</em>
+</div>

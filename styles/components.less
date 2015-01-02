@@ -36,7 +36,7 @@
 				position: relative; 
 				z-index: 9999;
 
-				&:hover { 
+				&:hover, &.active { 
 					background-color: @h-back; 
 					color: @h-text; 
 					text-decoration: none; 
@@ -69,8 +69,14 @@
 	padding: 1em; 
 	border-bottom: 1px solid @line; 
 
-	.prev { float: left; }
-	.next { float: right; }
+	.prev { float: left; margin-right: .2em; }
+	.next { float: right; margin-left: .2em; }
+
+	i {
+		margin: .2em;
+		position: relative;
+		top: .1em;
+	}
 }
 
 .page-details {
@@ -136,6 +142,7 @@
 		
 		.item-title { 
 			font-size: 1.25em; 
+			line-height: .9em;
 			font-weight: bold; 
 			text-decoration: none; 
 			color: @text; 
@@ -149,15 +156,15 @@
 
 	.item-author { 
 		color: @text; 
-		margin-bottom: 1em; 
 	}
 	
 	.item-meta { 
 		color: @text; 
+		margin-top: 1em; 
 
-		dt, dd { float: left }
-		dt { width: 20% }
-		dd { width: 80% }
+		dt, dd { float: left; }
+		dt { width: 20%; }
+		dd { width: 80%; }
 	}
 
 	.item-sidebar { 
@@ -253,4 +260,18 @@
 			i { color: darken(@warn, 10%) }
 		}
 	}
+}
+
+.under-construction, .no-results {
+	font-size: 3em;
+	color: @vague;
+	text-align: center;
+	padding: 5em 0;
+}
+
+.loading {
+	font-size: 3em;
+	color: @line;
+	text-align: center;
+	padding: 2em 0;	
 }

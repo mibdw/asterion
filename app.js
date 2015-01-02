@@ -5,9 +5,12 @@ var app = express();
 var http = require('http').Server(app);
 var port = process.env.PORT || 4242;
 var moment = require('moment');
+var bodyParser = require('body-parser');
 
-app.engine('html', require('ejs').renderFile);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public')); 
+app.engine('html', require('ejs').renderFile);
 
 // Routes
 

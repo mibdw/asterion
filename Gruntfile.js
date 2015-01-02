@@ -20,6 +20,7 @@ module.exports = function (grunt) {
 						'scripts/angular/angular.min.js',
 						'scripts/angular/angular-route.min.js',
 						'scripts/angular/angular-cookies.min.js',
+						'scripts/angular/angular-sanitize.min.js',
 						'scripts/global.js',					
 					]
 				}
