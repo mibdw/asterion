@@ -5,7 +5,7 @@ app.config(['$routeProvider', function ($routeProvider) {
 		templateUrl: 'partials/dashboard/main',
 		controller: 'dashboardController'
 	})
-	.when('/search', {
+	.when('/q/:query', {
 		templateUrl: 'partials/search/results',
 		controller: 'searchController'
 	})
@@ -23,10 +23,16 @@ app.controller('global', ['$scope', '$rootScope', '$http', '$location', '$route'
 
 		$rootScope.searchTerm;
 
-		$scope.quickSearch = function (searchTerm) {
-			if ($location.path() == '/search') $route.reload();
+		$rootScope.slugify = function (text) {
+			return text.toString()
+			.replace(/\s+/g, '+') // Replace spaces with -
+			.replace(/[^\w\+]+/g, '') // Remove all non-word chars
+			.replace(/\+\++/g, '+') // Replace multiple - with single -
+		} 
 
-			$location.path('/search');
+		$scope.quickSearch = function (searchTerm) {
+			searchTerm = $rootScope.slugify(searchTerm);
+			$location.path('/q/' + searchTerm);
 		}
 	}
 ]);
@@ -40,8 +46,8 @@ app.controller('dashboardController', ['$scope', '$rootScope', '$http', '$locati
 	}	
 ]);
 
-app.controller('searchController', ['$scope', '$rootScope', '$http', '$location', '$cookies',
-	function ($scope, $rootScope, $http, $location, $cookies) {
+app.controller('searchController', ['$scope', '$rootScope', '$http', '$location', '$cookies', '$routeParams',
+	function ($scope, $rootScope, $http, $location, $cookies, $routeParams) {
 		$rootScope.pageSlug = 'search'
 		$rootScope.pageTitle = 'Search';
 		$rootScope.pageSubtitle = '';
@@ -59,11 +65,7 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 			{ 'slug': 'isbn', 'name': 'ISBN' }, 
 		];
 
-		$scope.pagination = {
-			'page': 0,
-			'limit': 12,
-			'pages': 0,
-		};
+		$scope.pagination = { 'page': 0, 'limit': 12, 'pages': 0 };
 
 		$scope.currentSortMethod = $scope.sortMethods[0];
 		if ($cookies.currentSortMethod) $scope.currentSortMethod = $scope.sortMethods[$cookies.currentSortMethod];
@@ -72,10 +74,13 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 		if ($cookies.sortOrder) $scope.sortOrder = $cookies.sortOrder;
 
 		$scope.getResults = function (searchTerm) {
-			if (!searchTerm) return $location.path('/');
+			if (!searchTerm) {
+				if (!$routeParams.query) return $location.path('/');
+				searchTerm = $routeParams.query.replace(/\+/g, ' ');
+				$rootScope.searchTerm = searchTerm;
+			};
 			$scope.noResults = false;
 			$scope.searchedFor = searchTerm;
-
 			$http.post('/search/results', { 
 				'search': searchTerm, 
 				'page': $scope.pagination.page, 

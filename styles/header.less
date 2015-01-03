@@ -78,7 +78,7 @@ header {
 	border-right: 1px solid @h-line; 
 	background-color: @h-back;
 
-	&:hover { 
+	&:hover, &:focus { 
 		background-color: @h-hover; 
 		text-decoration: none;
 
@@ -105,6 +105,7 @@ header {
 
 nav { 
 	float: left; 
+	display: block;
 	font-size: 1.3em; 
 	line-height: @h-height; 
 	padding: 0 1em; 
@@ -121,9 +122,10 @@ nav {
 		color: @h-vague 
 	}
 	
-	&:hover { 
+	&:hover, &:focus { 
 		background-color: @h-hover;  
 		color: @h-text;
+		outline-width: 0;
 
 		i { color: @h-text }
 
@@ -209,7 +211,7 @@ nav {
 		top: -.2em; 
 	}
 
-	&:hover { 
+	&:hover, &:focus { 
 		background-color: @h-hover; 
 		cursor: pointer; 
 
@@ -228,7 +230,7 @@ nav {
 	
 	i { color: @h-vague; }
 
-	&:hover { 
+	&:hover, &:focus { 
 		background-color: @h-hover; 
 		cursor: pointer; 
 

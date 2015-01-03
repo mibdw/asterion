@@ -3,9 +3,7 @@ var moment = require('moment');
 var Item = require(__dirname + '/../models/item.js');
 
 exports.results = function(req, res, next) {
-	var query = { 
-		'query_string': { 'query': req.body.search }
-	};
+	var query = { 'query_string': { 'query': req.body.search } };
 
 	var conditions = {
 		'from': req.body.page * req.body.limit, 

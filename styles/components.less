@@ -66,16 +66,33 @@
 
 .pagination { 
 	text-align: center; 
-	padding: 1em; 
 	border-bottom: 1px solid @line; 
+	.clearfix ();
 
-	.prev { float: left; margin-right: .2em; }
-	.next { float: right; margin-left: .2em; }
+	span {
+		line-height: 3em;
+		padding: 0 1em;
+		display: inline-block;
+	}
 
-	i {
-		margin: .2em;
-		position: relative;
-		top: .1em;
+	a {
+		line-height: 3em;
+		padding: 0 1em;
+
+		&.prev { 
+			float: left; 
+			border-right: 1px solid @line;
+		}
+		
+		&.next { 
+			float: right; 
+			border-left: 1px solid @line;
+		}
+
+		&:hover {
+			background-color: @h-back;
+			color: @h-text;
+		}
 	}
 }
 
@@ -125,6 +142,15 @@
 	min-height: 13em;	
 	.clearfix ();
 	
+	.item-select {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		width: 2em;
+		cursor: pointer;
+	}
+
 	input[type="checkbox"] { 
 		position: absolute; 
 		top: 1.5em; 
@@ -142,7 +168,7 @@
 		
 		.item-title { 
 			font-size: 1.25em; 
-			line-height: .9em;
+			line-height: 1em;
 			font-weight: bold; 
 			text-decoration: none; 
 			color: @text; 
@@ -200,6 +226,7 @@
 		}
 	
 		.item-links { 
+			margin-top: 1em;
 			list-style-type: none; 
 
 			li { text-align: right;	}

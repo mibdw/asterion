@@ -4,9 +4,7 @@ module.exports = function (grunt) {
 
 		less: {
 			development: {
-				options: {
-					compress: true,
-				},
+				options: { compress: true },
 				files: {
 					"public/asterion.css": "styles/main.less"
 				}
@@ -44,9 +42,7 @@ module.exports = function (grunt) {
 				src: 'public/asterion.js',
 				dest: 'public/asterion.min.js'
 			},
-			options: {
-				mangle: false
-			}
+			options: { mangle: false }
 		},
 
 		watch: {
@@ -57,17 +53,26 @@ module.exports = function (grunt) {
 					'scripts/angular/*.js'
 				],
 				tasks: ['ngAnnotate', 'concat'],
-				options: {
-					spawn: false,
-				},
+				options: { spawn: false },
 			},
 			styles: {
 				files: ['styles/*.less'],
 				tasks: ['less'],
-				options: {
-					nospawn: true,
-				},
+				options: { nospawn: true },
 			} 
+		},
+
+		nodemon: {
+			dev: {
+				script: 'app.js'
+			}
+		},
+
+		concurrent: {
+			start: {
+				tasks: ['nodemon', 'watch'],
+				options: { logConcurrentOutput: true }
+			}
 		}
 	});
 
@@ -76,7 +81,8 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-nodemon');
+	grunt.loadNpmTasks('grunt-concurrent');
 
-	grunt.registerTask('default', ['less', 'ngAnnotate', 'concat', 'uglify', 'watch']);
+	grunt.registerTask('default', ['less', 'ngAnnotate', 'concat', 'uglify', 'concurrent:start']);
 };

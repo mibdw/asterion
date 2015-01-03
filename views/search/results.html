@@ -1,11 +1,12 @@
-<div id="main" style="width: 70%" ng-init="getResults(searchTerm)">
+<div id="main" style="width: 75%" ng-init="getResults(searchTerm)">
 
 	<div ng-show="searchLoading == true" class="loading">
 		<i class="fa fa-refresh fa-spin"></i>
 	</div>
 	
 	<div ng-show="searchLoading == false" ng-repeat="item in searchResults.hits.hits" class="item">
-		<input type="checkbox">
+		<label class="item-select" for="{{item._source._id}}"></label>
+		<input type="checkbox" id="{{item._source._id}}">
 		<a href="" class="item-detail">
 			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{item._source.isbn}}" alt="{{item._source.title}}">
 			<div class="item-title" ng-bind-html="item._source.title | highlight: searchedFor">Title</div>
@@ -25,24 +26,23 @@
 		
 		<div class="item-sidebar">
 			<div class="item-price"><strong>{{item._source.price}}</strong> EUR</div>
-			<button class="cart">Shopping cart</button>
+			<button class="cart">Add to cart</button>
 	
 			<ul class="item-links">
 				<li><a href="">More information</a></li>
-				<li><a href="">Order references</a></li>
 			</ul>
 		</div>
 	</div>
 
 </div>
 
-<aside ng-show="noResults == false" style="width: 30%">
+<aside ng-show="noResults == false" style="width: 25%">
 	<div class="pagination">
-		<a href="" class="prev" ng-show="pagination.page > 0" ng-click="searchPage('first', searchedFor)">
-			<i class="fa fa-angle-double-left"></i>First
+		<a href="" class="prev" ng-show="pagination.page > 0" ng-click="searchPage('first', searchedFor)" title="First">
+			<i class="fa fa-angle-double-left"></i>
 		</a>
-		<a href="" class="prev" ng-show="pagination.page > 1" ng-click="searchPage('prev', searchedFor)">
-			<i class="fa fa-angle-left"></i>Previous
+		<a href="" class="prev" ng-show="pagination.page > 1" ng-click="searchPage('prev', searchedFor)" title="Previous">
+			<i class="fa fa-angle-left"></i>
 		</a>
 
 		<span ng-hide="searchResults">
@@ -52,11 +52,11 @@
 			{{pagination.page + 1}} of {{pagination.pages}}
 		</span>
 		
-		<a href="" class="next" ng-show="pagination.page + 1 < pagination.pages" ng-click="searchPage('last', searchedFor)">
-			Last<i class="fa fa-angle-double-right"></i>
+		<a href="" class="next" ng-show="pagination.page + 1 < pagination.pages" ng-click="searchPage('last', searchedFor)" title="Last">
+			<i class="fa fa-angle-double-right"></i>
 		</a>
-		<a href="" class="next" ng-show="pagination.page + 2 < pagination.pages" ng-click="searchPage('next', searchedFor)">
-			Next<i class="fa fa-angle-right"></i>
+		<a href="" class="next" ng-show="pagination.page + 2 < pagination.pages" ng-click="searchPage('next', searchedFor)" title="Next">
+			<i class="fa fa-angle-right"></i>
 		</a>
 	</div>
 

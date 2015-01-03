@@ -13,12 +13,12 @@
 <body>
 	<header>
 		
-		<a href="/" class="masthead">
+		<a href="/#/" class="masthead" tabindex="1">
 			<!-- <img src="http://www.erasmusbooks.nl/wp-content/themes/erasmus4/img/logo-erasmus2.png"> -->
 			<i class="fa fa-bookmark"></i>
 		</a>
 
-		<nav>
+		<nav tabindex="2">
 			<i class="fa fa-bars"></i> Menu
 			<ul class="dropdown">
 				<li><a href="">Advanced search</a></li>
@@ -34,7 +34,8 @@
 			</ul>
 		</nav>
 
-		<div class="user"><i class="fa fa-user"></i>
+		<div class="user" tabindex="5">
+			<i class="fa fa-user"></i>
 			<ul class="dropdown">
 				<li><a href="">Profile</a></li>
 				<li><a href="">Settings</a></li>
@@ -44,7 +45,7 @@
 			</ul>
 		</div>
 
-		<div class="carts">
+		<div class="carts" tabindex="4">
 			<i class="fa fa-shopping-cart"></i>
 			<div class="cart-title">Shopping cart title</div><br>
 			<div class="cart-meta">99 items / EUR 999.99</div>
@@ -52,7 +53,7 @@
 		
 		<form class="search" ng-submit="quickSearch(searchTerm)">
 			<label for="search"><i class="fa fa-search"></i></label>
-			<input type="text" id="search" placeholder="Search by title, author, ISBN..." autocomplete="off" ng-model="searchTerm">
+			<input type="text" id="search" placeholder="Search by title, author, ISBN..." autocomplete="off" ng-model="searchTerm" tabindex="3">
 			<a href="" ng-show="searchTerm" ng-click="searchTerm = ''" class="fa fa-remove" title="Clear search"></a>
 		</form>
 

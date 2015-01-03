@@ -23,7 +23,7 @@ mongoose.connect('mongodb://localhost/asterion');
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function (callback) { console.log(moment().format('DD-MM-YYYY HH:mm:ss') + ' - Database connected bitch') });
+db.once('open', function (callback) { console.log(moment().format('DD-MM-YYYY HH:mm:ss') + ' - Database connected, Donny') });
 
 // Go go go!
 
