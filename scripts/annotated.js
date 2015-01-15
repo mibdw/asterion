@@ -256,7 +256,7 @@ function(){this.$get=["$$sanitizeUri",function(a){return function(d){var c=[];G(
 if(!e)return e;for(var n,h=e,m=[],l,p;n=h.match(d);)l=n[0],n[2]==n[3]&&(l="mailto:"+l),p=n.index,k(h.substr(0,p)),f(l,n[0].replace(c,"")),h=h.substring(p+n[0].length);k(h);return a(m.join(""))}}])})(window,window.angular);
 //# sourceMappingURL=angular-sanitize.min.js.map
 
-var app = angular.module('asterion', ['ngRoute', 'ngCookies', 'ngSanitize', 'highlighter']);
+	var app = angular.module('asterion', ['ngRoute', 'ngCookies', 'ngSanitize', 'highlighter']);
 
 app.config(['$routeProvider', function ($routeProvider) {
 	$routeProvider.when('/', {
@@ -304,12 +304,16 @@ app.controller('dashboardController', ['$scope', '$rootScope', '$http', '$locati
 	}	
 ]);
 
-app.controller('searchController', ['$scope', '$rootScope', '$http', '$location', '$cookies', '$routeParams',
-	function ($scope, $rootScope, $http, $location, $cookies, $routeParams) {
+app.controller('searchController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore',
+	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore) {
 		$rootScope.pageSlug = 'search'
 		$rootScope.pageTitle = 'Search';
 		$rootScope.pageSubtitle = '';
 		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
+
+		$scope.focusSearch = function () {
+			alert('YO!');
+		};
 
 		$scope.searchLoading = true;
 		$scope.noResults = false;
@@ -325,11 +329,43 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 
 		$scope.pagination = { 'page': 0, 'limit': 12, 'pages': 0 };
 
-		$scope.currentSortMethod = $scope.sortMethods[0];
-		if ($cookies.currentSortMethod) $scope.currentSortMethod = $scope.sortMethods[$cookies.currentSortMethod];
+		var sortNo = $cookieStore.get('currentSortMethod') || 0;
+		$scope.currentSortMethod = $scope.sortMethods[sortNo];
+		$scope.sortOrder = $cookieStore.get('sortOrder') || 'asc';
 
-		$scope.sortOrder = 'asc';
-		if ($cookies.sortOrder) $scope.sortOrder = $cookies.sortOrder;
+	
+		$scope.filterState = $cookieStore.get('filterState') || { 'status': 'open', 'group': 'close', 'country': 'close' };
+		
+		$scope.filter = { 
+			'group': [],
+			'status': [],
+			'country': [] 
+		};
+
+		$scope.filterDisplay = function (filter) {
+			if ($scope.filterState[filter] == 'open') { 
+				$scope.filterState[filter] = 'close'  
+			} else { 
+				$scope.filterState[filter] = 'open'
+			}
+			$cookieStore.put('filterState', $scope.filterState);
+		}
+		
+		$scope.filterToggle = function (section, arg) {
+			if (!arg) {
+				$scope.filter[section].length = 0;
+			} else {
+				var i = $scope.filter[section].indexOf(arg);
+				if (i < 0) {
+					$scope.filter[section].push(arg);
+				} else {
+					$scope.filter[section].splice(i, 1);
+				} 
+			}
+
+			$scope.searchLoading = true;
+			$scope.getResults($scope.searchedFor);
+		}
 
 		$scope.getResults = function (searchTerm) {
 			if (!searchTerm) {
@@ -344,13 +380,23 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 				'page': $scope.pagination.page, 
 				'limit': $scope.pagination.limit,
 				'sort': $scope.currentSortMethod.slug,
-				'order': $scope.sortOrder
-			}).success(function (results) {
+				'order': $scope.sortOrder,
+				'filter': $scope.filter
+			}).success(function (response) {
 				$scope.searchLoading = false;
-				if (results.hits.total < 1) $scope.noResults = true;
+				if (response.hits.total < 1 && response.aggregations.availability.buckets.length < 1 && response.aggregations.binding.buckets.length < 1 && response.aggregations.countries.buckets.length < 1 ) $scope.noResults = true;
 
-				$scope.searchResults = results;
-				$scope.pagination.pages = Math.ceil(results.hits.total / $scope.pagination.limit); 
+				$scope.results = response.hits.hits;
+				$scope.total = response.hits.total;
+				$scope.aggs = response.aggregations;
+				console.log(response.aggregations);
+
+				$scope.pagination.pages = Math.ceil(response.hits.total / $scope.pagination.limit); 
+
+				angular.forEach($scope.results, function (result) {
+					result._source.price = parseFloat(result._source.price);
+					result._source.price = result._source.price.toFixed(2);
+				});
 
 				$rootScope.titleLine = 'Search results for \"' + searchTerm + '\"' + $rootScope.titleSep1 + $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
 			});
@@ -367,7 +413,7 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 
 		$scope.sortResults = function (index, searchTerm) {
 			$scope.currentSortMethod = $scope.sortMethods[index];
-			$cookies.currentSortMethod = index;
+			$cookieStore.put('currentSortMethod', index);
 
 			$scope.searchLoading = true;
  			$scope.getResults(searchTerm);
@@ -375,7 +421,7 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 
 		$scope.sortDirection = function (arg, searchTerm) {
 			$scope.sortOrder = arg;
-			$cookies.sortOrder = $scope.sortOrder;
+			$cookieStore.put('sortOrder', $scope.sortOrder);
 
 			$scope.searchLoading = true;
  			$scope.getResults(searchTerm);
@@ -385,6 +431,8 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 
 angular.module('highlighter',[]).filter('highlight', function () {
 	return function (text, search, caseSensitive) {
+		if (!text) return false;
+
 		text = text.toString();
 		search = search.toString();
 		search = search.split(' ');

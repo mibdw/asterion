@@ -6,6 +6,7 @@
 	line-height: 1.4em; 
 	padding: (@h-height / 2) 0;
 	list-style-type: none; 
+	z-index: 999;
 	
 	li { 
 		border-width: 0 1px; 
@@ -58,11 +59,8 @@ header {
 	height: @h-height; 
 	background-color: @h-back; 
 	color: @h-text; 
-	border-bottom: 4px solid @h-line; 
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
+	border-bottom: 1px solid @h-line;
+	box-sizing: content-box;
 	z-index: 1111;
 }
 
@@ -141,6 +139,7 @@ nav {
 
 .search {
 	background-color: @h-back;
+	cursor: text;
 	
 	label { 
 		font-size: 1.5em; 

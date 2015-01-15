@@ -64,7 +64,10 @@ module.exports = function (grunt) {
 
 		nodemon: {
 			dev: {
-				script: 'app.js'
+				script: 'app.js',
+				options: {
+					ignore: ['node_modules/**', 'scripts/**', 'styles/**', 'views/**', 'public/**'],
+				}
 			}
 		},
 

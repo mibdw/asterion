@@ -7,14 +7,17 @@
 
 body { 
 	font-size: @f-size; 
-	padding-top: @h-height;
 }
 
 a { 
 	color: @link; 
 	text-decoration: none; 
 	
-	&:hover { text-decoration: underline }
+	&:hover { 
+		text-decoration: underline; 
+
+		mark { color: @link }
+	}
 }
 
 mark { background-color: @mark; }
