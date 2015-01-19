@@ -1,16 +1,23 @@
 var express = require('express');
 var router = express.Router();
+var passport = require('passport');
 
-router.get('/', function (req, res) {
-	res.render(__dirname + '/../views/index.html');
-});
+var auth = require(__dirname + '/auth.js');
+router.get('/', ensAuth, auth.main);
+router.get('/login', auth.login);
+router.post('/login', auth.entry);
+router.get('/logout', auth.exit);
 
-router.get('/partials/:section/:partial', function (req, res) {
+var search = require(__dirname + '/search.js');
+router.post('/search/results', ensAuth, search.results);
+
+router.get('/partials/:section/:partial', ensAuth, function (req, res) {
 	res.render(__dirname + '/../views/' + req.params.section + '/' + req.params.partial + '.html');
 });
 
-var search = require(__dirname + '/search.js');
-router.post('/search/results', search.results);
-
+function ensAuth (req, res, next) {
+	if (req.isAuthenticated()) return next();
+	res.redirect('/login');
+} 
 
 module.exports.router = router;

@@ -2,18 +2,18 @@ var mongoose = require('mongoose');
 var mongoosastic = require('mongoosastic');
 
 var bookSchema = mongoose.Schema({
-	author: { type: String},
-	title: { type: String},
-	isbn: { type: String},
-	publisher: { type: String},
-	price: { type: String},
-	currency: { type: String},
+	author: String,
+	title: String,
+	isbn: String,
+	publisher: String,
+	price: String,
+	currency: String,
 	status: { type: String, es_type: 'multi_field', es_fields: { status: { type: 'string', index: 'analyzed' }, untouched: { type: 'string', index: 'not_analyzed' }}},
-	pages: { type: String},
+	pages: String,
 	country: { type: String, es_type: 'multi_field', es_fields: { country: { type: 'string', index: 'analyzed' }, untouched: { type: 'string', index: 'not_analyzed' }}},
-	date: { type: String},
+	date: String,
 	group: { type: String, es_type: 'multi_field', es_fields: { group: { type: 'string', index: 'analyzed' }, untouched: { type: 'string', index: 'not_analyzed' }}},
-	place: { type: String}
+	place: String
 });
 
 bookSchema.plugin(mongoosastic);

@@ -13,7 +13,7 @@ a {
 	color: @link; 
 	text-decoration: none; 
 	
-	&:hover { 
+	&:hover, &:focus { 
 		text-decoration: underline; 
 
 		mark { color: @link }
@@ -31,4 +31,52 @@ aside {
 	border-left: 1px solid @line; 
 	float: left; 
 	margin-left: -1px; 
+}
+
+input {
+	&[type="text"], &[type="password"], &[type="email"] {
+		border: 1px solid @line;
+		background-color: @back;
+		color: @text;
+		padding: .2em .4em;
+		margin: 0 .2em .2em 0;
+		border-radius: 2px;
+		.placeholder(@vague);
+
+		&:focus, &:active {
+			border-color: @vague;
+		}
+	}
+}
+
+button {
+	padding: .1em .6em;
+	font-size: 1em;
+	background-color: @back; 
+	border: 3px solid @line; 
+	font-size: 1.1em; 
+	border-radius: 2px; 
+	margin-bottom: .25em; 
+	color: @text;
+	cursor: pointer;
+
+	&:hover, &:focus {
+		background-color: @b-back;
+		color: @b-text;
+		border-color: @b-line;
+	}
+}
+
+.message {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	font-size: 1.2em;
+	font-weight: bold;
+	padding: .4em 0;
+	text-align: center;
+	background-color: @danger;
+	color: @back;
+	border-bottom: 2px solid @danger;
 }

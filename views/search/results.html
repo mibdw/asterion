@@ -3,6 +3,10 @@
 	<div ng-show="searchLoading == true" class="loading">
 		<i class="fa fa-refresh fa-spin"></i>
 	</div>
+
+	<div ng-show="noResultsFilter == true" class="no-results">
+		No results correspond with your filters
+	</div>
 	
 	<div ng-show="searchLoading == false" ng-repeat="item in results" class="item">
 		<label class="item-select" for="{{item._source._id}}"></label>
@@ -23,7 +27,7 @@
 				<span ng-show="item._source.date">({{item._source.date}})</span>
 			</dd>
 			<dt>ISBN:</dt>
-			<dd><span ng-bind-html="item._source.isbn | highlight: searchedFor"></span><span ng-hide="item._source.isbn">&nbsp;</span></dd>
+			<dd><span ng-bind-html="item._source.isbn | highlight: searchedFor" ng-show="item._source.isbn"></span><span ng-hide="item._source.isbn">&nbsp;</span></dd>
 			<dt>Product type:</dt>
 			<dd>{{item._source.group}}<span ng-show="item._source.pages > 0">, {{item._source.pages}} pages</span></dd>
 			<dt>Availability:</dt>
@@ -33,7 +37,27 @@
 		<div class="item-sidebar">
 			<div class="item-price" ng-show="item._source.price > 0"><strong>{{item._source.price}}</strong> EUR</div>
 			<div class="item-price unknown" ng-show="item._source.price <= 0">Price unknown</div>
-			<button class="cart">Add to cart</button>
+
+			<div class="item-actions" ng-class="{active: cartsDropdown.active == item._id}">
+				<button type="button" class="cart">Add to cart</button>
+				<button type="button" class="more" ng-focus="focusCarts(item)" ng-blur="blurCarts()"><i class="fa fa-caret-down"></i></button>
+
+				<span class="indicator" ng-show="cartsDropdown.active == item._id"></span>
+				<ul class="carts-list" ng-show="cartsDropdown.active == item._id">
+					<li ng-repeat="cart in cartsDropdown.carts">
+						<a href="" title="{{cart.title}}">
+							<span class="cart-no">{{$index + 1}}.</span>
+							<span class="cart-title">{{cart.title}}</span>
+							<span class="cart-amount">
+								<i class="fa fa-shopping-cart"></i> {{cart.amount}}
+							</span>
+							<span class="cart-price">
+								<i class="fa fa-credit-card"></i> {{cart.price}} EUR
+							</span>
+						</a>
+					</li>
+				</ul>
+			</div>
 	
 			<ul class="item-links">
 				<li><a href="">More information</a></li>
@@ -73,20 +97,16 @@
 		<dd><em>{{searchedFor}}</em><span ng-hide="searchedFor">&nbsp;</span></dd>
 		<dt>Results:</dt>
 		<dd>{{total}}<span ng-hide="results.count">&nbsp;</span></dd>
-		<dt ng-show="filter.group.length > 0 || filter.status.length > 0 || filter.country.length > 0">Filter:</dt>
-		<dd ng-show="filter.group.length > 0 || filter.status.length > 0 || filter.country.length > 0">
-			 <span class="filter-arg" ng-repeat="arg in filter.group">{{arg}}</span><span class="filter-arg" ng-repeat="arg in filter.status">{{arg}}</span><span class="filter-arg" ng-repeat="arg in filter.country">{{arg}}</span>
-		</dd>
 		<dt>Sort by:</dt>
 		<dd>
-			<span href="" class="hover-menu"><a>{{currentSortMethod.name}}</a>
+			<span href="" class="dropdown"><a>{{currentSortMethod.name}}</a>
 				<ul>
 					<li ng-repeat="method in sortMethods">
 						<a href="" ng-class="{active: method.slug == currentSortMethod.slug}" ng-click="sortResults($index, searchedFor)">{{method.name}}</a>
 					</li>
 				</ul>
 			</span>
-			<span href="" class="hover-menu" ng-hide="currentSortMethod.slug == 'relevance'"> / 
+			<span href="" class="dropdown" ng-hide="currentSortMethod.slug == 'relevance'"> / 
 				<a ng-show="sortOrder == 'asc'">Ascending</a>
 				<a ng-show="sortOrder == 'desc'">Descending</a>
 				<ul>
@@ -101,7 +121,7 @@
 		</dd>
 		<dt>Currency:</dt>
 		<dd>
-			<span href="" class="hover-menu"><a>Original</a>
+			<span href="" class="dropdown"><a>Original</a>
 				<ul>
 					<li><a href="" class="active">Original</a></li>
 					<li><a href="">EUR</a></li>
@@ -122,12 +142,14 @@
 			<h3 ng-click="filterDisplay('status')">
 				<i class="fa fa-chevron-up" ng-class="{'fa-chevron-down': filterState.status == 'open'}"></i> 
 				Availability
+				<span ng-show="filter.status.length > 0 && filterState.status == 'close'">{{filter.status.length}} active</span>
 			</h3>
 			<ul>
-				<li ng-repeat="option in aggs.availability.buckets">
-					<label ng-class="{active: filter['status'].indexOf(option.key) > -1}">
-						<input type="checkbox" ng-checked="filter['status'].indexOf(option.key) > -1" ng-click="filterToggle('status', option.key)"> 
+				<li ng-repeat="option in aggs.status.set.buckets" ng-class="{active: filter['status'].indexOf(option.key) > -1}">
+					<label>
+						<input type="checkbox" ng-checked="filter['status'].indexOf(option.key) > -1" ng-click="filterToggle('status', option.key)">
 						{{option.key}} <span>({{option.doc_count}})</span>
+						<i class="fa fa-remove"></i>
 					</label>
 				</li>
 				<li ng-show="filter['status'].length > 0"><a href="" ng-click="filterToggle('status')">Clear filters</a></li>
@@ -138,12 +160,14 @@
 			<h3 ng-click="filterDisplay('group')">
 				<i class="fa fa-chevron-up" ng-class="{'fa-chevron-down': filterState.group == 'open'}"></i> 
 				Product type
+				<span ng-show="filter.group.length > 0 && filterState.group == 'close'">{{filter.group.length}} active</span>
 			</h3>
 			<ul>
-				<li ng-repeat="option in aggs.binding.buckets">
-					<label ng-class="{active: filter['group'].indexOf(option.key) > -1}">
+				<li ng-repeat="option in aggs.group.set.buckets" ng-class="{active: filter['group'].indexOf(option.key) > -1}">
+					<label>
 						<input type="checkbox" ng-checked="filter['group'].indexOf(option.key) > -1" ng-click="filterToggle('group', option.key)"> 
 						{{option.key}} <span>({{option.doc_count}})</span>
+						<i class="fa fa-remove"></i>
 					</label>
 				</li>
 				<li ng-show="filter['group'].length > 0"><a href="" ng-click="filterToggle('group')">Clear filters</a></li>
@@ -154,12 +178,14 @@
 			<h3 ng-click="filterDisplay('country')">
 				<i class="fa fa-chevron-up" ng-class="{'fa-chevron-down': filterState.country == 'open'}"></i> 
 				Countries
+				<span ng-show="filter.country.length > 0 && filterState.country == 'close'">{{filter.country.length}} active</span>
 			</h3>
 			<ul>
-				<li ng-repeat="option in aggs.countries.buckets">
-					<label ng-class="{active: filter['country'].indexOf(option.key) > -1}">
+				<li ng-repeat="option in aggs.country.set.buckets" ng-class="{active: filter['country'].indexOf(option.key) > -1}">
+					<label>
 						<input type="checkbox" ng-checked="filter['country'].indexOf(option.key) > -1" ng-click="filterToggle('country', option.key)"> 
 						{{option.key}} <span>({{option.doc_count}})</span>
+						<i class="fa fa-remove"></i>
 					</label>
 				</li>
 				<li ng-show="filter['country'].length > 0"><a href="" ng-click="filterToggle('country')">Clear filters</a></li>

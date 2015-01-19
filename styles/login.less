@@ -1,0 +1,56 @@
+.login {
+	background-color: @b-back;
+
+	form {
+		width: 30em;
+		margin: 6em auto 0;
+		padding-left: 9em;
+		position: relative;
+
+		i {
+			font-size: 4em;
+			position: absolute;
+			top: -.1em;
+			left: 0;
+			display: block;
+			width: 2em;
+			height: 2em;
+			border-radius: 1em;
+			background-color: @b-vague;
+			text-align: center;
+			line-height: 2em;
+			color: @back;
+		}
+
+		input {
+			font-size: 1.4em;
+			width: 100%;
+			border-color: @b-line;
+
+			&:focus, &:active {
+				border-color: @b-vague;
+			}
+		}
+
+		button {
+			float: right;
+			border-color: @b-line;
+			background-color: @b-back;
+			color: @b-text;
+
+			&:hover, &:focus {
+				background-color: @b-line;
+				color: @b-text;
+				border-color: @b-text;
+			}
+		}
+
+		a {
+			color: @h-vague;
+			font-size: .8em;
+			line-height: 1.3em;
+			float: left;
+			clear: left;
+		}
+	}
+}

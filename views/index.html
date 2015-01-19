@@ -5,7 +5,7 @@
 	<title ng-bind-template="{{titleLine}}">Asterion</title>
 
 	<link rel="stylesheet" href="/asterion.css">
-	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/asterion-icon.gif">
 
 	<script src="/asterion.js"></script>
 
@@ -20,7 +20,7 @@
 
 		<nav tabindex="2">
 			<i class="fa fa-bars"></i> Menu
-			<ul class="dropdown">
+			<ul class="hover-menu">
 				<li><a href="">Advanced search</a></li>
 				<li><a href="">Order outside database</a></li>
 				<li><a href="">ISBN upload</a></li>
@@ -36,19 +36,23 @@
 
 		<div class="user" tabindex="5">
 			<i class="fa fa-user"></i>
-			<ul class="dropdown">
+			<ul class="hover-menu">
 				<li><a href="">Profile</a></li>
 				<li><a href="">Language</a></li>
 				<li><a href="">Help</a></li>
 				<li class="divider"></li>
-				<li><a href="">Logout</a></li>
+				<li><a href="/logout">Logout</a></li>
 			</ul>
 		</div>
 
 		<div class="carts" tabindex="4">
-			<i class="fa fa-shopping-cart"></i>
-			<div class="cart-title">Shopping cart title</div><br>
-			<div class="cart-meta">99 items / EUR 999.99</div>
+			<span class="cart-title">Shopping cart title</span>
+			<span class="cart-amount">
+				<i class="fa fa-shopping-cart"></i> 14
+			</span>
+			<span class="cart-amount">
+				<i class="fa fa-credit-card"></i> 97.33 EUR
+			</span>
 		</div>
 		
 		<form class="search" ng-submit="quickSearch(searchTerm)">

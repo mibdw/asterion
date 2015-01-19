@@ -33,6 +33,56 @@ app.controller('global', ['$scope', '$rootScope', '$http', '$location', '$route'
 		$scope.quickSearch = function (searchTerm) {
 			searchTerm = $rootScope.slugify(searchTerm);
 			$location.path('/q/' + searchTerm);
+		}	
+
+		$scope.cartsDropdown = {
+			active: false,
+			loading: false,
+			carts: [
+				{ 
+					title: 'Shipping cart title',
+					amount: 12,
+					price: 82.12
+				},
+				{ 
+					title: 'Lost in the dream',
+					amount: 31,
+					price: 33.12
+				},
+				{ 
+					title: 'Especially for you',
+					amount: 2,
+					price: 9.00
+				},
+				{ 
+					title: 'Cart 3',
+					amount: 7,
+					price: 28.09
+				},
+				{ 
+					title: 'Because you\'re too old, stupid moron',
+					amount: 4,
+					price: 849.12
+				},
+				{ 
+					title: 'Kisses',
+					amount: 3,
+					price: 63.22
+				},
+				{ 
+					title: 'Migraines',
+					amount: 102,
+					price: 993.21
+				},
+			]
+		}
+
+		$scope.focusCarts = function (item) {
+			$scope.cartsDropdown['active'] = item._id;
+		}
+
+		$scope.blurCarts = function (item) {
+			$scope.cartsDropdown['active'] = false;
 		}
 	}
 ]);
@@ -81,7 +131,8 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 		$scope.filter = { 
 			'group': [],
 			'status': [],
-			'country': [] 
+			'country': [],
+			'order': []
 		};
 
 		$scope.filterDisplay = function (filter) {
@@ -115,7 +166,10 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 				searchTerm = $routeParams.query.replace(/\+/g, ' ');
 				$rootScope.searchTerm = searchTerm;
 			};
+			
+			$scope.noResultsFilter = false;
 			$scope.noResults = false;
+
 			$scope.searchedFor = searchTerm;
 			$http.post('/search/results', { 
 				'search': searchTerm, 
@@ -126,7 +180,13 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 				'filter': $scope.filter
 			}).success(function (response) {
 				$scope.searchLoading = false;
-				if (response.hits.total < 1 && response.aggregations.availability.buckets.length < 1 && response.aggregations.binding.buckets.length < 1 && response.aggregations.countries.buckets.length < 1 ) $scope.noResults = true;
+				
+				if (response.hits.total < 1) $scope.noResultsFilter = true;
+				if (response.hits.total < 1 && response.aggregations.availability.buckets.length < 1 && response.aggregations.binding.buckets.length < 1 && response.aggregations.countries.buckets.length < 1 ) {
+					$scope.noResultsFilter = false;
+					$scope.noResults = true;
+					return false;
+				}
 
 				$scope.results = response.hits.hits;
 				$scope.total = response.hits.total;

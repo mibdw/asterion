@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="asterion" ng-controller="global">
+<head>
+	<meta charset="UTF-8">
+	<title ng-bind-template="{{titleLine}}">Asterion</title>
+
+	<link rel="stylesheet" href="/asterion.css">
+	<link rel="icon" type="image/x-icon" href="/asterion-icon.gif">
+
+</head>
+<body class="login">
+	<% if (message.length > 0) { %>
+		<div class="message"><%= message %></div>
+	<% } %>
+
+	<form action="/login" method="post">
+		<i class="fa fa-bookmark"></i>
+		<input type="email" name="email" placeholder="E-mail" autofocus>
+		<input type="password" name="password" placeholder="Password">
+		<button type="submit">Login</button>
+		<a href="">Forgot password?</a>
+		<a href="">Register</a>
+	</form>	
+
+</body>
+</html>
