@@ -1,0 +1,100 @@
+input {
+	font-size: @f-size;
+
+	&[type="text"], &[type="password"], &[type="email"] {
+		border: 1px solid @line;
+		background-color: @back;
+		color: @text;
+		padding: .4em .6em;
+		margin: 0 .2em .2em 0;
+		border-radius: 2px;
+		.placeholder(@vague);
+
+		&:focus, &:active {
+			border-color: @vague;
+		}
+	}
+}
+
+button {
+	padding: .1em .6em;
+	font-size: 1em;
+	background-color: @back; 
+	border: 3px solid @line; 
+	font-size: 1.1em; 
+	border-radius: 2px; 
+	margin-bottom: .25em; 
+	color: @text;
+	cursor: pointer;
+	.transition (background-color .5 ease);
+
+	&:hover, &:focus {
+		background-color: @b-back;
+		color: @b-text;
+		border-color: @b-line;
+	}
+
+	&[type="reset"] {
+		color: @vague;
+
+		&:hover, &:focus {
+			background-color: @line;
+			border-color: @vague;
+			color: @text;
+		}
+	}
+
+	&[type="submit"] {
+		background-color: @h-back;
+		border-color: @h-line;
+		color: @h-text;
+
+		&:hover, &:focus {
+			background-color: @h-line;
+			border-color: @h-vague;
+			color: @h-text;
+		}
+	}
+
+	&.success, &.success:hover, &.success:focus {
+		background-color: @success;
+		border-color: darken(@success, 10%);
+	}
+}
+
+.form {
+	padding: 1em;
+	border-bottom: 1px solid @line;
+	.clearfix;
+
+	label {
+		color: @vague;
+		line-height: 2em;
+		width: 15%;
+		float: left;
+		clear: left;
+	}
+
+	input[type="text"], input[type="password"] {
+		float: left;
+		width: 50%;
+	}	
+
+	input[type="checkbox"] {
+		margin: 1px 3px 0 0;
+	}
+
+	.shelf-box {
+		float: left;
+		width: 50%;
+		margin-left: 15%;
+		line-height: 2em;
+
+		label {
+			color: @text;
+			width: auto;
+			lh: auto;
+			float: none;
+		}
+	}
+}

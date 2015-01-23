@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="asterion" ng-controller="global">
+<html lang="en" ng-app="asterion" ng-controller="globalController">
 <head>
 	<meta charset="UTF-8">
 	<title ng-bind-template="{{titleLine}}">Asterion</title>
@@ -14,7 +14,6 @@
 	<header>
 		
 		<a href="/#/" class="masthead" tabindex="1" ng-click="searchTerm = ''">
-			<!-- <img src="http://www.erasmusbooks.nl/wp-content/themes/erasmus4/img/logo-erasmus2.png"> -->
 			<i class="fa fa-bookmark"></i>
 		</a>
 
@@ -37,7 +36,7 @@
 		<div class="user" tabindex="5">
 			<i class="fa fa-user"></i>
 			<ul class="hover-menu">
-				<li><a href="">Profile</a></li>
+				<li><a href="/#/profile" ng-click="searchTerm = ''">Profile</a></li>
 				<li><a href="">Language</a></li>
 				<li><a href="">Help</a></li>
 				<li class="divider"></li>
@@ -63,7 +62,7 @@
 
 	</header>
 
-	<div class="subheader">
+	<div class="subheader" tabindex="6">
 		<h1>{{pageTitle}}</h1>
 		<span>{{pageSubtitle}}</span>
 	</div>
@@ -73,6 +72,5 @@
 	<footer>
 		Footer
 	</footer>
-
 </body>
 </html>

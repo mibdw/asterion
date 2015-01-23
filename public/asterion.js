@@ -26674,29 +26674,66 @@ function(){this.$get=["$$sanitizeUri",function(a){return function(d){var c=[];G(
 if(!e)return e;for(var n,h=e,m=[],l,p;n=h.match(d);)l=n[0],n[2]==n[3]&&(l="mailto:"+l),p=n.index,k(h.substr(0,p)),f(l,n[0].replace(c,"")),h=h.substring(p+n[0].length);k(h);return a(m.join(""))}}])})(window,window.angular);
 //# sourceMappingURL=angular-sanitize.min.js.map
 
-	var app = angular.module('asterion', ['ngRoute', 'ngCookies', 'ngSanitize', 'highlighter']);
+var app = angular.module('asterion', [
+	'ngRoute', 
+	'ngCookies', 
+	'ngSanitize', 
+	'highlighter', 
+	'global', 
+	'dashboard', 
+	'search', 
+	'profile',
+]);
 
 app.config(['$routeProvider', function ($routeProvider) {
 	$routeProvider.when('/', {
 		templateUrl: 'partials/dashboard/main',
 		controller: 'dashboardController'
 	})
-	.when('/q/:query', {
+	.when('/search/:query', {
 		templateUrl: 'partials/search/results',
 		controller: 'searchController'
+	})
+	.when('/profile', {
+		templateUrl: 'partials/profile/index',
+		controller: 'profileController'
 	})
 	.otherwise({
 		redirectTo: '/'
 	});
 }]);
 
-app.controller('global', ['$scope', '$rootScope', '$http', '$location', '$route',
+angular.module('highlighter',[]).filter('highlight', function () {
+	return function (text, search, caseSensitive) {
+		if (!text) return false;
+
+		text = text.toString();
+		search = search.toString();
+		search = search.split(' ');
+
+		for (i in search) {
+			if (text && (search[i] || angular.isNumber(search[i]))) {
+				if (caseSensitive) {
+					text = text.split(search[i]).join('<mark>' + search[i] + '</mark>');
+				} else {
+					text = text.replace(new RegExp(search[i], 'gi'), '<mark>$&</mark>');
+				}
+			} else {
+				text = text;
+			}
+
+			if (i ==  search.length - 1) return text;
+		}
+	};
+});
+var ctrl = angular.module('global', []);
+
+ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$route',
 	function ($scope, $rootScope, $http, $location, $route) {
 		$rootScope.masthead = 'Asterion';
 		$rootScope.titleSep1 = ' \u2014 ';
 		$rootScope.titleSep2 = ' \u00BB ';
 		$rootScope.titleLine = 'Bookselling like a pro' + $rootScope.titleSep1 + $rootScope.masthead;
-
 		$rootScope.searchTerm;
 
 		$rootScope.slugify = function (text) {
@@ -26708,7 +26745,7 @@ app.controller('global', ['$scope', '$rootScope', '$http', '$location', '$route'
 
 		$scope.quickSearch = function (searchTerm) {
 			searchTerm = $rootScope.slugify(searchTerm);
-			$location.path('/q/' + searchTerm);
+			$location.path('/search/' + searchTerm);
 		}	
 
 		$scope.cartsDropdown = {
@@ -26762,26 +26799,24 @@ app.controller('global', ['$scope', '$rootScope', '$http', '$location', '$route'
 		}
 	}
 ]);
+var ctrl = angular.module('dashboard', []);
 
-app.controller('dashboardController', ['$scope', '$rootScope', '$http', '$location',
+ctrl.controller('dashboardController', ['$scope', '$rootScope', '$http', '$location',
 	function ($scope, $rootScope, $http, $location) {
 		$rootScope.pageSlug = 'dashboard'
 		$rootScope.pageTitle = 'Dashboard';
 		$rootScope.pageSubtitle = '';
-		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;	
 	}	
 ]);
+var ctrl = angular.module('search', []);
 
-app.controller('searchController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore',
+ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore',
 	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore) {
 		$rootScope.pageSlug = 'search'
 		$rootScope.pageTitle = 'Search';
 		$rootScope.pageSubtitle = '';
 		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
-
-		$scope.focusSearch = function () {
-			alert('YO!');
-		};
 
 		$scope.searchLoading = true;
 		$scope.noResults = false;
@@ -26843,10 +26878,9 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 				$rootScope.searchTerm = searchTerm;
 			};
 			
-			$scope.noResultsFilter = false;
 			$scope.noResults = false;
-
 			$scope.searchedFor = searchTerm;
+			
 			$http.post('/search/results', { 
 				'search': searchTerm, 
 				'page': $scope.pagination.page, 
@@ -26857,17 +26891,11 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 			}).success(function (response) {
 				$scope.searchLoading = false;
 				
-				if (response.hits.total < 1) $scope.noResultsFilter = true;
-				if (response.hits.total < 1 && response.aggregations.availability.buckets.length < 1 && response.aggregations.binding.buckets.length < 1 && response.aggregations.countries.buckets.length < 1 ) {
-					$scope.noResultsFilter = false;
-					$scope.noResults = true;
-					return false;
-				}
+				if (response.hits.total < 1) $scope.noResults = true;
 
 				$scope.results = response.hits.hits;
 				$scope.total = response.hits.total;
 				$scope.aggs = response.aggregations;
-				console.log(response.aggregations);
 
 				$scope.pagination.pages = Math.ceil(response.hits.total / $scope.pagination.limit); 
 
@@ -26906,27 +26934,28 @@ app.controller('searchController', ['$scope', '$rootScope', '$http', '$location'
 		};
 	}
 ]);
+var ctrl = angular.module('profile', []);
 
-angular.module('highlighter',[]).filter('highlight', function () {
-	return function (text, search, caseSensitive) {
-		if (!text) return false;
+ctrl.controller('profileController', ['$scope', '$rootScope', '$http', '$timeout',
+	function ($scope, $rootScope, $http, $timeout) {
+		$rootScope.pageSlug = 'profile'
+		$rootScope.pageTitle = 'Profile';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
 
-		text = text.toString();
-		search = search.toString();
-		search = search.split(' ');
+		$scope.user = {};
+		$scope.updated = false;
 
-		for (i in search) {
-			if (text && (search[i] || angular.isNumber(search[i]))) {
-				if (caseSensitive) {
-					text = text.split(search[i]).join('<mark>' + search[i] + '</mark>');
-				} else {
-					text = text.replace(new RegExp(search[i], 'gi'), '<mark>$&</mark>');
-				}
-			} else {
-				text = text;
-			}
+		$http.post('/users/read').success(function (user) {
+			$scope.user = user;
+		});
 
-			if (i ==  search.length - 1) return text;
+		$scope.updateUser = function (user) {
+			$scope.updated = 'waiting';
+			$http.post('/users/update', user).success(function (response) {
+				$scope.updated = response.success;
+				$timeout(function () { $scope.updated = false }, 3000);
+			});
 		}
-	};
-});
+	}	
+]);

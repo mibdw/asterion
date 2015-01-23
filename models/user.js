@@ -11,7 +11,11 @@ var userSchema = mongoose.Schema({
 	active: { type: Boolean, default: true },
 	creator: String,
 	created: Date,
-	accounts: [String]
+	editor: String,
+	edited: Date,
+	accounts: [String],
+	lang: String,
+	confirmation: { type: Boolean, default: true }
 });
 
 userSchema.plugin(passportLocalMongoose, { usernameField: 'email' });

@@ -2,6 +2,10 @@
 @royalblue: #4183D7;
 @eucalyptus: #26A65B;
 
+// BRAND
+@asterion: @royalblue;
+
+// TYPOGRAPHY
 @f-size: 16px;
 @f-fam: Calibri, Verdana, sans-serif;
 
@@ -13,7 +17,7 @@
 @mark: #F8FEA8;
 
 // HEADER
-@h-back: @royalblue;
+@h-back: @asterion;
 @h-line: darken(@h-back, 10%);
 @h-text: @back;
 @h-hover: darken(@h-back, 5%);
@@ -24,7 +28,7 @@
 @sh-back: #EEE;
 
 // BUTTON
-@b-back: @royalblue;
+@b-back: @asterion;
 @b-line: darken(@b-back, 10%);
 @b-text: @back;
 @b-hover: darken(@b-back, 5%);;
@@ -36,11 +40,14 @@
 @warn: #f0ad4e;
 @danger: #d9534f;
 
+// IMPORTS
 @import 'mixins';
-
 @import 'typography';
 @import 'fonts';
+@import 'forms';
+
 @import 'components';
+@import 'results';
 
 @import 'header';
 @import 'footer';

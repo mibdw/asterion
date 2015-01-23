@@ -1,3 +1,31 @@
+.kong {
+	font-size: 3em;
+	color: @vague;
+	text-align: center;
+	padding: 5em 0;
+}
+
+.loading {
+	font-size: 3em;
+	color: @line;
+	text-align: center;
+	padding: 2em 0;	
+}
+
+.message {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	font-size: 1.2em;
+	font-weight: bold;
+	padding: .4em 0;
+	text-align: center;
+	background-color: @danger;
+	color: @back;
+	border-bottom: 2px solid @danger;
+}
+
 .dropdown	 { 
 	position: relative; 
 	cursor: pointer; 
@@ -97,7 +125,7 @@
 	}
 }
 
-.page-details {
+.detail-list {
 	padding: 1em; 
 	.clearfix ();
 	
@@ -106,7 +134,7 @@
 	dt { width: 25% }
 }
 
-.page-functions { 
+.functions { 
 	padding: 0 1em 1em; 
 	border-bottom: 1px solid @line; 
 }
@@ -176,6 +204,10 @@
 					color: @link;
 				}
 
+				&.disabled {
+					color: @vague;
+				}
+
 				&.active { 
 					background-color: @h-back;
 					color: @h-text; 
@@ -201,309 +233,3 @@
 		}
 	}
 }
-
-.item { 
-	padding: 1em 15em 1em 9em; 
-	border-bottom: 1px solid @line; 
-	position: relative; 
-	min-height: 13em;	
-	.clearfix ();
-	
-	.item-select {
-		position: absolute;
-		top: 0;
-		left: 0;
-		bottom: 0;
-		width: 2em;
-		cursor: pointer;
-	}
-
-	input[type="checkbox"] { 
-		position: absolute; 
-		top: 1.5em; 
-		left: 1em;
-	}
-
-	.item-detail {
-	
-		img { 
-			width: 6em; 
-			position: absolute; 
-			top: 1em; 
-			left: 2em; 
-		}
-		
-		.item-title { 
-			font-size: 1.25em; 
-			line-height: 1em;
-			max-height: 3em;
-			overflow: hidden;
-			font-weight: bold; 
-			text-decoration: none; 
-			color: @text; 
-		}
-	
-		&:hover .item-title { 
-			text-decoration: underline; 
-			color: @link; 
-		}
-	}
-
-	.item-author { 
-		color: @text; 
-	}
-	
-	.item-meta { 
-		color: @text; 
-		margin-top: 1em; 
-
-		dt, dd { float: left; }
-		dt { width: 20%; }
-		dd { width: 80%; }
-	}
-
-	.item-sidebar { 
-		position: absolute; 
-		top: 0; 
-		right: 0; 
-		width: 12em; 
-		padding: 1em; 
-		
-		.item-price { 
-			margin-bottom: 1em; 
-			text-align: right;
-
-			strong { font-size: 1.25em; }
-
-			&.unknown { 
-				font-size: 1.25em; 
-				font-weight: bold;
-				font-style: italic;
-				color: @line;
-			}
-		}
-
-		.item-actions {
-			padding-right: 1.5em;
-			position: relative;
-
-			button { 
-				background-color: @back; 
-				border: 3px solid @line; 
-				font-size: 1.1em; 
-				border-radius: 2px; 
-				margin-bottom: .25em; 
-				color: @text;
-				cursor: pointer;
-				padding: 0;
-
-				&.cart {
-					width: 100%;
-					border-right-width: 1px; 
-
-					&:hover { background-color: @b-hover; }
-				}
-
-				&.more {
-					position: absolute;
-					top: 0;
-					right: 2px;
-					width: 1.5em;
-					border-left-width: 1px;
-					text-align: center;
-
-					&:hover, &:focus { background-color: @b-hover; }
-				}
-
-			}
-
-			&:hover, &.active {
-				button {
-					border-color: @b-line;
-					color: @b-text;
-					background-color: @b-back;
-				}  
-			}
-
-			ul { 
-				position: absolute; 
-				list-style-type: none;  
-				background-color: @back;
-				width: 199%; 
-				top: 1.35em; 
-				right: -2em; 
-				margin-left: -5em; 
-				margin: 1em 0 0;
-				border: 1px solid @vague;
-				max-height: 19em;
-				overflow-y: auto;
-				
-				li { 
-					background-color: @back; 
-
-					&:first-child a { border-top: .5em solid @back; }
-					&:last-child a { border-bottom: .5em solid @back; }
-				
-					&.loading { font-size: 1.75em;}
-
-					a {
-						display: block; 
-						padding: .2em .5em .2em 2.5em; 
-						color: @text;
-						background-color: @back;
-						position: relative; 
-						border-bottom: 1px solid @line;
-						z-index: 999;
-				
-						.cart-no {
-							position: absolute;
-							color: @line;
-							font-weight: bold;
-							font-size: 1;
-							line-height: 2.4em;
-							left: 0;
-							width: 2.3em;
-							text-align: center;
-						}
-
-						.cart-title { 
-							display: block;
-							font-weight: bold;
-							font-size: 1.2em;
-							white-space: nowrap;
-							overflow-x: hidden;
-							text-overflow: ellipsis;
-						}
-
-					  .cart-amount, .cart-price {
-					  	font-size: .9em;
-					  	position: relative;
-					  	top: -.3em;
-					  	display: inline-block;
-					  	min-width: 3.5em;
-
-					  	i {
-					  		margin-right: .2em;
-					  	}
-					  }
-
-						&:hover, &.active { 
-							background-color: @b-back; 
-							color: @b-text; 
-							text-decoration: none; 
-
-							.cart-no {
-								color: @b-vague;
-							}
-						}
-					}
-				}
-			}
-
-			.indicator { 
-				display: block; 
-				position: absolute; 
-				z-index: 1;
-				background-color: @back; 
-				border-width: 1px 1px 0 0; 
-				border-color: @vague; 
-				border-style: solid; 
-				width: 1em; 
-				height: 1em; 
-				top: 1.9em; 
-				right: .5em;
-				.rotate (-45deg);
-			}
-		}
-	
-		.item-links { 
-			margin-top: 1em;
-			list-style-type: none; 
-
-			li { text-align: right;	}
-		}
-	}
-
-	&:last-child .item-sidebar .item-actions {
-		ul {
-			top: auto;
-			bottom: 2.4em;
-		}
-
-		.indicator {
-			top: auto;
-			bottom: 1.9em;
-			.rotate (135deg);
-		}
-	}
-
-	.alert {
-		border-top: 1px solid @line;
-		margin: 1em -23px -1em -9em;
-		padding: .5em 12em .5em 12em;
-		float: left;
-		position: relative;
-		color: @back;
-		border-width: 3px 0 0;
-		border-style: solid;
-		width: 100%;
-		box-sizing: content-box;
-		min-height: 1.5em;
-
-		.alert-content {
-			position: absolute;
-			left: 2.75em; 
-			top: .5em;
-		}
-
-		i {
-			position: absolute;
-			left: .25em;
-			top: .1em;
-			font-size: 1.75em;
-		}
-
-		&.info { 
-			background-color: @info; 
-			border-color: darken(@info, 5%);
-
-			i { color: darken(@info, 10%) }
-		}
-
-		&.danger { 
-			background-color: @danger; 
-			border-color: darken(@danger, 5%);
-
-			i { color: darken(@danger, 10%) }
-		}
-
-		&.success { 
-			background-color: @success; 
-			border-color: darken(@success, 5%);
-
-			i { color: darken(@success, 10%) }
-		}
-
-		&.warn { 
-			background-color: @warn; 
-			border-color: darken(@warn, 5%);
-
-			i { color: darken(@warn, 10%) }
-		}
-	}
-}
-
-.under-construction, .no-results {
-	font-size: 3em;
-	color: @vague;
-	text-align: center;
-	padding: 5em 0;
-}
-
-.loading {
-	font-size: 3em;
-	color: @line;
-	text-align: center;
-	padding: 2em 0;	
-}
-

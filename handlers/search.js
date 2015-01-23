@@ -28,15 +28,23 @@ exports.results = function(req, res, next) {
 			'aggs': {
 				'status' : {
 					'filter': {},
-					'aggs': { 'set': { 'terms': { 'field' : 'status' }}}
+					'aggs': { 'set': { 'terms': { 
+						'field' : 'status',
+						'size': 0
+					}}}
 				},
 				'group' : {
 					'filter': {},
-					'aggs': { 'set': { 'terms': { 'field' : 'group' }}}
+					'aggs': { 'set': { 'terms': { 
+						'field' : 'group',
+					}}}
 				},
 				'country' : {
 					'filter': {},
-					'aggs': { 'set': { 'terms': { 'field' : 'country' }}}
+					'aggs': { 'set': { 'terms': { 
+						'field' : 'country',
+						'size': 25 
+					}}}
 				}
 			},
 			'sort': [],

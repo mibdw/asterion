@@ -1,49 +1,45 @@
-<div id="main" style="width: 75%" ng-init="getResults(searchTerm)">
+<div id="main" class="left" style="width: 75%" ng-init="getResults(searchTerm)">
 
 	<div ng-show="searchLoading == true" class="loading">
 		<i class="fa fa-refresh fa-spin"></i>
 	</div>
-
-	<div ng-show="noResultsFilter == true" class="no-results">
-		No results correspond with your filters
-	</div>
 	
-	<div ng-show="searchLoading == false" ng-repeat="item in results" class="item">
-		<label class="item-select" for="{{item._source._id}}"></label>
-		<input type="checkbox" id="{{item._source._id}}">
-		<a href="" class="item-detail">
-			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{item._source.isbn}}" alt="{{item._source.title}}">
-			<div class="item-title" ng-bind-html="item._source.title | highlight: searchedFor">Title</div>
+	<div ng-show="searchLoading == false" ng-repeat="result in results" class="result">
+		<label class="result-select" for="{{result._source._id}}"></label>
+		<input type="checkbox" id="{{result._source._id}}">
+		<a href="" class="result-detail">
+			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{result._source.isbn}}" alt="{{result._source.title}}">
+			<div class="result-title" ng-bind-html="result._source.title | highlight: searchedFor">Title</div>
 		</a>
-		<div class="item-author" ng-show="item._source.author" ng-bind-html="item._source.author | highlight: searchedFor">Item author(s)</div>
+		<div class="result-author" ng-show="result._source.author" ng-bind-html="result._source.author | highlight: searchedFor">Item author(s)</div>
 	
-		<dl class="item-meta">
+		<dl class="result-meta">
 			<dt>Publisher:</dt>
-			<dd><span ng-bind-html="item._source.publisher | highlight: searchedFor"></span></dd>
+			<dd><span ng-bind-html="result._source.publisher | highlight: searchedFor"></span></dd>
 			<dt>Place:</dt>
 			<dd>
-				<span>{{item._source.place}}</span><span ng-show="item._source.place && item._source.country">,</span>
-				<span>{{item._source.country}}</span>
-				<span ng-show="item._source.date">({{item._source.date}})</span>
+				<span>{{result._source.place}}</span><span ng-show="result._source.place && result._source.country">,</span>
+				<span>{{result._source.country}}</span>
+				<span ng-show="result._source.date">({{result._source.date}})</span>
 			</dd>
 			<dt>ISBN:</dt>
-			<dd><span ng-bind-html="item._source.isbn | highlight: searchedFor" ng-show="item._source.isbn"></span><span ng-hide="item._source.isbn">&nbsp;</span></dd>
+			<dd><span ng-bind-html="result._source.isbn | highlight: searchedFor" ng-show="result._source.isbn"></span><span ng-hide="result._source.isbn">&nbsp;</span></dd>
 			<dt>Product type:</dt>
-			<dd>{{item._source.group}}<span ng-show="item._source.pages > 0">, {{item._source.pages}} pages</span></dd>
+			<dd>{{result._source.group}}<span ng-show="result._source.pages > 0">, {{result._source.pages}} pages</span></dd>
 			<dt>Availability:</dt>
-			<dd><i class="available"></i> {{item._source.status}}</dd>
+			<dd><i class="available"></i> {{result._source.status}}</dd>
 		</dl>
 		
-		<div class="item-sidebar">
-			<div class="item-price" ng-show="item._source.price > 0"><strong>{{item._source.price}}</strong> EUR</div>
-			<div class="item-price unknown" ng-show="item._source.price <= 0">Price unknown</div>
+		<div class="result-sidebar">
+			<div class="result-price" ng-show="result._source.price > 0"><strong>{{result._source.price}}</strong> EUR</div>
+			<div class="result-price unknown" ng-show="result._source.price <= 0">Price unknown</div>
 
-			<div class="item-actions" ng-class="{active: cartsDropdown.active == item._id}">
-				<button type="button" class="cart">Add to cart</button>
-				<button type="button" class="more" ng-focus="focusCarts(item)" ng-blur="blurCarts()"><i class="fa fa-caret-down"></i></button>
+			<div class="result-actions" ng-class="{active: cartsDropdown.active == result._id || activeButton == result._id}">
+				<button type="button" class="cart" ng-focus="activeButton = result._id" ng-blur="activeButton = false">Add to cart</button>
+				<button type="button" class="more" ng-focus="focusCarts(result)" ng-blur="blurCarts()"><i class="fa fa-caret-down"></i></button>
 
-				<span class="indicator" ng-show="cartsDropdown.active == item._id"></span>
-				<ul class="carts-list" ng-show="cartsDropdown.active == item._id">
+				<span class="indicator" ng-show="cartsDropdown.active == result._id"></span>
+				<ul class="carts-list" ng-show="cartsDropdown.active == result._id">
 					<li ng-repeat="cart in cartsDropdown.carts">
 						<a href="" title="{{cart.title}}">
 							<span class="cart-no">{{$index + 1}}.</span>
@@ -59,16 +55,15 @@
 				</ul>
 			</div>
 	
-			<ul class="item-links">
+			<ul class="result-links">
 				<li><a href="">More information</a></li>
 			</ul>
 		</div>
 	</div>
 
-
 </div>
 
-<aside ng-show="noResults == false" style="width: 25%">
+<aside class="right" ng-show="noResults == false" style="width: 25%">
 	<div class="pagination">
 		<a href="" class="prev" ng-show="pagination.page > 0" ng-click="searchPage('first', searchedFor)" title="First">
 			<i class="fa fa-angle-double-left"></i>
@@ -92,7 +87,7 @@
 		</a>
 	</div>
 
-	<dl class="page-details">
+	<dl class="detail-list">
 		<dt>Criteria:</dt>
 		<dd><em>{{searchedFor}}</em><span ng-hide="searchedFor">&nbsp;</span></dd>
 		<dt>Results:</dt>
@@ -133,7 +128,7 @@
 		</dd>
 	</dl>
 
-	<div class="page-functions">
+	<div class="functions">
 		<a href="">Select all</a>
 	</div>
 
@@ -145,9 +140,9 @@
 				<span ng-show="filter.status.length > 0 && filterState.status == 'close'">{{filter.status.length}} active</span>
 			</h3>
 			<ul>
-				<li ng-repeat="option in aggs.status.set.buckets" ng-class="{active: filter['status'].indexOf(option.key) > -1}">
+				<li ng-repeat="option in aggs.status.set.buckets" ng-class="{active: filter['status'].indexOf(option.key) > -1, disabled: option.doc_count < 1}">
 					<label>
-						<input type="checkbox" ng-checked="filter['status'].indexOf(option.key) > -1" ng-click="filterToggle('status', option.key)">
+						<input type="checkbox" ng-checked="filter['status'].indexOf(option.key) > -1" ng-disabled="option.doc_count < 1" ng-click="filterToggle('status', option.key)">
 						{{option.key}} <span>({{option.doc_count}})</span>
 						<i class="fa fa-remove"></i>
 					</label>
@@ -163,9 +158,9 @@
 				<span ng-show="filter.group.length > 0 && filterState.group == 'close'">{{filter.group.length}} active</span>
 			</h3>
 			<ul>
-				<li ng-repeat="option in aggs.group.set.buckets" ng-class="{active: filter['group'].indexOf(option.key) > -1}">
+				<li ng-repeat="option in aggs.group.set.buckets" ng-class="{active: filter['group'].indexOf(option.key) > -1, disabled: option.doc_count < 1}">
 					<label>
-						<input type="checkbox" ng-checked="filter['group'].indexOf(option.key) > -1" ng-click="filterToggle('group', option.key)"> 
+						<input type="checkbox" ng-checked="filter['group'].indexOf(option.key) > -1"  ng-disabled="option.doc_count < 1" ng-click="filterToggle('group', option.key)"> 
 						{{option.key}} <span>({{option.doc_count}})</span>
 						<i class="fa fa-remove"></i>
 					</label>
@@ -181,20 +176,20 @@
 				<span ng-show="filter.country.length > 0 && filterState.country == 'close'">{{filter.country.length}} active</span>
 			</h3>
 			<ul>
-				<li ng-repeat="option in aggs.country.set.buckets" ng-class="{active: filter['country'].indexOf(option.key) > -1}">
+				<li ng-repeat="option in aggs.country.set.buckets" ng-class="{active: filter['country'].indexOf(option.key) > -1, disabled: option.doc_count < 1}">
 					<label>
-						<input type="checkbox" ng-checked="filter['country'].indexOf(option.key) > -1" ng-click="filterToggle('country', option.key)"> 
+						<input type="checkbox" ng-checked="filter['country'].indexOf(option.key) > -1" ng-disabled="option.doc_count < 1" ng-click="filterToggle('country', option.key)"> 
 						{{option.key}} <span>({{option.doc_count}})</span>
 						<i class="fa fa-remove"></i>
 					</label>
 				</li>
 				<li ng-show="filter['country'].length > 0"><a href="" ng-click="filterToggle('country')">Clear filters</a></li>
-			</ul>
+			</ul>	
 		</div>
 	</div>
 
 </aside>
 
-<div ng-show="noResults == true" class="no-results">
+<div ng-show="noResults == true" class="kong">
 	No results for <em>{{searchedFor}}</em>
 </div>
