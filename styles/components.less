@@ -93,6 +93,32 @@
 	&:hover > a { text-decoration: underline }
 }
 
+.sub-menu {
+	border-bottom: 1px solid @line;
+	
+	li {
+		a {
+			display: block; 
+			padding: .2em .5em; 
+			color: @text;
+
+			&:hover, &:focus {
+				background-color: @sh-back;
+				text-decoration: none;
+			}
+		}
+
+		&.active a, &.active a:hover, &.active a:focus {
+			text-decoration: none;
+			background-color: @h-back;
+			color: @h-text;
+		}
+
+		&:first-child a { border-top: 1em solid @back; }
+		&:last-child a { border-bottom: 1em solid @back; }
+	}
+}
+
 .pagination { 
 	text-align: center; 
 	border-bottom: 1px solid @line; 

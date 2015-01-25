@@ -12,6 +12,7 @@
 		border-width: 0 1px; 
 		border-color: @vague; 
 		border-style: solid; 
+		position: relative;
 
 		&:first-child { 
 			padding-top: .5em; 
@@ -46,11 +47,31 @@
 			padding: .2em .8em; 
 			text-decoration: none; 
 			color: @text; 
-			
-			&:hover { 
-				background-color: @h-back; 
-				color: @h-text;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		&.active a, a:hover, a:focus { 
+			background-color: @h-back; 
+			color: @h-text;
+		}
+
+		&.sub {
+			.hover-menu-sub {
+				display: none;
+				position: absolute;
+				padding: 1em;
+				width: 10em;
+				top: -2em;
+				left: 1em;
+				margin-left: -10em;
+
+				li:first-child { border-top: 1px solid @vague; }
+				li:last-child { border-bottom: 1px solid @vague; }
 			}
+
+			&:hover .hover-menu-sub { display: block; }
 		}
 	}
 }

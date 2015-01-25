@@ -6,7 +6,7 @@ exports.read = function(req, res, next) {
 	var id = req.body.id || req.user._id;
 
 	User.findById(id)
-	.select('_id email name confirm accounts')
+	.select('_id email name confirmation accounts')
 	.exec(function (err, user) {
 		if (err) return console.log(err);
 		return res.send(user);

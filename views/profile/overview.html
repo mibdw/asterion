@@ -1,0 +1,28 @@
+<form ng-controller="profileOverview" ng-submit="updateUser(user)" class="form">
+	
+	<label for="email">E-mail</label>
+	<input type="text" id="email" ng-model="user.email" required="required">
+
+	<label for="first-name">Name</label>
+	<input type="text" id="first-name" ng-model="user.name.first" placeholder="First" required="required" style="width: 19.7%; margin-right: .3%">
+	<input type="text" id="last-name" ng-model="user.name.last" placeholder="Last" required="required" style="width: 35%">
+
+	<label for="password">New password</label>
+	<input type="password" id="password" ng-model="user.password" style="width: 35%">
+	<label for="confirm">&nbsp;</label>
+	<input type="password" id="confirm" ng-model="confirm" style="width: 35%" placeholder="Confirm new password" ng-class="{invalid: noMatch == true}"ng-keypress="confirmPassword()">
+	
+	<div class="shelf-box">	
+		<input type="checkbox" id="confirm-mail" ng-checked="user.confirmation == true" ng-click="user.confirmation = !user.confirmation"> 
+		<label for="confirm-mail">Automatically send order confirmations by e-mail</label>
+	</div>		
+
+	<div class="shelf-box" style="margin-top: 1em">
+		<button type="reset">Clear</button>
+		<button type="submit" ng-class="{success: updated == true}" ng-disabled="noMatch == true">
+			<span ng-show="updated == false">Save</span>
+			<span ng-show="updated == 'waiting'"><i class="fa fa-refresh fa-spin"></i> Saving</span>
+			<span ng-show="updated == true"><i class="fa fa-check"></i> Saved</span>
+		</button>
+	</div>
+</form>

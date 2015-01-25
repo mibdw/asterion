@@ -13,6 +13,10 @@ input {
 		&:focus, &:active {
 			border-color: @vague;
 		}
+
+		&.invalid, &.invalid:focus, &.invalid:active {
+			border-color: @danger;
+		}
 	}
 }
 
@@ -35,10 +39,10 @@ button {
 	}
 
 	&[type="reset"] {
-		color: @vague;
+		color: @text;
 
 		&:hover, &:focus {
-			background-color: @line;
+			background-color: @back;
 			border-color: @vague;
 			color: @text;
 		}
@@ -54,6 +58,20 @@ button {
 			border-color: @h-vague;
 			color: @h-text;
 		}
+
+		&[disabled="disabled"], &[disabled="disabled"]:hover {
+			background-color: @h-back;
+			border-color: @h-line;
+			color: @h-vague;
+			cursor: not-allowed;
+		}
+	}
+
+	&[disabled="disabled"], &[disabled="disabled"]:hover, &[disabled="disabled"]:focus {
+		background-color: @back;
+		color: @line;
+		border-color: @line;
+		cursor: not-allowed;
 	}
 
 	&.success, &.success:hover, &.success:focus {

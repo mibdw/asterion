@@ -1,12 +1,44 @@
 var ctrl = angular.module('global', []);
 
-ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$route',
-	function ($scope, $rootScope, $http, $location, $route) {
+ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location',
+	function ($scope, $rootScope, $http, $location) {
 		$rootScope.masthead = 'Asterion';
-		$rootScope.titleSep1 = ' \u2014 ';
-		$rootScope.titleSep2 = ' \u00BB ';
+		$rootScope.titleSep1 = ' \u2012 ';
+		$rootScope.titleSep2 = ' \u00AB ';
 		$rootScope.titleLine = 'Bookselling like a pro' + $rootScope.titleSep1 + $rootScope.masthead;
+
+		$scope.currentLang = 'en';
+		$scope.changeLang = function (tongue) {
+			$scope.currentLang = tongue;
+		}
+
 		$rootScope.searchTerm;
+
+		$scope.menuSearch = [
+			{'name': 'Advanced search', 'slug': 'advanced-search' },
+			{'name': 'Outside database', 'slug': 'order-outside-database' },
+			{'name': 'ISBN upload', 'slug': 'isbn-upload' },
+		];
+		
+		$scope.menuOrders = [
+			{'name': 'Order tracing', 'slug': 'order-tracing' },
+			{'name': 'Standing orders and journals', 'slug': 'standing-orders' },
+			{'name': 'New title service', 'slug': 'new-title-service' },
+			{'name': 'Approval plans', 'slug': 'approval-plans' },
+		];
+
+		$scope.menuUser = [
+			{'name': 'Profile', 'slug': 'profile' },
+			{'name': 'Language', 'sub': [
+				{'code': 'en', 'name': 'English'},
+				{'code': 'de', 'name': 'Deutsch'},
+				{'code': 'fr', 'name': 'Français'},
+				{'code': 'nl', 'name': 'Nederlands'},
+				{'code': 'es', 'name': 'Español'},
+				{'code': 'it', 'name': 'Italiano'},
+			]},
+			{'name': 'Help', 'slug': 'help' },
+		];
 
 		$rootScope.slugify = function (text) {
 			return text.toString()

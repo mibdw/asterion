@@ -20,25 +20,28 @@
 		<nav tabindex="2">
 			<i class="fa fa-bars"></i> Menu
 			<ul class="hover-menu">
-				<li><a href="">Advanced search</a></li>
-				<li><a href="">Order outside database</a></li>
-				<li><a href="">ISBN upload</a></li>
+				<li ng-repeat="option in menuSearch" ng-class="{active: option.slug == pageSlug}">
+					<a href="/#/{{option.slug}}" ng-click="searchTerm = ''">{{option.name}}</a>
+				</li>
 				<li class="divider"></li>
-				<li><a href="">Order tracing</a></li>
-				<li><a href="">Standing orders &amp; journals</a></li>
-				<li><a href="">New title service</a></li>
-				<li><a href="">Approval plans</a></li>
-				<li class="divider"></li>
-				<li><a href="">Account information</a></li>
+				<li ng-repeat="option in menuOrders" ng-class="{active: option.slug == pageSlug}">
+					<a href="/#/{{option.slug}}" ng-click="searchTerm = ''">{{option.name}}</a>
+				</li>
 			</ul>
 		</nav>
 
 		<div class="user" tabindex="5">
 			<i class="fa fa-user"></i>
 			<ul class="hover-menu">
-				<li><a href="/#/profile" ng-click="searchTerm = ''">Profile</a></li>
-				<li><a href="">Language</a></li>
-				<li><a href="">Help</a></li>
+				<li ng-repeat="option in menuUser" ng-class="{active: option.slug == pageSlug, sub: option.sub}">
+					<a ng-show="option.slug" href="/#/{{option.slug}}" ng-click="searchTerm = ''">{{option.name}}</a>
+					<a ng-show="option.sub">{{option.name}}</a>
+					<ul class="hover-menu-sub">
+						<li ng-repeat="tongue in option.sub" ng-class="{active: tongue.code == currentLang}">
+							<a href="" ng-click="changeLang(tongue.code)">{{tongue.name}}</a>
+						</li>
+					</ul>
+				</li>
 				<li class="divider"></li>
 				<li><a href="/logout">Logout</a></li>
 			</ul>
