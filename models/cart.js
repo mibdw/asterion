@@ -17,6 +17,7 @@ var cartSchema = mongoose.Schema({
 		added: Date,
 		user: String
 	}],
+	total: Number
 });
 
 module.exports = mongoose.model('Cart', cartSchema);

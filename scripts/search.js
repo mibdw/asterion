@@ -57,6 +57,7 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 			}
 
 			$scope.searchLoading = true;
+			$scope.pagination.page = 0;
 			$scope.getResults($scope.searchedFor);
 		}
 

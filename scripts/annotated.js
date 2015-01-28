@@ -262,6 +262,7 @@ var app = angular.module('asterion', [
 	'ngSanitize', 
 	'highlighter', 
 	'global', 
+	'drawer', 
 	'dashboard', 
 	'search', 
 	'profile',
@@ -352,9 +353,9 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 
 		$rootScope.slugify = function (text) {
 			return text.toString()
-			.replace(/\s+/g, '+') // Replace spaces with -
-			.replace(/[^\w\+]+/g, '') // Remove all non-word chars
-			.replace(/\+\++/g, '+') // Replace multiple - with single -
+			.replace(/\s+/g, '+')
+			.replace(/[^\w\+]+/g, '')
+			.replace(/\+\++/g, '+')
 		} 
 
 		$scope.quickSearch = function (searchTerm) {
@@ -362,10 +363,11 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			$location.path('/search/' + searchTerm);
 		}	
 
-		$scope.cartsDropdown = {
-			active: false,
+		$scope.carts = {
+			dropdown: false,
+			active: 3,
 			loading: false,
-			carts: [
+			list: [
 				{ 
 					title: 'Shipping cart title',
 					amount: 12,
@@ -405,11 +407,26 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 		}
 
 		$scope.focusCarts = function (item) {
-			$scope.cartsDropdown['active'] = item._id;
+			$scope.carts['dropdown'] = item._id;
 		}
 
 		$scope.blurCarts = function (item) {
-			$scope.cartsDropdown['active'] = false;
+			$scope.carts['dropdown'] = false;
+		}
+	}
+]);
+var ctrl = angular.module('drawer', []);
+
+ctrl.controller('drawerController', ['$scope', '$http', '$location',
+	function ($scope, $http, $location) {
+		$scope.drawerMenu = [
+			{'name': 'Contents', 'slug': 'contents', 'url': '/partials/drawer/contents'},
+			{'name': 'Shopping carts', 'slug': 'carts', 'url': '/partials/drawer/carts'},
+		];
+
+		$scope.drawerActive = $scope.drawerMenu[0];
+		$scope.gotoDrawer = function (option) {
+			$scope.drawerActive = option;
 		}
 	}
 ]);
@@ -482,6 +499,7 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 			}
 
 			$scope.searchLoading = true;
+			$scope.pagination.page = 0;
 			$scope.getResults($scope.searchedFor);
 		}
 

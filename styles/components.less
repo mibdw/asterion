@@ -64,7 +64,13 @@
 				position: relative; 
 				z-index: 9999;
 
-				&:hover, &.active { 
+				&:hover { 
+					background-color: @sh-back; 
+					color: @text; 
+					text-decoration: none; 
+				}
+
+				&.active, &.active:hover { 
 					background-color: @h-back; 
 					color: @h-text; 
 					text-decoration: none; 
@@ -226,8 +232,7 @@
 				}
 
 				&:hover { 
-					background-color: @mark;
-					color: @link;
+					background-color: @sh-back;
 				}
 
 				&.disabled {

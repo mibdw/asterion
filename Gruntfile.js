@@ -21,6 +21,7 @@ module.exports = function (grunt) {
 						'scripts/angular/angular-sanitize.min.js',
 						'scripts/config.js',
 						'scripts/global.js',
+						'scripts/drawer.js',
 						'scripts/dashboard.js',
 						'scripts/search.js',
 						'scripts/profile.js',

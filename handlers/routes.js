@@ -18,6 +18,14 @@ router.post('/users/create', ensAuth, users.create);
 router.post('/users/update', ensAuth, users.update);
 router.post('/users/remove', ensAuth, users.remove);
 
+var carts = require(__dirname + '/carts.js');
+router.post('/carts/contents', ensAuth, carts.contents);
+router.post('/carts/create', ensAuth, carts.create);
+router.post('/carts/update', ensAuth, carts.update);
+router.post('/carts/remove', ensAuth, carts.remove);
+router.post('/carts/add', ensAuth, carts.add);
+router.post('/carts/subtract', ensAuth, carts.subtract);
+
 router.get('/partials/:section/:partial', ensAuth, function (req, res) {
 	res.render(__dirname + '/../views/' + req.params.section + '/' + req.params.partial + '.html');
 });

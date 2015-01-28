@@ -4,6 +4,7 @@ var app = angular.module('asterion', [
 	'ngSanitize', 
 	'highlighter', 
 	'global', 
+	'drawer', 
 	'dashboard', 
 	'search', 
 	'profile',

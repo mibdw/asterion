@@ -48,13 +48,29 @@
 		</div>
 
 		<div class="carts" tabindex="4">
-			<span class="cart-title">Shopping cart title</span>
+			<span class="cart-title" title="{{carts.list[carts.active].title}}">{{carts.list[carts.active].title}}</span>
 			<span class="cart-amount">
-				<i class="fa fa-shopping-cart"></i> 14
+				<i class="fa fa-shopping-cart"></i> {{carts.list[carts.active].amount}}
 			</span>
 			<span class="cart-amount">
-				<i class="fa fa-credit-card"></i> 97.33 EUR
+				<i class="fa fa-credit-card"></i> {{carts.list[carts.active].price}} EUR
 			</span>
+
+			<div class="drawer" ng-controller="drawerController" ng-class="{pinned: drawerPin == true}">
+					<table class="drawer-menu">
+						<tr>
+							<td  class="drawer-pin" ng-class="{active: drawerPin == true}">
+								<a href="" ng-click="drawerPin ? drawerPin = false : drawerPin = true">
+									<i class="fa fa-thumb-tack"></i>
+								</a>
+							</td>
+							<td ng-repeat="option in drawerMenu" ng-class="{active: drawerActive == option}">
+								<a href="" ng-click="gotoDrawer(option)">{{option.name}}</a>
+							</td>
+						</tr>
+					</table>
+					<div ng-include="drawerActive.url"></div>
+			</div>
 		</div>
 		
 		<form class="search" ng-submit="quickSearch(searchTerm)">

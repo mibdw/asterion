@@ -52,9 +52,14 @@
 			white-space: nowrap;
 		}
 
-		&.active a, a:hover, a:focus { 
+		&.active a, &.active a:hover, &.active a:focus {
 			background-color: @h-back; 
-			color: @h-text;
+			color: @h-text;			
+		}
+
+		a:hover, a:focus { 
+			background-color: @sh-back; 
+			color: @text;
 		}
 
 		&.sub {
@@ -66,23 +71,52 @@
 				top: -2em;
 				left: 1em;
 				margin-left: -10em;
+				list-style-type: none;
 
 				li:first-child { border-top: 1px solid @vague; }
 				li:last-child { border-bottom: 1px solid @vague; }
 			}
 
-			&:hover .hover-menu-sub { display: block; }
+			&:hover {
+				
+				a {
+					background-color: @sh-back;
+					color: @text;
+				}
+
+				.hover-menu-sub { 
+					display: block; 
+
+					li a {
+						background-color: @back;
+						color: @text;
+
+						&:hover, &:focus {
+							background-color: @sh-back;
+							color: @text;
+						}
+					}
+
+					li.active a, li.active a:hover, li.active a:focus {
+						background-color: @h-back;
+						color: @h-text;
+					}
+				}
+			}
 		}
 	}
 }
 
 header { 
-	height: @h-height; 
+	height: @h-height + 1; 
 	background-color: @h-back; 
-	color: @h-text; 
 	border-bottom: 1px solid @h-line;
-	box-sizing: content-box;
-	z-index: 1111;
+	color: @h-text; 
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 999;
 }
 
 .masthead { 
@@ -152,13 +186,13 @@ nav {
 			display: block; 
 			left: -1em; 
 			min-width: 16em;
-			opacity: 1; 
 			margin-top: 0;
 		}
 	}
 }
 
 .search {
+	height: @h-height;
 	background-color: @h-back;
 	cursor: text;
 	
@@ -170,7 +204,7 @@ nav {
 
 	input { 
 		background-color: transparent; 
-		width: 45%; 
+		width: 55%; 
 		height: @h-height; 
 		border-width: 0; 
 		font-size: 1.3em; 
@@ -206,7 +240,8 @@ nav {
 	float: right; 
 	height: @h-height; 
 	border-left: 1px solid @h-line; 
-	padding: 0 2em 0 1.4em; 
+	padding: 0 2em 0 1.4em;
+	max-width: 15em; 
 	position: relative; 
 	background-color: @h-back;
 
@@ -217,6 +252,9 @@ nav {
 		line-height: .8em; 
 		margin-top: .6em; 
 		font-weight: bold;
+		white-space: nowrap;
+		overflow-x: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.cart-amount, .cart-price {
@@ -233,11 +271,66 @@ nav {
 		}
 	}
 
-	&:hover, &:focus { 
+	.drawer {
+		position: fixed;
+		top: @h-height + 1px;
+		right: -36%;
+		bottom: 0;
+		width: 35%;
+		border-left: 1px solid @d-line;
+		background-color: @d-back;
+		.transition(right .25s ease-out);
+
+		&.pinned { right: 0 }
+
+		.drawer-menu {
+			width: 100%;
+			border-collapse: collapse;
+			border-spacing: 0;
+
+			td {
+				border-width: 0  0 1px 1px;
+				border-style: solid;
+				border-color: @d-line;
+
+				&.drawer-pin { 
+					border-left-width: 0;
+					width: 1%; 
+				}
+
+				&.active {
+					background-color: @d-hover;
+					
+					a { color: @d-text; }
+				}
+				
+				a {
+					display: block;
+					color: @d-vague;
+					text-align: center;
+					padding: .4em 1em;
+
+					&:hover {
+						color: @d-text;
+						text-decoration: none;
+					}
+
+					&:focus { 
+						outline-width: 0;
+						text-decoration: none;
+					}
+				}
+			}
+		}
+	}
+
+	&:hover, &:focus, &.pinned { 
 		background-color: @h-hover; 
 		cursor: pointer; 
 
-		.cart-title, .cart-title, .cart-amount { color: @h-text; }
+		.cart-amount, .cart-price, .cart-title { color: @h-text }
+
+		.drawer { right: 0; }
 	}
 }
 
