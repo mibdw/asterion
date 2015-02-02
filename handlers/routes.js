@@ -17,9 +17,11 @@ router.post('/users/list', ensAuth, users.list);
 router.post('/users/create', ensAuth, users.create);
 router.post('/users/update', ensAuth, users.update);
 router.post('/users/remove', ensAuth, users.remove);
+router.post('/users/cart', ensAuth, users.cart);
 
 var carts = require(__dirname + '/carts.js');
-router.post('/carts/contents', ensAuth, carts.contents);
+router.post('/carts/detail', ensAuth, carts.detail);
+router.post('/carts/list', ensAuth, carts.list);
 router.post('/carts/create', ensAuth, carts.create);
 router.post('/carts/update', ensAuth, carts.update);
 router.post('/carts/remove', ensAuth, carts.remove);

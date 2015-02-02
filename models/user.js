@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var passportLocalMongoose = require('passport-local-mongoose');
+var Cart = require(__dirname + '/cart.js');
 
 var userSchema = mongoose.Schema({
 	email: { type: String, unique: true },
@@ -10,12 +11,13 @@ var userSchema = mongoose.Schema({
 	},
 	active: { type: Boolean, default: true },
 	creator: String,
-	created: Date,
+	creaed: Date,
 	editor: String,
 	edited: Date,
 	accounts: [String],
 	lang: String,
-	confirmation: { type: Boolean, default: true }
+	confirmation: { type: Boolean, default: true },
+	cart: { type: String, ref: 'Cart' }
 });
 
 userSchema.plugin(passportLocalMongoose, { usernameField: 'email' });

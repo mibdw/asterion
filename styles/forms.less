@@ -49,7 +49,7 @@ button {
 		}
 	}
 
-	&[type="submit"] {
+	&[type="submit"], &.submit {
 		background-color: @h-back;
 		border-color: @h-line;
 		color: @h-text;
@@ -78,6 +78,26 @@ button {
 	&.success, &.success:hover, &.success:focus {
 		background-color: @success;
 		border-color: darken(@success, 10%);
+	}
+
+	&.dark {
+		background-color: @d-back;
+		border-color: @d-line;
+		color: @d-vague;
+
+		&:hover, &:focus {
+			background-color: @d-hover;
+			border-color: @d-line;
+			color: @d-text;
+		}
+
+		&[disabled="disabled"], &[disabled="disabled"]:hover {
+			background-color: @d-back;
+			border-color: @d-line;
+			color: @d-vague;
+			cursor: not-allowed;
+		}
+
 	}
 }
 

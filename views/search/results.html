@@ -34,12 +34,12 @@
 			<div class="result-price" ng-show="result._source.price > 0"><strong>{{result._source.price}}</strong> EUR</div>
 			<div class="result-price unknown" ng-show="result._source.price <= 0">Price unknown</div>
 
-			<div class="result-actions" ng-class="{active: carts.dropdown == result._id || activeButton == result._id}">
+			<div class="result-actions" ng-class="{active: dropdownCarts == result._id || activeButton == result._id}">
 				<button type="button" class="cart" ng-focus="activeButton = result._id" ng-blur="activeButton = false">Add to cart</button>
-				<button type="button" class="more" ng-focus="focusCarts(result)" ng-blur="blurCarts()"><i class="fa fa-caret-down"></i></button>
+				<button type="button" class="more" ng-focus="dropdownCarts = result._id" ng-blur="dropdownCarts = false"><i class="fa fa-caret-down"></i></button>
 
-				<span class="indicator" ng-show="carts.dropdown == result._id"></span>
-				<ul class="carts-list" ng-show="carts.dropdown == result._id">
+				<span class="indicator" ng-show="dropdownCarts == result._id"></span>
+				<ul class="carts-list" ng-show="dropdownCarts == result._id">
 					<li ng-repeat="cart in carts.list">
 						<a href="" title="{{cart.title}}">
 							<span class="cart-no">{{$index + 1}}.</span>

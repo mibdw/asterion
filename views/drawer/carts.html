@@ -1,3 +1,45 @@
-Shopping carts
+<div ng-controller="drawerCarts">
+	<div class="drawer-cart" ng-repeat="cart in cartList | orderBy: '-created'">
+		<div class="title">{{cart.title}}</div>
+		<div class="price">
+			<strong>{{cart.price}}</strong> EUR
+		</div>
 
-{{drawerPin}}
+		<dl class="meta">
+			<dt>Items:</dt>
+			<dd>{{cart.quantity}}</dd>
+			<dt>Account:</dt>
+			<dd>University of Nonsense, Department of Trouble (22222)</dd>
+			<dt>Created:</dt>
+			<dd>{{cart.owner.name.first}} {{cart.owner.name.last}} ({{fromNow(cart.created)}})</dd>
+			<dt ng-show="cart.editor">Modified:</dt>
+			<dd ng-show="cart.editor">{{cart.editor}} ({{cart.edited}})</dd>
+		</dl>
+
+		<div class="links">
+			<a href="">More information</a>
+			<a href="" ng-click="removeCart(cart)">Remove</a>
+		</div>
+
+		<button type="button" class="dark">Activate</button>
+		
+	</div>
+
+	<div class="drawer-bottom carts-options">
+		<i class="fa fa-search carts-search" ng-click="cartsSearch ? cartsSearch = false : cartsSearch = true" ng-class="{active: cartsSearch == true}" ng-show="cartsNew == false"></i>
+		
+		<a ng-show="cartsSearch == false && cartsNew == false" href="" ng-click="cartsNew = true">New shopping cart</a>
+		<a ng-show="cartsSearch == false && cartsNew == false" href="">Shopping cart management</a>
+		
+		<div class="carts-query" ng-show="cartsSearch == true">
+			<input type="text" placeholder="Enter search term" ng-model="cartsQuery">		
+			<i class="fa fa-remove carts-remove" ng-click="cartsSearch = false; cartsQuery = ''"></i>
+		</div>
+
+		<form ng-submit="createCart()" class="carts-create" ng-show="cartsNew == true">
+			<input type="text" ng-model="cartsName" placeholder="Enter new shopping cart name">
+			<button type="submit">Create</button>
+			<i class="fa fa-remove" ng-click="cartsNew = false; cartsName = ''"></i>
+		</form>
+	</div>
+</div>

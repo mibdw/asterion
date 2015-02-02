@@ -1,3 +1,51 @@
-Drawer contents
+<div ng-controller="drawerContents">
+	<div class="drawer-header drawer-cart">
+		<a href="" class="title">{{activeCart.title}}</a>
+		<div class="price">
+			<strong>{{activeCart.price}}</strong> EUR
+		</div>
 
-{{drawerPin}}
+		<dl class="meta">
+			<dt>Items:</dt>
+			<dd>{{activeCart.quantity}}</dd>
+			<dt>Account:</dt>
+			<dd>University of Nonsense, Department of Trouble (22222)</dd>
+			<dt>Created:</dt>
+			<dd>{{activeCart.owner}} ({{activeCart.created}})</dd>
+			<dt>Modified:</dt>
+			<dd>{{activeCart.editor}} ({{activeCart.edited}})</dd>
+		</dl>
+	</div>
+
+	<ul class="drawer-list">
+		<li class="drawer-item">
+			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR=9789038827087" alt="Grunberg rond de wereld">
+			
+			<div class="title">Grunberg rond de wereld</div>
+
+			<div class="price"><strong>10.00</strong> EUR</div>
+			<div class="quantity">
+				<label for="quantity">Qty: </label>
+				<input id="quantity" type="text" value="1">
+			</div>
+
+			<dl class="meta">
+				<dt>Author:</dt>
+				<dd>Grunberg, Arnon</dd>
+				<dt>ISBN:</dt>
+				<dd>9789038827087</dd>
+				<dt>Added:</dt>
+				<dd>Harry Turtle (2 months ago)</dd>
+			</dl>
+
+			<div class="links">
+				<a href="">More information</a>
+				<a href="">Remove</a>
+			</div>
+		</li>
+	</ul>
+
+	<div class="drawer-bottom">
+		<a href="" class="contents-link">Go to shopping cart</a>
+	</div>
+</div>

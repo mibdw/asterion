@@ -47,29 +47,23 @@
 			</ul>
 		</div>
 
-		<div class="carts" tabindex="4">
-			<span class="cart-title" title="{{carts.list[carts.active].title}}">{{carts.list[carts.active].title}}</span>
-			<span class="cart-amount">
-				<i class="fa fa-shopping-cart"></i> {{carts.list[carts.active].amount}}
-			</span>
-			<span class="cart-amount">
-				<i class="fa fa-credit-card"></i> {{carts.list[carts.active].price}} EUR
-			</span>
+		<div class="carts" ng-controller="drawerController" ng-class="{active: drawerPin == true}">
+			<div class="cart-click" ng-click="drawerPin ? drawerPin = false : drawerPin = true" tabindex="4">
+				<span class="cart-title" title="{{activeCart.title}}">{{activeCart.title}}</span>
+				<span class="cart-quantity">
+					<i class="fa fa-shopping-cart"></i> {{activeCart.quantity}}
+				</span>
+				<span class="cart-price">
+					<i class="fa fa-credit-card"></i> {{activeCart.price}} EUR
+				</span>
+			</div>
 
-			<div class="drawer" ng-controller="drawerController" ng-class="{pinned: drawerPin == true}">
-					<table class="drawer-menu">
-						<tr>
-							<td  class="drawer-pin" ng-class="{active: drawerPin == true}">
-								<a href="" ng-click="drawerPin ? drawerPin = false : drawerPin = true">
-									<i class="fa fa-thumb-tack"></i>
-								</a>
-							</td>
-							<td ng-repeat="option in drawerMenu" ng-class="{active: drawerActive == option}">
-								<a href="" ng-click="gotoDrawer(option)">{{option.name}}</a>
-							</td>
-						</tr>
-					</table>
-					<div ng-include="drawerActive.url"></div>
+			<div class="drawer" ng-class="{pinned: drawerPin == true}">
+					<div class="drawer-close" ng-click="drawerPin = false"><i class="fa fa-angle-double-right"></i></div>
+					<div class="drawer-menu">
+						<a href="" ng-repeat="option in drawerMenu" ng-class="{active: drawerActive == option}" ng-click="gotoDrawer(option)">{{option.name}}</a>
+					</div>
+					<div class="drawer-content" ng-include="drawerActive.url"></div>
 			</div>
 		</div>
 		

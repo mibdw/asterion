@@ -26736,6 +26736,7 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 		$rootScope.titleSep2 = ' \u00AB ';
 		$rootScope.titleLine = 'Bookselling like a pro' + $rootScope.titleSep1 + $rootScope.masthead;
 
+
 		$scope.currentLang = 'en';
 		$scope.changeLang = function (tongue) {
 			$scope.currentLang = tongue;
@@ -26769,68 +26770,41 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			{'name': 'Help', 'slug': 'help' },
 		];
 
-		$rootScope.slugify = function (text) {
+		$rootScope.searchify = function (text) {
 			return text.toString()
 			.replace(/\s+/g, '+')
 			.replace(/[^\w\+]+/g, '')
 			.replace(/\+\++/g, '+')
 		} 
 
+		$rootScope.fromNow = function (date) {
+			return moment(date).fromNow()
+		} 
+
 		$scope.quickSearch = function (searchTerm) {
-			searchTerm = $rootScope.slugify(searchTerm);
+			searchTerm = $rootScope.searchify(searchTerm);
 			$location.path('/search/' + searchTerm);
 		}	
 
-		$scope.carts = {
-			dropdown: false,
-			active: 3,
-			loading: false,
-			list: [
-				{ 
-					title: 'Shipping cart title',
-					amount: 12,
-					price: 82.12
-				},
-				{ 
-					title: 'Lost in the dream',
-					amount: 31,
-					price: 33.12
-				},
-				{ 
-					title: 'Especially for you',
-					amount: 2,
-					price: 9.00
-				},
-				{ 
-					title: 'Cart 3',
-					amount: 7,
-					price: 28.09
-				},
-				{ 
-					title: 'Because you\'re too old, stupid moron',
-					amount: 4,
-					price: 849.12
-				},
-				{ 
-					title: 'Kisses',
-					amount: 3,
-					price: 63.22
-				},
-				{ 
-					title: 'Migraines',
-					amount: 102,
-					price: 993.21
-				},
-			]
+		$rootScope.cartList = [];
+		$rootScope.getCarts = function () {
+			$http.post('/carts/list').success(function (carts) {
+				$rootScope.cartList = carts;
+			});
+		}
+		$rootScope.getCarts();
+
+		$scope.activeCart = {
+			'title': 'Shopping cart title',
+			'quantity': 12,
+			'price': 999.99,
+			'owner': 'Harry Turtle',
+			'created':  '2 months ago',
+			'editor': 'Harry Turtle',
+			'edited': '2 seconds ago'
 		}
 
-		$scope.focusCarts = function (item) {
-			$scope.carts['dropdown'] = item._id;
-		}
-
-		$scope.blurCarts = function (item) {
-			$scope.carts['dropdown'] = false;
-		}
+		$scope.dropdownCarts = false;
 	}
 ]);
 var ctrl = angular.module('drawer', []);
@@ -26842,10 +26816,43 @@ ctrl.controller('drawerController', ['$scope', '$http', '$location',
 			{'name': 'Shopping carts', 'slug': 'carts', 'url': '/partials/drawer/carts'},
 		];
 
+		$scope.drawerPin = false;
+
 		$scope.drawerActive = $scope.drawerMenu[0];
 		$scope.gotoDrawer = function (option) {
 			$scope.drawerActive = option;
 		}
+	}
+]);
+
+ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http',
+	function ($scope, $rootScope, $http) {
+		$scope.cartsSearch = false;
+		$scope.cartsNew = false;
+
+		$scope.createCart = function () {
+			$http.post('/carts/create', { 'title': $scope.cartsName }).success(function (response) {
+
+				$scope.cartsName = '';
+				$scope.cartsNew = false;
+				$rootScope.getCarts();
+			});
+		}
+
+		$scope.removeCart = function (cart) {
+			if (confirm('Are you sure you want to remove this cart?')) {
+				$http.post('/carts/remove', { 'id': cart._id }).success(function (response) {
+					$rootScope.getCarts();
+				})
+			}
+		}
+	}
+]);
+
+ctrl.controller('drawerContents', ['$scope', '$http',
+	function ($scope, $http) {
+
+		
 	}
 ]);
 var ctrl = angular.module('dashboard', []);

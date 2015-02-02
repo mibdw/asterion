@@ -6,7 +6,8 @@ exports.read = function(req, res, next) {
 	var id = req.body.id || req.user._id;
 
 	User.findById(id)
-	.select('_id email name confirmation accounts')
+	.select('_id email name confirmation accounts cart')
+	.populate('_id title slug amount price')
 	.exec(function (err, user) {
 		if (err) return console.log(err);
 		return res.send(user);
@@ -49,5 +50,9 @@ exports.update = function(req, res, next) {
 };
 
 exports.remove = function(req, res, next) {
+	
+};
+
+exports.cart = function(req, res, next) {
 	
 };
