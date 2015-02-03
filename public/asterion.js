@@ -26729,18 +26729,12 @@ angular.module('highlighter',[]).filter('highlight', function () {
 });
 var ctrl = angular.module('global', []);
 
-ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location',
-	function ($scope, $rootScope, $http, $location) {
+ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$timeout',
+	function ($scope, $rootScope, $http, $location, $timeout) {
 		$rootScope.masthead = 'Asterion';
 		$rootScope.titleSep1 = ' \u2012 ';
 		$rootScope.titleSep2 = ' \u00AB ';
 		$rootScope.titleLine = 'Bookselling like a pro' + $rootScope.titleSep1 + $rootScope.masthead;
-
-
-		$scope.currentLang = 'en';
-		$scope.changeLang = function (tongue) {
-			$scope.currentLang = tongue;
-		}
 
 		$rootScope.searchTerm;
 
@@ -26777,6 +26771,22 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			.replace(/\+\++/g, '+')
 		} 
 
+		$rootScope.searchify = function (text) {
+			return text.toString()
+			.replace(/\s+/g, '+')
+			.replace(/[^\w\+]+/g, '')
+			.replace(/\+\++/g, '+')
+		} 
+
+		$rootScope.slugify =  function (text) {
+			return text.toString().toLowerCase()
+			.replace(/\s+/g, '-')
+			.replace(/[^\w\-]+/g, '')
+			.replace(/\-\-+/g, '-')
+			.replace(/^-+/, '')
+			.replace(/-+$/, '')
+		}  
+
 		$rootScope.fromNow = function (date) {
 			return moment(date).fromNow()
 		} 
@@ -26786,41 +26796,85 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			$location.path('/search/' + searchTerm);
 		}	
 
+		$scope.currentLang = 'en';
+		$scope.changeLang = function (tongue) {
+			$scope.currentLang = tongue;
+		}
+
+		$rootScope.user = {};
+		$rootScope.activeCart = {};
+		$rootScope.getUser = function () {
+			$http.post('/users/read').success(function (user) {
+				$rootScope.user = user;
+				$rootScope.getActiveCart(user.cart);
+			});
+		}
+		$rootScope.getUser();
+
+		$rootScope.cartsLoading = false;
 		$rootScope.cartList = [];
 		$rootScope.getCarts = function () {
+			$rootScope.cartsLoading = true;
 			$http.post('/carts/list').success(function (carts) {
 				$rootScope.cartList = carts;
+				$rootScope.cartsLoading = false;
 			});
 		}
 		$rootScope.getCarts();
 
-		$scope.activeCart = {
-			'title': 'Shopping cart title',
-			'quantity': 12,
-			'price': 999.99,
-			'owner': 'Harry Turtle',
-			'created':  '2 months ago',
-			'editor': 'Harry Turtle',
-			'edited': '2 seconds ago'
+		$rootScope.getActiveCart = function (id) {
+			$http.post('/carts/detail', { 'id': id }).success(function (cart) {
+				$rootScope.activeCart = cart;
+			});
+		}
+
+		$rootScope.addingToCart = false;
+		$rootScope.addToCart = function (book, cart) {
+			$rootScope.addingToCart = book;
+			$http.post('/carts/add', { 'book': book, 'cart': cart }).success(function (response) {
+				$rootScope.addingToCart = false;
+				$rootScope.getActiveCart($rootScope.user.cart);
+				$rootScope.getCarts();
+			});
 		}
 
 		$scope.dropdownCarts = false;
+		$scope.cartsDropdown = function (arg) {
+			if (arg == false) $timeout(function () { $scope.dropdownCarts = arg }, 250);
+			if (arg != false) $scope.dropdownCarts = arg; 
+		}
 	}
 ]);
 var ctrl = angular.module('drawer', []);
 
-ctrl.controller('drawerController', ['$scope', '$http', '$location',
-	function ($scope, $http, $location) {
+ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location',
+	function ($scope, $http, $rootScope, $location) {
 		$scope.drawerMenu = [
 			{'name': 'Contents', 'slug': 'contents', 'url': '/partials/drawer/contents'},
 			{'name': 'Shopping carts', 'slug': 'carts', 'url': '/partials/drawer/carts'},
 		];
 
-		$scope.drawerPin = false;
+		$rootScope.drawerPin = false;
 
 		$scope.drawerActive = $scope.drawerMenu[0];
 		$scope.gotoDrawer = function (option) {
 			$scope.drawerActive = option;
+		}
+
+		$scope.createCartEmpty = function () {
+			$http.post('/carts/create', { 
+				'title': $scope.cartNameEmpty,
+				'slug': $rootScope.slugify($scope.cartNameEmpty),
+			}).success(function (response) {
+				$scope.cartsName = '';
+				$scope.cartsNew = false;
+				$rootScope.getCarts();
+
+				$http.post('/users/cart', response).success(function (what) {
+					$rootScope.user.cart = what.id;
+					$rootScope.getActiveCart(what.id);
+				});
+			});
 		}
 	}
 ]);
@@ -26831,19 +26885,28 @@ ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http',
 		$scope.cartsNew = false;
 
 		$scope.createCart = function () {
-			$http.post('/carts/create', { 'title': $scope.cartsName }).success(function (response) {
-
+			$http.post('/carts/create', { 
+				'title': $scope.cartsName,
+				'slug': $rootScope.slugify($scope.cartsName),
+			}).success(function (response) {
 				$scope.cartsName = '';
 				$scope.cartsNew = false;
 				$rootScope.getCarts();
 			});
 		}
 
+		$scope.activateCart = function (cart) {
+			$http.post('/users/cart', cart).success(function (response) {
+				$rootScope.user.cart = response.id;
+				$rootScope.getActiveCart(response.id);
+			});
+		}
+
 		$scope.removeCart = function (cart) {
 			if (confirm('Are you sure you want to remove this cart?')) {
-				$http.post('/carts/remove', { 'id': cart._id }).success(function (response) {
-					$rootScope.getCarts();
-				})
+				$rootScope.cartList.splice($rootScope.cartList.indexOf(cart), 1);
+				if (cart._id == $rootScope.user.cart && $rootScope.cartList.length > 0) $scope.activateCart($rootScope.cartList[0]);
+				$http.post('/carts/remove', { 'id': cart._id });
 			}
 		}
 	}
@@ -27017,13 +27080,12 @@ ctrl.controller('profileOverview', ['$scope', '$rootScope', '$http', '$timeout',
 		$rootScope.pageSubtitle = 'Information';
 		$rootScope.titleLine = $rootScope.pageSubtitle + $rootScope.titleSep1 + $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
 
-		$scope.user = {};
 		$scope.updated = false;
 		$scope.noMatch = false;
 
 		$scope.confirmPassword = function () {
 			$timeout(function () { 
-				if ($scope.confirm && $scope.user.password != $scope.confirm) {
+				if ($scope.confirm && $rootScope.user.password != $scope.confirm) {
 					$scope.noMatch = true;					
 				} else {
 					$scope.noMatch = false;
@@ -27031,17 +27093,13 @@ ctrl.controller('profileOverview', ['$scope', '$rootScope', '$http', '$timeout',
 			}, 1);
 		}
 
-		$http.post('/users/read').success(function (user) {
-			$scope.user = user;
-		});
-
 		$scope.updateUser = function (user) {
-			if ($scope.user.password && $scope.user.password != $scope.confirm) return alert('Password do not match');	
+			if ($rootScope.user.password && $rootScope.user.password != $scope.confirm) return alert('Password do not match');	
 
 			$scope.updated = 'waiting';
 			$http.post('/users/update', user).success(function (response) {
 				$scope.updated = response.success;
-				$scope.user.password = ''; 
+				$rootScope.user.password = ''; 
 				$scope.confirm = ''; 
 				$timeout(function () { 
 					$scope.updated = false;

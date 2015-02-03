@@ -35,17 +35,17 @@
 			<div class="result-price unknown" ng-show="result._source.price <= 0">Price unknown</div>
 
 			<div class="result-actions" ng-class="{active: dropdownCarts == result._id || activeButton == result._id}">
-				<button type="button" class="cart" ng-focus="activeButton = result._id" ng-blur="activeButton = false">Add to cart</button>
-				<button type="button" class="more" ng-focus="dropdownCarts = result._id" ng-blur="dropdownCarts = false"><i class="fa fa-caret-down"></i></button>
+				<button type="button" class="cart" ng-click="addToCart(result, user.cart)">Add to cart</button>
+				<button type="button" class="more" ng-focus="cartsDropdown(result._id)" ng-blur="cartsDropdown(false)"><i class="fa fa-caret-down"></i></button>
 
 				<span class="indicator" ng-show="dropdownCarts == result._id"></span>
 				<ul class="carts-list" ng-show="dropdownCarts == result._id">
-					<li ng-repeat="cart in carts.list">
-						<a href="" title="{{cart.title}}">
+					<li ng-repeat="cart in cartList">
+						<a href="" title="{{cart.title}}" ng-click="addToCart(result, cart._id)">
 							<span class="cart-no">{{$index + 1}}.</span>
 							<span class="cart-title">{{cart.title}}</span>
-							<span class="cart-amount">
-								<i class="fa fa-shopping-cart"></i> {{cart.amount}}
+							<span class="cart-quantity">
+								<i class="fa fa-shopping-cart"></i> {{cart.quantity}}
 							</span>
 							<span class="cart-price">
 								<i class="fa fa-credit-card"></i> {{cart.price}} EUR

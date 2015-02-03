@@ -24,13 +24,12 @@ ctrl.controller('profileOverview', ['$scope', '$rootScope', '$http', '$timeout',
 		$rootScope.pageSubtitle = 'Information';
 		$rootScope.titleLine = $rootScope.pageSubtitle + $rootScope.titleSep1 + $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
 
-		$scope.user = {};
 		$scope.updated = false;
 		$scope.noMatch = false;
 
 		$scope.confirmPassword = function () {
 			$timeout(function () { 
-				if ($scope.confirm && $scope.user.password != $scope.confirm) {
+				if ($scope.confirm && $rootScope.user.password != $scope.confirm) {
 					$scope.noMatch = true;					
 				} else {
 					$scope.noMatch = false;
@@ -38,17 +37,13 @@ ctrl.controller('profileOverview', ['$scope', '$rootScope', '$http', '$timeout',
 			}, 1);
 		}
 
-		$http.post('/users/read').success(function (user) {
-			$scope.user = user;
-		});
-
 		$scope.updateUser = function (user) {
-			if ($scope.user.password && $scope.user.password != $scope.confirm) return alert('Password do not match');	
+			if ($rootScope.user.password && $rootScope.user.password != $scope.confirm) return alert('Password do not match');	
 
 			$scope.updated = 'waiting';
 			$http.post('/users/update', user).success(function (response) {
 				$scope.updated = response.success;
-				$scope.user.password = ''; 
+				$rootScope.user.password = ''; 
 				$scope.confirm = ''; 
 				$timeout(function () { 
 					$scope.updated = false;

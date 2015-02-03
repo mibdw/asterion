@@ -54,5 +54,8 @@ exports.remove = function(req, res, next) {
 };
 
 exports.cart = function(req, res, next) {
-	
+	User.findByIdAndUpdate(req.user._id, { 'cart': req.body._id }, function (err, user) {
+		if (err) console.log(err);
+		return res.send({ 'id': user.cart });
+	});	
 };

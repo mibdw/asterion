@@ -272,12 +272,25 @@ nav {
 				}
 			}
 		}
+
+		&.no-carts { 
+			padding-top: @h-height / 2;
+			color: @h-vague;
+
+			strong {
+				display: block;
+				font-size: 1.2em;
+				line-height: 1em;
+				margin-top: -.5em;
+				text-align: center;
+			}
+		}
 	}
 
 	&:hover, &.active { 
 		background-color: @h-hover; 
 
-		.cart-quantity, .cart-price, .cart-title { color: @h-text }
+		.cart-quantity, .cart-price, .cart-title, .no-carts { color: @h-text }
 	}
 }
 

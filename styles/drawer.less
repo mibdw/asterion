@@ -1,9 +1,9 @@
 .drawer {
 	position: fixed;
 	top: @h-height + 1px;
-	right: -38%;
+	right: -40.5%;
 	bottom: 0;
-	width: 37%;
+	width: 40%;
 	.transition(right .25s ease-out);
 
 	&.pinned { right: 0 }
@@ -22,8 +22,27 @@
 		color: @d-vague;
 		cursor: pointer;
 
-		&:hover { color: @d-text }
+		&:hover { 
+			color: @d-text;
+			background-color: @d-hover; 
+		}
 		i { font-size: 1.2em; }
+	}
+
+	.drawer-loading {
+		position: absolute;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+		padding-top: 50%;
+		text-align: center;
+
+		i {
+			font-size: 2em;
+			color: @d-vague;
+			margin-top: -1em;
+		}
 	}
 
 	.drawer-menu {
@@ -75,10 +94,14 @@
 
 		.drawer-cart {
 			display: block;
-			padding: .5em;
+			padding: .5em 1em;
 			border-bottom: 1px solid @d-line;
 			position: relative;
 			color: @d-text;
+
+			&:hover { background-color: @d-hover; }
+
+			&.active { border-left: 1em solid @d-line }
 
 			.title {
 				font-size: 1.2em;
@@ -122,29 +145,37 @@
 				a {
 					font-size: .8em;
 					color: @d-vague;
-					margin-right: 1em;	
+					margin-right: 1em;
+
+					&:hover { 
+						color: @d-text; 
+						text-decoration: none;
+					}	
 				}
 			}	
 
 			button {
 				position: absolute;
-				bottom: .5em;
+				bottom: .3em;
 				right: .5em;
 			}
 		}
 
 		
 		.drawer-item {
-			padding: .5em .5em .5em 3.5em;
+			padding: .5em 1em .5em 4em;
 			border-bottom: 1px solid @d-line;
 			min-height: 5em;
 			position: relative;
 
+			&:hover { background-color: @d-hover; }
+
 			img {
 				width: 2.5em;
 				position: absolute;
-				left: .5em;
+				left: 1em;
 				top: .75em;
+				overflow: hidden;
 			}
 
 			.title {
@@ -208,6 +239,11 @@
 					font-size: .8em;
 					color: @d-vague;
 					margin-right: 1em;	
+
+					&:hover { 
+						color: @d-text; 
+						text-decoration: none;
+					}
 				}
 			}	
 		}
@@ -221,8 +257,8 @@
 			border-top: 1px solid @d-line;
 
 			a {
-				height: 2em;
-				line-height: 2em;
+				height: 2.5em;
+				line-height: 2.5em;
 				display: block;
 				color: @d-vague;
 				text-align: center;
@@ -236,19 +272,20 @@
 			}
 
 			&.carts-options {
-				padding-left: 2em;
+				padding-left: 2.5em;
 				height: 2.5em;
 
 				.carts-search {
 					position: absolute;
 					top: 0;
 					left: 0;
-					width: 2em;
+					width: 2.5em;
 					height: 2.5em;
 					line-height: 2.4em;
 					text-align: center;
 					color: @d-vague;
 					cursor: pointer;
+					background-color: @d-back;
 
 					&:hover, &.active {
 						color: @d-text;
@@ -337,6 +374,26 @@
 					}		
 				}
 			}
+		}
+	}
+
+	.drawer-empty {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: @d-back;
+		border-left: 1px solid @d-line;
+		padding: 48% 2em 0;
+
+		input {
+			width: 100%;
+			font-size: 1.3em;
+		}
+
+		button {
+			float: right;
 		}
 	}
 }

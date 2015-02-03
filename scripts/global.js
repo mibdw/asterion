@@ -1,17 +1,11 @@
 var ctrl = angular.module('global', []);
 
-ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location',
-	function ($scope, $rootScope, $http, $location) {
+ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$timeout',
+	function ($scope, $rootScope, $http, $location, $timeout) {
 		$rootScope.masthead = 'Asterion';
 		$rootScope.titleSep1 = ' \u2012 ';
 		$rootScope.titleSep2 = ' \u00AB ';
 		$rootScope.titleLine = 'Bookselling like a pro' + $rootScope.titleSep1 + $rootScope.masthead;
-
-
-		$scope.currentLang = 'en';
-		$scope.changeLang = function (tongue) {
-			$scope.currentLang = tongue;
-		}
 
 		$rootScope.searchTerm;
 
@@ -48,6 +42,22 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			.replace(/\+\++/g, '+')
 		} 
 
+		$rootScope.searchify = function (text) {
+			return text.toString()
+			.replace(/\s+/g, '+')
+			.replace(/[^\w\+]+/g, '')
+			.replace(/\+\++/g, '+')
+		} 
+
+		$rootScope.slugify =  function (text) {
+			return text.toString().toLowerCase()
+			.replace(/\s+/g, '-')
+			.replace(/[^\w\-]+/g, '')
+			.replace(/\-\-+/g, '-')
+			.replace(/^-+/, '')
+			.replace(/-+$/, '')
+		}  
+
 		$rootScope.fromNow = function (date) {
 			return moment(date).fromNow()
 		} 
@@ -57,24 +67,52 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			$location.path('/search/' + searchTerm);
 		}	
 
+		$scope.currentLang = 'en';
+		$scope.changeLang = function (tongue) {
+			$scope.currentLang = tongue;
+		}
+
+		$rootScope.user = {};
+		$rootScope.activeCart = {};
+		$rootScope.getUser = function () {
+			$http.post('/users/read').success(function (user) {
+				$rootScope.user = user;
+				$rootScope.getActiveCart(user.cart);
+			});
+		}
+		$rootScope.getUser();
+
+		$rootScope.cartsLoading = false;
 		$rootScope.cartList = [];
 		$rootScope.getCarts = function () {
+			$rootScope.cartsLoading = true;
 			$http.post('/carts/list').success(function (carts) {
 				$rootScope.cartList = carts;
+				$rootScope.cartsLoading = false;
 			});
 		}
 		$rootScope.getCarts();
 
-		$scope.activeCart = {
-			'title': 'Shopping cart title',
-			'quantity': 12,
-			'price': 999.99,
-			'owner': 'Harry Turtle',
-			'created':  '2 months ago',
-			'editor': 'Harry Turtle',
-			'edited': '2 seconds ago'
+		$rootScope.getActiveCart = function (id) {
+			$http.post('/carts/detail', { 'id': id }).success(function (cart) {
+				$rootScope.activeCart = cart;
+			});
+		}
+
+		$rootScope.addingToCart = false;
+		$rootScope.addToCart = function (book, cart) {
+			$rootScope.addingToCart = book;
+			$http.post('/carts/add', { 'book': book, 'cart': cart }).success(function (response) {
+				$rootScope.addingToCart = false;
+				$rootScope.getActiveCart($rootScope.user.cart);
+				$rootScope.getCarts();
+			});
 		}
 
 		$scope.dropdownCarts = false;
+		$scope.cartsDropdown = function (arg) {
+			if (arg == false) $timeout(function () { $scope.dropdownCarts = arg }, 250);
+			if (arg != false) $scope.dropdownCarts = arg; 
+		}
 	}
 ]);
