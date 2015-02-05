@@ -96,16 +96,31 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 		$rootScope.getActiveCart = function (id) {
 			$http.post('/carts/detail', { 'id': id }).success(function (cart) {
 				$rootScope.activeCart = cart;
+				$rootScope.activeCart.quantity = 0;
+				angular.forEach($rootScope.activeCart.books, function (item) {
+					$rootScope.activeCart.quantity += item.quantity;
+					$rootScope.activeCart.price += item.book.price * item.quantity;
+				});
 			});
 		}
 
 		$rootScope.addingToCart = false;
+		$rootScope.addedToCart = false;
 		$rootScope.addToCart = function (book, cart) {
 			$rootScope.addingToCart = book;
+
 			$http.post('/carts/add', { 'book': book, 'cart': cart }).success(function (response) {
-				$rootScope.addingToCart = false;
 				$rootScope.getActiveCart($rootScope.user.cart);
 				$rootScope.getCarts();
+
+				$timeout(function () {
+					$rootScope.addingToCart = false;
+					$rootScope.addedToCart = book;
+
+					$timeout(function () {
+						$rootScope.addedToCart = false;
+					}, 3000);
+				}, 750);
 			});
 		}
 
@@ -113,6 +128,11 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 		$scope.cartsDropdown = function (arg) {
 			if (arg == false) $timeout(function () { $scope.dropdownCarts = arg }, 250);
 			if (arg != false) $scope.dropdownCarts = arg; 
+		}
+
+		$rootScope.reloadEverything = function () {
+			$rootScope.getCarts();
+			$rootScope.getActiveCart($rootScope.user.cart);
 		}
 	}
 ]);

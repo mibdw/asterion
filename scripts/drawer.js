@@ -1,13 +1,17 @@
 var ctrl = angular.module('drawer', []);
 
-ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location',
-	function ($scope, $http, $rootScope, $location) {
+ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location', 'focus',
+	function ($scope, $http, $rootScope, $location, focus) {
 		$scope.drawerMenu = [
 			{'name': 'Contents', 'slug': 'contents', 'url': '/partials/drawer/contents'},
 			{'name': 'Shopping carts', 'slug': 'carts', 'url': '/partials/drawer/carts'},
 		];
 
 		$rootScope.drawerPin = false;
+		$scope.drawerToggle = function (pin) {
+			pin ? $rootScope.drawerPin = false : $rootScope.drawerPin = true;
+			if ($rootScope.cartList.length < 1) focus('cart-name-empty');
+		}
 
 		$scope.drawerActive = $scope.drawerMenu[0];
 		$scope.gotoDrawer = function (option) {
@@ -32,10 +36,21 @@ ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location'
 	}
 ]);
 
-ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http',
-	function ($scope, $rootScope, $http) {
+ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus',
+	function ($scope, $rootScope, $http, focus) {
 		$scope.cartsSearch = false;
+		$scope.cartsSearchToggle = function (arg) {
+			arg ? $scope.cartsSearch = false : $scope.cartsSearch = true;
+			if (arg == false) focus('carts-query');
+			if (arg == true) $scope.cartsQuery = '';
+		}
+
 		$scope.cartsNew = false;
+		$scope.cartsNewToggle = function (arg) {
+			arg ? $scope.cartsNew = false : $scope.cartsNew = true;
+			if (arg == false) focus('carts-name');
+			if (arg == true) $scope.cartsName = '';
+		}
 
 		$scope.createCart = function () {
 			$http.post('/carts/create', { 
@@ -65,9 +80,22 @@ ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http',
 	}
 ]);
 
-ctrl.controller('drawerContents', ['$scope', '$http',
-	function ($scope, $http) {
+ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http',
+	function ($scope, $rootScope, $http) {
 
-		
+		$scope.activateCart = function (cart) {
+			$http.post('/users/cart', cart).success(function (response) {
+				$rootScope.user.cart = response.id;
+				$rootScope.getActiveCart(response.id);
+			});
+		}
+
+		$scope.removeCart = function () {
+			if (confirm('Are you sure you want to remove this cart?')) {
+				$rootScope.cartList.splice($rootScope.cartList.indexOf(cart), 1);
+				if ($rootScope.activeCart._id == $rootScope.user.cart && $rootScope.cartList.length > 0) $scope.activateCart($rootScope.cartList[0]);
+				$http.post('/carts/remove', { 'id': $rootScope.activeCart._id });
+			}
+		}		
 	}
 ]);

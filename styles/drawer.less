@@ -92,9 +92,21 @@
 		width: 100%;
 		overflow: hidden;
 
+		.no-carts {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			padding: 48% 2em 0;
+			color: @d-vague;
+			font-size: 1.3em;
+			text-align: center;			
+		}
+
 		.drawer-cart {
 			display: block;
-			padding: .5em 1em;
+			padding: .5em 2em .5em 1em;
 			border-bottom: 1px solid @d-line;
 			position: relative;
 			color: @d-text;
@@ -107,7 +119,7 @@
 				font-size: 1.2em;
 				display: block;
 				color: @d-text;
-				margin-right: 5em;
+				margin-right: 7em;
 				.text-truncate;
 			}
 
@@ -116,19 +128,24 @@
 				width: 6em;
 				position: absolute;
 				top: .5em;
-				right: .5em;
+				right: 1.5em;
 				text-align: right;
 				line-height: 1.55em;
 
 				strong {
 					font-size: 1.2em;
 				}
+
+				&.zero {
+					font-style: italic;
+					color: @d-vague;
+				}
 			}
 
 			.meta {
 				line-height: 1.25em;
 				font-size: .8em;
-				margin-right: 5em;
+				margin-right: 7em;
 				color: @d-vague;
 
 				dt {
@@ -160,7 +177,6 @@
 				right: .5em;
 			}
 		}
-
 		
 		.drawer-item {
 			padding: .5em 1em .5em 4em;
@@ -179,7 +195,10 @@
 			}
 
 			.title {
-				margin-right: 6em;
+				font-size: 1.2em;
+				display: block;
+				color: @d-text;
+				margin-right: 7em;
 				.text-truncate;
 			}
 
@@ -195,15 +214,20 @@
 				width: 6em;
 				position: absolute;
 				top: .5em;
-				right: .5em;
+				right: 1.5em;
 				text-align: right;
 				line-height: 1.55em;
+
+				&.zero {
+					font-style: italic;
+					color: @d-vague;
+				}
 			}
 
 			.quantity {
 				position: absolute;
 				bottom: .5em;
-				right: .5em;
+				right: 1.5em;
 				
 				label { 
 					color: @d-vague;
@@ -247,7 +271,6 @@
 				}
 			}	
 		}
-
 
 		.drawer-bottom {
 			position: absolute;

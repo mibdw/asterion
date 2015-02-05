@@ -26727,6 +26727,16 @@ angular.module('highlighter',[]).filter('highlight', function () {
 		}
 	};
 });
+
+app.factory('focus', ["$timeout", function ($timeout) {
+	return function (id) {
+		$timeout(function () {
+			var element = document.getElementById(id);
+			if (element) element.focus();
+		});
+	};
+}]);
+
 var ctrl = angular.module('global', []);
 
 ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$timeout',
@@ -26825,16 +26835,31 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 		$rootScope.getActiveCart = function (id) {
 			$http.post('/carts/detail', { 'id': id }).success(function (cart) {
 				$rootScope.activeCart = cart;
+				$rootScope.activeCart.quantity = 0;
+				angular.forEach($rootScope.activeCart.books, function (item) {
+					$rootScope.activeCart.quantity += item.quantity;
+					$rootScope.activeCart.price += item.book.price * item.quantity;
+				});
 			});
 		}
 
 		$rootScope.addingToCart = false;
+		$rootScope.addedToCart = false;
 		$rootScope.addToCart = function (book, cart) {
 			$rootScope.addingToCart = book;
+
 			$http.post('/carts/add', { 'book': book, 'cart': cart }).success(function (response) {
-				$rootScope.addingToCart = false;
 				$rootScope.getActiveCart($rootScope.user.cart);
 				$rootScope.getCarts();
+
+				$timeout(function () {
+					$rootScope.addingToCart = false;
+					$rootScope.addedToCart = book;
+
+					$timeout(function () {
+						$rootScope.addedToCart = false;
+					}, 3000);
+				}, 750);
 			});
 		}
 
@@ -26843,18 +26868,27 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			if (arg == false) $timeout(function () { $scope.dropdownCarts = arg }, 250);
 			if (arg != false) $scope.dropdownCarts = arg; 
 		}
+
+		$rootScope.reloadEverything = function () {
+			$rootScope.getCarts();
+			$rootScope.getActiveCart($rootScope.user.cart);
+		}
 	}
 ]);
 var ctrl = angular.module('drawer', []);
 
-ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location',
-	function ($scope, $http, $rootScope, $location) {
+ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location', 'focus',
+	function ($scope, $http, $rootScope, $location, focus) {
 		$scope.drawerMenu = [
 			{'name': 'Contents', 'slug': 'contents', 'url': '/partials/drawer/contents'},
 			{'name': 'Shopping carts', 'slug': 'carts', 'url': '/partials/drawer/carts'},
 		];
 
 		$rootScope.drawerPin = false;
+		$scope.drawerToggle = function (pin) {
+			pin ? $rootScope.drawerPin = false : $rootScope.drawerPin = true;
+			if ($rootScope.cartList.length < 1) focus('cart-name-empty');
+		}
 
 		$scope.drawerActive = $scope.drawerMenu[0];
 		$scope.gotoDrawer = function (option) {
@@ -26879,10 +26913,21 @@ ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location'
 	}
 ]);
 
-ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http',
-	function ($scope, $rootScope, $http) {
+ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus',
+	function ($scope, $rootScope, $http, focus) {
 		$scope.cartsSearch = false;
+		$scope.cartsSearchToggle = function (arg) {
+			arg ? $scope.cartsSearch = false : $scope.cartsSearch = true;
+			if (arg == false) focus('carts-query');
+			if (arg == true) $scope.cartsQuery = '';
+		}
+
 		$scope.cartsNew = false;
+		$scope.cartsNewToggle = function (arg) {
+			arg ? $scope.cartsNew = false : $scope.cartsNew = true;
+			if (arg == false) focus('carts-name');
+			if (arg == true) $scope.cartsName = '';
+		}
 
 		$scope.createCart = function () {
 			$http.post('/carts/create', { 
@@ -26912,10 +26957,23 @@ ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http',
 	}
 ]);
 
-ctrl.controller('drawerContents', ['$scope', '$http',
-	function ($scope, $http) {
+ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http',
+	function ($scope, $rootScope, $http) {
 
-		
+		$scope.activateCart = function (cart) {
+			$http.post('/users/cart', cart).success(function (response) {
+				$rootScope.user.cart = response.id;
+				$rootScope.getActiveCart(response.id);
+			});
+		}
+
+		$scope.removeCart = function () {
+			if (confirm('Are you sure you want to remove this cart?')) {
+				$rootScope.cartList.splice($rootScope.cartList.indexOf(cart), 1);
+				if ($rootScope.activeCart._id == $rootScope.user.cart && $rootScope.cartList.length > 0) $scope.activateCart($rootScope.cartList[0]);
+				$http.post('/carts/remove', { 'id': $rootScope.activeCart._id });
+			}
+		}		
 	}
 ]);
 var ctrl = angular.module('dashboard', []);
@@ -27099,7 +27157,9 @@ ctrl.controller('profileOverview', ['$scope', '$rootScope', '$http', '$timeout',
 			$scope.updated = 'waiting';
 			$http.post('/users/update', user).success(function (response) {
 				$scope.updated = response.success;
-				$rootScope.user.password = ''; 
+				$rootScope.user.password = '';
+				$rootScope.reloadEverything();
+
 				$scope.confirm = ''; 
 				$timeout(function () { 
 					$scope.updated = false;

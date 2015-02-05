@@ -56,6 +56,7 @@ exports.add = function(req, res, next) {
 		'added': moment().format(),
 		'user': req.user._id
 	};
+	// 	
 	Cart.findById(req.body.cart, function (err, cart) {
 		if (err) console.log(err);
 

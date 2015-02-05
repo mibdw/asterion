@@ -43,7 +43,9 @@ ctrl.controller('profileOverview', ['$scope', '$rootScope', '$http', '$timeout',
 			$scope.updated = 'waiting';
 			$http.post('/users/update', user).success(function (response) {
 				$scope.updated = response.success;
-				$rootScope.user.password = ''; 
+				$rootScope.user.password = '';
+				$rootScope.reloadEverything();
+
 				$scope.confirm = ''; 
 				$timeout(function () { 
 					$scope.updated = false;

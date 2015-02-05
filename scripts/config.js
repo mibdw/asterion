@@ -51,3 +51,12 @@ angular.module('highlighter',[]).filter('highlight', function () {
 		}
 	};
 });
+
+app.factory('focus', function ($timeout) {
+	return function (id) {
+		$timeout(function () {
+			var element = document.getElementById(id);
+			if (element) element.focus();
+		});
+	};
+});

@@ -103,7 +103,7 @@
 					width: 100%;
 					border-right-width: 1px; 
 
-					&:hover, &:focus { background-color: @b-hover; }
+					&:hover { background-color: @b-hover; }
 				}
 
 				&.more {
@@ -114,9 +114,23 @@
 					border-left-width: 1px;
 					text-align: center;
 
-					&:hover, &:focus { background-color: @b-hover; }
+					&:hover { background-color: @b-hover; }
 				}
 
+			}
+
+			&.single, &.adding, &.added {
+				padding-right: 0;
+
+				.cart { border-right-width: 3px; }
+
+				.success, .success:hover, .success:focus {
+					width: 100%;
+					color: @b-text;
+					border-right-width: 3px;
+					background-color: @success;
+					border-color: darken(@success, 10%);
+				}
 			}
 
 			&:hover, &.active {

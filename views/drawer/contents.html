@@ -1,8 +1,11 @@
 <div ng-controller="drawerContents">
 	<div class="drawer-header drawer-cart">
 		<a href="" class="title">{{activeCart.title}}</a>
-		<div class="price">
-			<strong>{{activeCart.price}}</strong> EUR
+		<div class="price" ng-show="activeCart.price > 0">
+			<strong>{{activeCart.price | currency: ''}}</strong> EUR
+		</div>
+		<div class="price zero" ng-show="activeCart.price =< 0">
+			No price
 		</div>
 
 		<dl class="meta">
@@ -16,15 +19,25 @@
 			<dt ng-show="activeCart.editor">Modified:</dt>
 			<dd ng-show="activeCart.editor">{{activeCart.editor.name.first}} {{activeCart.editor.name.last}} ({{fromNow(activeCart.edited)}})</dd>
 		</dl>
+
+		<div class="links">
+			<a href="/#/cart/{{activeCart.slug}}">More information</a>
+			<a href="" ng-click="removeCart()">Remove</a>
+		</div>
 	</div>
 
 	<ul class="drawer-list">
 		<li class="drawer-item" ng-repeat="item in activeCart.books | orderBy: '-added'">
 			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{item.book.isbn}}" alt="{{item.book.title}}">
 			
-			<div class="title">{{item.book.title}}</div>
+			<a href="" class="title">{{item.book.title}}</a>
 
-			<div class="price"><strong>{{item.book.price * item.quantity}}</strong> EUR</div>
+			<div class="price" ng-show="item.book.price > 0">
+				<strong>{{(item.book.price * item.quantity) | currency: ''}}</strong> EUR
+			</div>
+			<div class="price zero" ng-show="item.book.price == 0">
+				Price unknown
+			</div>
 			<div class="quantity">
 				<label for="quantity">Qty: </label>
 				<input id="quantity" type="text" ng-model="item.quantity">

@@ -2,11 +2,14 @@
 	<div class="drawer-loading" ng-show="cartsLoading == true">
 		<i class="fa fa-refresh fa-spin"></i>
 	</div>
-
-	<div class="drawer-cart" ng-repeat="cart in cartList | orderBy: '-created' | filter: cartsQuery" ng-show="cartsLoading == false" ng-class="{active: cart._id == user.cart}">
+	
+	<div class="drawer-cart" ng-repeat="cart in cartResults = (cartList | orderBy: '-created' | filter: { title: cartsQuery})" ng-show="cartsLoading == false" ng-class="{active: cart._id == user.cart}">
 		<a class="title" href="/#/cart/{{cart.slug}}" ng-bind-html="cart.title | highlight: cartsQuery">{{cart.title}}</a>
-		<div class="price">
-			<strong>{{cart.price}}</strong> EUR
+		<div class="price" ng-show="cart.price > 0">
+			<strong>{{cart.price | currency: ''}}</strong> EUR
+		</div>
+		<div class="price zero" ng-show="cart.price =< 0">
+			No price
 		</div>
 
 		<dl class="meta">
@@ -29,24 +32,26 @@
 		<button type="button" ng-click="activateCart(cart)" class="dark" ng-show="cart._id != user.cart">
 			Activate
 		</button>
-		
 	</div>
 
+	<div class="no-carts" ng-show="cartsQuery && cartResults.length < 1">No results for <em>{{cartsQuery}}</em></div>
+
 	<div class="drawer-bottom carts-options" ng-show="cartsLoading == false">
-		<i class="fa fa-search carts-search" ng-click="cartsSearch ? cartsSearch = false : cartsSearch = true" ng-class="{active: cartsSearch == true}" ng-show="cartsNew == false"></i>
+		<i class="fa fa-search carts-search" ng-click="cartsSearchToggle(cartsSearch)" ng-class="{active: cartsSearch == true}" ng-show="cartsNew == false"></i>
 		
-		<a ng-show="cartsSearch == false && cartsNew == false" href="" ng-click="cartsNew = true">New shopping cart</a>
+		<a ng-show="cartsSearch == false && cartsNew == false" href="" ng-click="cartsNewToggle(cartsNew)">New shopping cart</a>
 		<a ng-show="cartsSearch == false && cartsNew == false" href="/#/carts" ng-click="drawerPin = false">Cart manager</a>
 		
 		<div class="carts-query" ng-show="cartsSearch == true">
-			<input type="text" placeholder="Enter search term" ng-model="cartsQuery">		
-			<i class="fa fa-remove carts-remove" ng-click="cartsSearch = false; cartsQuery = ''"></i>
+			<input type="text" id="carts-query" placeholder="Enter search term" ng-model="cartsQuery">		
+			<i class="fa fa-remove carts-remove" ng-click="cartsSearchToggle(cartsSearch)"></i>
 		</div>
 
 		<form ng-submit="createCart()" class="carts-create" ng-show="cartsNew == true">
-			<input type="text" ng-model="cartsName" placeholder="Enter new shopping cart name">
+			<input type="text" id="carts-name" ng-model="cartsName" placeholder="Enter new shopping cart name">
 			<button type="submit">Create</button>
 			<i class="fa fa-remove" ng-click="cartsNew = false; cartsName = ''"></i>
 		</form>
 	</div>
+
 </div>

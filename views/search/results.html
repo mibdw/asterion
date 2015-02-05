@@ -31,12 +31,29 @@
 		</dl>
 		
 		<div class="result-sidebar">
-			<div class="result-price" ng-show="result._source.price > 0"><strong>{{result._source.price}}</strong> EUR</div>
+			<div class="result-price" ng-show="result._source.price > 0"><strong>{{result._source.price | currency: ''}}</strong> EUR</div>
 			<div class="result-price unknown" ng-show="result._source.price <= 0">Price unknown</div>
 
-			<div class="result-actions" ng-class="{active: dropdownCarts == result._id || activeButton == result._id}">
-				<button type="button" class="cart" ng-click="addToCart(result, user.cart)">Add to cart</button>
-				<button type="button" class="more" ng-focus="cartsDropdown(result._id)" ng-blur="cartsDropdown(false)"><i class="fa fa-caret-down"></i></button>
+			<div class="result-actions" ng-class="{
+				active: dropdownCarts == result._id || activeButton == result._id,
+				single: cartList.length < 2,
+				adding: addingToCart == result,
+				added: addedToCart == result
+			}">
+				
+				<button type="button" class="cart" ng-show="addingToCart != result && addedToCart != result" ng-click="addToCart(result, user.cart)">Add to cart</button>
+				
+				<button type="button" class="more" ng-focus="cartsDropdown(result._id)" ng-blur="cartsDropdown(false)" ng-show="cartList.length > 1 && addingToCart != result && addedToCart != result">
+					<i class="fa fa-caret-down"></i>
+				</button>
+
+				<button ng-show="addingToCart == result" class="cart">
+					<i class="fa fa-refresh fa-spin"></i> Adding
+				</button>
+
+				<button ng-show="addedToCart == result" class="success">
+					<i class="fa fa-check"></i> Added
+				</button>
 
 				<span class="indicator" ng-show="dropdownCarts == result._id"></span>
 				<ul class="carts-list" ng-show="dropdownCarts == result._id">
@@ -48,7 +65,7 @@
 								<i class="fa fa-shopping-cart"></i> {{cart.quantity}}
 							</span>
 							<span class="cart-price">
-								<i class="fa fa-credit-card"></i> {{cart.price}} EUR
+								<i class="fa fa-credit-card"></i> {{cart.price | currency: ''}} EUR
 							</span>
 						</a>
 					</li>
