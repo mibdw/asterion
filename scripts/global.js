@@ -1,7 +1,7 @@
 var ctrl = angular.module('global', []);
 
-ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$timeout',
-	function ($scope, $rootScope, $http, $location, $timeout) {
+ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$timeout', 'focus', 'searchify',
+	function ($scope, $rootScope, $http, $location, $timeout, focus, searchify) {
 		$rootScope.masthead = 'Asterion';
 		$rootScope.titleSep1 = ' \u2012 ';
 		$rootScope.titleSep2 = ' \u00AB ';
@@ -33,43 +33,54 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 				{'code': 'it', 'name': 'Italiano'},
 			]},
 			{'name': 'Help', 'slug': 'help' },
-		];
-
-		$rootScope.searchify = function (text) {
-			return text.toString()
-			.replace(/\s+/g, '+')
-			.replace(/[^\w\+]+/g, '')
-			.replace(/\+\++/g, '+')
-		} 
-
-		$rootScope.searchify = function (text) {
-			return text.toString()
-			.replace(/\s+/g, '+')
-			.replace(/[^\w\+]+/g, '')
-			.replace(/\+\++/g, '+')
-		} 
-
-		$rootScope.slugify =  function (text) {
-			return text.toString().toLowerCase()
-			.replace(/\s+/g, '-')
-			.replace(/[^\w\-]+/g, '')
-			.replace(/\-\-+/g, '-')
-			.replace(/^-+/, '')
-			.replace(/-+$/, '')
-		}  
+		];  
 
 		$rootScope.fromNow = function (date) {
 			return moment(date).fromNow()
 		} 
 
+		$scope.clickSearch = function () {
+			focus('search');
+		}
+
 		$scope.quickSearch = function (searchTerm) {
-			searchTerm = $rootScope.searchify(searchTerm);
+			searchTerm = searchify(searchTerm);
 			$location.path('/search/' + searchTerm);
 		}	
 
 		$scope.currentLang = 'en';
 		$scope.changeLang = function (tongue) {
 			$scope.currentLang = tongue;
+		}
+
+		$scope.menuEntered = false;
+		$scope.menuEnter = function ($event, arg) {
+			if ($event.keyCode == 40 && arg == false) {
+				$scope.menuEntered = true;
+				$event.preventDefault();
+				focus('menu-0');	
+			}
+		}
+
+		$scope.menuNav = function ($event, arg) {
+			if ($event.keyCode == 40) {
+				$event.preventDefault();
+				var i = 'menu-' + (arg + 1);
+				focus(i);	
+			} else if ($event.keyCode == 38) {
+				$event.preventDefault();
+				if (arg == 0) {
+					$scope.menuEntered = false;
+					focus('menu-top');	
+				} else {	
+					var i = 'menu-' + (arg - 1);
+					focus(i);	
+				}
+			} else if ($event.keyCode == 13) {
+				$scope.menuEntered = false;
+				$rootScope.searchTerm = '';
+				focus('');
+			}
 		}
 
 		$rootScope.user = {};

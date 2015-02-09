@@ -1,8 +1,10 @@
+var router = require('express').Router();
 var mongoose = require('mongoose');
 var moment = require('moment');
-var User = require(__dirname + '/../models/user.js');
+var task = require(__dirname + '/tasks');
+var User = require(__dirname + '/../models/user');
 
-exports.read = function(req, res, next) {
+router.post('/read', task.auth, function (req, res, next) {
 	var id = req.body.id || req.user._id;
 
 	User.findById(id)
@@ -12,17 +14,17 @@ exports.read = function(req, res, next) {
 		if (err) return console.log(err);
 		return res.send(user);
 	});
-};
+});
 
-exports.list = function(req, res, next) {
+router.post('/list', task.auth, function (req, res, next) {
 	
-};
+});
 
-exports.create = function(req, res, next) {
+router.post('/create', task.auth, function (req, res, next) {
 	
-};
+});
 
-exports.update = function(req, res, next) {
+router.post('/update', task.auth, function (req, res, next) {
 	req.body['editor'] = req.user._id;
 	req.body['edited'] = moment().format();
 	
@@ -47,15 +49,17 @@ exports.update = function(req, res, next) {
 			});
 		}
 	});
-};
+});
 
-exports.remove = function(req, res, next) {
+router.post('/remove', task.auth, function (req, res, next) {
 	
-};
+});
 
-exports.cart = function(req, res, next) {
+router.post('/cart', task.auth, function (req, res, next) {
 	User.findByIdAndUpdate(req.user._id, { 'cart': req.body._id }, function (err, user) {
 		if (err) console.log(err);
 		return res.send({ 'id': user.cart });
 	});	
-};
+});
+
+module.exports.router = router;

@@ -2,6 +2,7 @@
 <html lang="en" ng-app="asterion" ng-controller="globalController">
 <head>
 	<meta charset="UTF-8">
+	
 	<title ng-bind-template="{{titleLine}}">Asterion</title>
 
 	<link rel="stylesheet" href="/asterion.css">
@@ -17,15 +18,15 @@
 			<i class="fa fa-bookmark"></i>
 		</a>
 
-		<nav tabindex="2">
+		<nav tabindex="2" ng-class="{active: menuEntered == true}" ng-keypress="menuEnter($event, menuEntered)" id="menu-top">
 			<i class="fa fa-bars"></i> Menu
 			<ul class="hover-menu">
 				<li ng-repeat="option in menuSearch" ng-class="{active: option.slug == pageSlug}">
-					<a href="/#/{{option.slug}}" ng-click="searchTerm = ''">{{option.name}}</a>
+					<a href="/#/{{option.slug}}" id="menu-{{$index}}" ng-click="searchTerm = ''" ng-keypress="menuNav($event, $index)">{{option.name}}</a>
 				</li>
 				<li class="divider"></li>
 				<li ng-repeat="option in menuOrders" ng-class="{active: option.slug == pageSlug}">
-					<a href="/#/{{option.slug}}" ng-click="searchTerm = ''">{{option.name}}</a>
+					<a href="/#/{{option.slug}}" id="menu-{{menuSearch.length + $index}}" ng-click="searchTerm = ''" ng-keypress="menuNav($event, menuSearch.length + $index)">{{option.name}}</a>
 				</li>
 			</ul>
 		</nav>
@@ -52,7 +53,7 @@
 				<strong>No shopping carts</strong>
 			</div>
 			
-			<div class="cart-click" ng-click="drawerToggle(drawerPin)" tabindex="4" ng-show="cartList.length > 0">
+			<div class="cart-click" ng-click="drawerToggle(drawerPin)" ng-keypress="drawerKeypress($event, drawerPin)" tabindex="4" ng-show="cartList.length > 0">
 				<span class="cart-title" title="{{activeCart.title}}">{{activeCart.title}}</span>
 				<span class="cart-quantity">
 					<i class="fa fa-shopping-cart"></i> {{activeCart.quantity}}
@@ -79,9 +80,9 @@
 			</div>
 		</div>
 		
-		<form class="search" ng-submit="quickSearch(searchTerm)">
+		<form class="search" ng-submit="quickSearch(searchTerm)" ng-click="clickSearch()" ng-class="{active: hassleSearch == true }">
 			<label for="search"><i class="fa fa-search"></i></label>
-			<input type="text" id="search" placeholder="Search by title, author, ISBN..." autocomplete="off" ng-model="searchTerm" tabindex="3">
+			<input type="text" id="search" placeholder="Search by title, author, ISBN..." autocomplete="off" ng-model="searchTerm" tabindex="3" ng-focus="hassleSearch = true" ng-blur="hassleSearch = false">
 			<a href="" ng-show="searchTerm" ng-click="searchTerm = ''" class="fa fa-remove" title="Clear search"></a>
 		</form>
 

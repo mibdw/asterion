@@ -22,9 +22,17 @@ module.exports = function (grunt) {
 						'scripts/config.js',
 						'scripts/global.js',
 						'scripts/drawer.js',
-						'scripts/dashboard.js',
+						'scripts/dash.js',
 						'scripts/search.js',
+						'scripts/advanced.js',
+						'scripts/outside.js',
+						'scripts/isbn.js',
+						'scripts/tracing.js',
+						'scripts/standing.js',
+						'scripts/nts.js',
+						'scripts/approval.js',
 						'scripts/profile.js',
+						'scripts/help.js',
 					]
 				}
 			}

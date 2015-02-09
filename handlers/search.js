@@ -1,11 +1,12 @@
+var router = require('express').Router();
 var mongoose = require('mongoose');
 var moment = require('moment');
 var es = require('elasticsearch');
 var elastic = new es.Client({ host: 'localhost:9200' });
+var task = require(__dirname + '/tasks');
+var Book = require(__dirname + '/../models/book');
 
-var Book = require(__dirname + '/../models/book.js');
-
-exports.results = function(req, res, next) {
+router.post('/results', task.auth, function (req, res, next) {
 
 	function launchSearch (payload) {	
 			elastic.search(payload).then(function (response) { 
@@ -123,4 +124,6 @@ exports.results = function(req, res, next) {
 	if (filters['bool']['must'].length > 0) conditions['body']['post_filter'] = filters;
 
 	launchSearch(conditions);
-};
+});
+
+module.exports.router = router;

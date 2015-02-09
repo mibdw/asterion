@@ -30,7 +30,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
-app.use('/', require(__dirname + '/handlers/routes.js').router);
+app.use('/', require(__dirname + '/handlers/auth').router);
+app.use('/partials', require(__dirname + '/handlers/partials').router);
+app.use('/users', require(__dirname + '/handlers/users').router);
+app.use('/search', require(__dirname + '/handlers/search').router);
+app.use('/carts', require(__dirname + '/handlers/carts').router);
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, User.authenticate()));
 passport.serializeUser(User.serializeUser());

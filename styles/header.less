@@ -159,34 +159,35 @@ header {
 nav { 
 	float: left; 
 	display: block;
-	font-size: 1.3em; 
-	line-height: @h-height; 
-	padding: 0 1em; 
-	border-right: 1px solid @h-line; 
 	height: @h-height; 
 	position: relative; 
 	margin-right: 1em;
 	cursor: pointer;
 	color: @h-vague;
 	background-color: @h-back;
+	padding: 0 1em; 
+	font-size: 1.3em; 
+	line-height: @h-height; 
+	border-right: 1px solid @h-line; 
 
 	i { 
 		margin-right: .1em;
 		color: @h-vague 
 	}
 	
-	&:hover, &:focus { 
-		background-color: @h-hover;  
-		color: @h-text;
+	&:hover, &:focus, &.active { 
 		outline-width: 0;
+		background-color: @h-hover;
+		color: @h-text;
 
 		i { color: @h-text }
-
+		
 		.hover-menu { 
 			display: block; 
 			left: -1em; 
 			min-width: 16em;
 			margin-top: 0;
+			
 		}
 	}
 }
@@ -215,7 +216,7 @@ nav {
 		.placeholder (@h-vague);
 	}
 
-	&:hover {
+	&:hover, &.active {
 		background-color: @h-hover;
 
 		label { color: @h-text }
@@ -247,7 +248,12 @@ nav {
 		max-width: 15em; 		
 		cursor: pointer;
 
-		&:focus { outline-width: 0 } 
+		&:focus { 
+			background-color: @h-hover;
+			outline-width: 0; 
+
+			.cart-quantity, .cart-price, .cart-title, .no-carts { color: @h-text }
+		} 
 
 		.cart-title { 
 			display: block; 

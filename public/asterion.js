@@ -26674,44 +26674,68 @@ function(){this.$get=["$$sanitizeUri",function(a){return function(d){var c=[];G(
 if(!e)return e;for(var n,h=e,m=[],l,p;n=h.match(d);)l=n[0],n[2]==n[3]&&(l="mailto:"+l),p=n.index,k(h.substr(0,p)),f(l,n[0].replace(c,"")),h=h.substring(p+n[0].length);k(h);return a(m.join(""))}}])})(window,window.angular);
 //# sourceMappingURL=angular-sanitize.min.js.map
 
-var app = angular.module('asterion', [
-	'ngRoute', 
-	'ngCookies', 
-	'ngSanitize', 
-	'highlighter', 
-	'global', 
-	'drawer', 
-	'dashboard', 
-	'search', 
-	'profile',
+var app = angular.module('asterion', [ 
+	'ngRoute', 'ngCookies', 'ngSanitize', 'global', 'drawer', 'dashboard', 'search', 'advanced', 'outside', 'isbn', 'tracing', 'standing', 'nts', 'approval', 'profile', 'help'
 ]);
 
+// Routes
 app.config(['$routeProvider', function ($routeProvider) {
 	$routeProvider.when('/', {
-		templateUrl: 'partials/dashboard/main',
+		templateUrl: 'partials/dash/main',
 		controller: 'dashboardController'
 	})
 	.when('/search/:query', {
 		templateUrl: 'partials/search/results',
 		controller: 'searchController'
 	})
+	.when('/advanced-search', {
+		templateUrl: 'partials/advanced/main',
+		controller: 'advancedController'
+	})
+	.when('/order-outside-database', {
+		templateUrl: 'partials/outside/main',
+		controller: 'outsideController'
+	})
+	.when('/isbn-upload', {
+		templateUrl: 'partials/isbn/main',
+		controller: 'isbnController'
+	})
+	.when('/order-tracing', {
+		templateUrl: 'partials/tracing/main',
+		controller: 'tracingController'
+	})
+	.when('/standing-orders', {
+		templateUrl: 'partials/standing/main',
+		controller: 'standingController'
+	})
+	.when('/new-title-service', {
+		templateUrl: 'partials/nts/main',
+		controller: 'ntsController'
+	})
+	.when('/approval-plans', {
+		templateUrl: 'partials/approval/main',
+		controller: 'approvalController'
+	})
 	.when('/profile', {
-		templateUrl: 'partials/profile/index',
+		templateUrl: 'partials/profile/main',
 		controller: 'profileController'
+	})
+	.when('/help', {
+		templateUrl: 'partials/help/main',
+		controller: 'helpController'
 	})
 	.otherwise({
 		redirectTo: '/'
 	});
 }]);
 
-angular.module('highlighter',[]).filter('highlight', function () {
+// Filters
+app.filter('highlight', function () {
 	return function (text, search, caseSensitive) {
 		if (!text) return false;
-
 		text = text.toString();
 		search = search.toString();
 		search = search.split(' ');
-
 		for (i in search) {
 			if (text && (search[i] || angular.isNumber(search[i]))) {
 				if (caseSensitive) {
@@ -26719,15 +26743,13 @@ angular.module('highlighter',[]).filter('highlight', function () {
 				} else {
 					text = text.replace(new RegExp(search[i], 'gi'), '<mark>$&</mark>');
 				}
-			} else {
-				text = text;
-			}
-
+			} else { text = text; }
 			if (i ==  search.length - 1) return text;
 		}
 	};
 });
 
+// Factories
 app.factory('focus', ["$timeout", function ($timeout) {
 	return function (id) {
 		$timeout(function () {
@@ -26737,10 +26759,29 @@ app.factory('focus', ["$timeout", function ($timeout) {
 	};
 }]);
 
+app.factory('searchify', function () {
+	return function (text) {
+		return text.toString()
+		.replace(/\s+/g, '+')
+		.replace(/[^\w\+]+/g, '')
+		.replace(/\+\++/g, '+')
+	} 
+});
+
+app.factory('slugify', function () {
+	return function (text) {
+		return text.toString().toLowerCase()
+		.replace(/\s+/g, '-')
+		.replace(/[^\w\-]+/g, '')
+		.replace(/\-\-+/g, '-')
+		.replace(/^-+/, '')
+		.replace(/-+$/, '')
+	} 
+});
 var ctrl = angular.module('global', []);
 
-ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$timeout',
-	function ($scope, $rootScope, $http, $location, $timeout) {
+ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$timeout', 'focus', 'searchify',
+	function ($scope, $rootScope, $http, $location, $timeout, focus, searchify) {
 		$rootScope.masthead = 'Asterion';
 		$rootScope.titleSep1 = ' \u2012 ';
 		$rootScope.titleSep2 = ' \u00AB ';
@@ -26772,43 +26813,54 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 				{'code': 'it', 'name': 'Italiano'},
 			]},
 			{'name': 'Help', 'slug': 'help' },
-		];
-
-		$rootScope.searchify = function (text) {
-			return text.toString()
-			.replace(/\s+/g, '+')
-			.replace(/[^\w\+]+/g, '')
-			.replace(/\+\++/g, '+')
-		} 
-
-		$rootScope.searchify = function (text) {
-			return text.toString()
-			.replace(/\s+/g, '+')
-			.replace(/[^\w\+]+/g, '')
-			.replace(/\+\++/g, '+')
-		} 
-
-		$rootScope.slugify =  function (text) {
-			return text.toString().toLowerCase()
-			.replace(/\s+/g, '-')
-			.replace(/[^\w\-]+/g, '')
-			.replace(/\-\-+/g, '-')
-			.replace(/^-+/, '')
-			.replace(/-+$/, '')
-		}  
+		];  
 
 		$rootScope.fromNow = function (date) {
 			return moment(date).fromNow()
 		} 
 
+		$scope.clickSearch = function () {
+			focus('search');
+		}
+
 		$scope.quickSearch = function (searchTerm) {
-			searchTerm = $rootScope.searchify(searchTerm);
+			searchTerm = searchify(searchTerm);
 			$location.path('/search/' + searchTerm);
 		}	
 
 		$scope.currentLang = 'en';
 		$scope.changeLang = function (tongue) {
 			$scope.currentLang = tongue;
+		}
+
+		$scope.menuEntered = false;
+		$scope.menuEnter = function ($event, arg) {
+			if ($event.keyCode == 40 && arg == false) {
+				$scope.menuEntered = true;
+				$event.preventDefault();
+				focus('menu-0');	
+			}
+		}
+
+		$scope.menuNav = function ($event, arg) {
+			if ($event.keyCode == 40) {
+				$event.preventDefault();
+				var i = 'menu-' + (arg + 1);
+				focus(i);	
+			} else if ($event.keyCode == 38) {
+				$event.preventDefault();
+				if (arg == 0) {
+					$scope.menuEntered = false;
+					focus('menu-top');	
+				} else {	
+					var i = 'menu-' + (arg - 1);
+					focus(i);	
+				}
+			} else if ($event.keyCode == 13) {
+				$scope.menuEntered = false;
+				$rootScope.searchTerm = '';
+				focus('');
+			}
 		}
 
 		$rootScope.user = {};
@@ -26877,8 +26929,8 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 ]);
 var ctrl = angular.module('drawer', []);
 
-ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location', 'focus',
-	function ($scope, $http, $rootScope, $location, focus) {
+ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location', 'focus', 'slugify',
+	function ($scope, $http, $rootScope, $location, focus, slugify) {
 		$scope.drawerMenu = [
 			{'name': 'Contents', 'slug': 'contents', 'url': '/partials/drawer/contents'},
 			{'name': 'Shopping carts', 'slug': 'carts', 'url': '/partials/drawer/carts'},
@@ -26890,6 +26942,10 @@ ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location'
 			if ($rootScope.cartList.length < 1) focus('cart-name-empty');
 		}
 
+		$scope.drawerKeypress = function ($event, pin) {
+			if ($event.keyCode == 13) $scope.drawerToggle(pin);
+		}
+
 		$scope.drawerActive = $scope.drawerMenu[0];
 		$scope.gotoDrawer = function (option) {
 			$scope.drawerActive = option;
@@ -26898,7 +26954,7 @@ ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location'
 		$scope.createCartEmpty = function () {
 			$http.post('/carts/create', { 
 				'title': $scope.cartNameEmpty,
-				'slug': $rootScope.slugify($scope.cartNameEmpty),
+				'slug': slugify($scope.cartNameEmpty),
 			}).success(function (response) {
 				$scope.cartsName = '';
 				$scope.cartsNew = false;
@@ -26913,8 +26969,8 @@ ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location'
 	}
 ]);
 
-ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus',
-	function ($scope, $rootScope, $http, focus) {
+ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus', 'slugify',
+	function ($scope, $rootScope, $http, focus, slugify) {
 		$scope.cartsSearch = false;
 		$scope.cartsSearchToggle = function (arg) {
 			arg ? $scope.cartsSearch = false : $scope.cartsSearch = true;
@@ -26932,7 +26988,7 @@ ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus',
 		$scope.createCart = function () {
 			$http.post('/carts/create', { 
 				'title': $scope.cartsName,
-				'slug': $rootScope.slugify($scope.cartsName),
+				'slug': slugify($scope.cartsName),
 			}).success(function (response) {
 				$scope.cartsName = '';
 				$scope.cartsNew = false;
@@ -27112,6 +27168,76 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 		};
 	}
 ]);
+var ctrl = angular.module('advanced', []);
+
+ctrl.controller('advancedController', ['$scope', '$rootScope', '$http', '$location',
+	function ($scope, $rootScope, $http, $location) {
+		$rootScope.pageSlug = 'advanced'
+		$rootScope.pageTitle = 'Advanced search';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;	
+	}	
+]);
+var ctrl = angular.module('outside', []);
+
+ctrl.controller('outsideController', ['$scope', '$rootScope', '$http', '$location',
+	function ($scope, $rootScope, $http, $location) {
+		$rootScope.pageSlug = 'outside'
+		$rootScope.pageTitle = 'Order outside database';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;	
+	}	
+]);
+var ctrl = angular.module('isbn', []);
+
+ctrl.controller('isbnController', ['$scope', '$rootScope', '$http', '$location',
+	function ($scope, $rootScope, $http, $location) {
+		$rootScope.pageSlug = 'isbn'
+		$rootScope.pageTitle = 'ISBN upload';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;	
+	}	
+]);
+var ctrl = angular.module('tracing', []);
+
+ctrl.controller('tracingController', ['$scope', '$rootScope', '$http', '$location',
+	function ($scope, $rootScope, $http, $location) {
+		$rootScope.pageSlug = 'tracing'
+		$rootScope.pageTitle = 'Order tracing';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;	
+	}	
+]);
+var ctrl = angular.module('standing', []);
+
+ctrl.controller('standingController', ['$scope', '$rootScope', '$http', '$location',
+	function ($scope, $rootScope, $http, $location) {
+		$rootScope.pageSlug = 'standing'
+		$rootScope.pageTitle = 'Standing orders and journals';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;	
+	}	
+]);
+var ctrl = angular.module('nts', []);
+
+ctrl.controller('ntsController', ['$scope', '$rootScope', '$http', '$location',
+	function ($scope, $rootScope, $http, $location) {
+		$rootScope.pageSlug = 'nts'
+		$rootScope.pageTitle = 'New title service';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;	
+	}	
+]);
+var ctrl = angular.module('approval', []);
+
+ctrl.controller('approvalController', ['$scope', '$rootScope', '$http', '$location',
+	function ($scope, $rootScope, $http, $location) {
+		$rootScope.pageSlug = 'approval'
+		$rootScope.pageTitle = 'Approval plans';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;	
+	}	
+]);
 var ctrl = angular.module('profile', []);
 
 ctrl.controller('profileController', ['$scope', '$rootScope',
@@ -27176,4 +27302,14 @@ ctrl.controller('profileActivity', ['$scope', '$rootScope', '$http',
 
 
 	}
+]);
+var ctrl = angular.module('help', []);
+
+ctrl.controller('helpController', ['$scope', '$rootScope', '$http', '$location',
+	function ($scope, $rootScope, $http, $location) {
+		$rootScope.pageSlug = 'help'
+		$rootScope.pageTitle = 'Help';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;	
+	}	
 ]);

@@ -1,7 +1,7 @@
 var ctrl = angular.module('drawer', []);
 
-ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location', 'focus',
-	function ($scope, $http, $rootScope, $location, focus) {
+ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location', 'focus', 'slugify',
+	function ($scope, $http, $rootScope, $location, focus, slugify) {
 		$scope.drawerMenu = [
 			{'name': 'Contents', 'slug': 'contents', 'url': '/partials/drawer/contents'},
 			{'name': 'Shopping carts', 'slug': 'carts', 'url': '/partials/drawer/carts'},
@@ -13,6 +13,10 @@ ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location'
 			if ($rootScope.cartList.length < 1) focus('cart-name-empty');
 		}
 
+		$scope.drawerKeypress = function ($event, pin) {
+			if ($event.keyCode == 13) $scope.drawerToggle(pin);
+		}
+
 		$scope.drawerActive = $scope.drawerMenu[0];
 		$scope.gotoDrawer = function (option) {
 			$scope.drawerActive = option;
@@ -21,7 +25,7 @@ ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location'
 		$scope.createCartEmpty = function () {
 			$http.post('/carts/create', { 
 				'title': $scope.cartNameEmpty,
-				'slug': $rootScope.slugify($scope.cartNameEmpty),
+				'slug': slugify($scope.cartNameEmpty),
 			}).success(function (response) {
 				$scope.cartsName = '';
 				$scope.cartsNew = false;
@@ -36,8 +40,8 @@ ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location'
 	}
 ]);
 
-ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus',
-	function ($scope, $rootScope, $http, focus) {
+ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus', 'slugify',
+	function ($scope, $rootScope, $http, focus, slugify) {
 		$scope.cartsSearch = false;
 		$scope.cartsSearchToggle = function (arg) {
 			arg ? $scope.cartsSearch = false : $scope.cartsSearch = true;
@@ -55,7 +59,7 @@ ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus',
 		$scope.createCart = function () {
 			$http.post('/carts/create', { 
 				'title': $scope.cartsName,
-				'slug': $rootScope.slugify($scope.cartsName),
+				'slug': slugify($scope.cartsName),
 			}).success(function (response) {
 				$scope.cartsName = '';
 				$scope.cartsNew = false;

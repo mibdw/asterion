@@ -4,7 +4,7 @@
 		<div class="price" ng-show="activeCart.price > 0">
 			<strong>{{activeCart.price | currency: ''}}</strong> EUR
 		</div>
-		<div class="price zero" ng-show="activeCart.price =< 0">
+		<div class="price zero" ng-show="activeCart.price == 0">
 			No price
 		</div>
 
