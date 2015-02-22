@@ -1,0 +1,54 @@
+.detail {
+	
+	.detail-title {
+		padding: @f-size @f-size 0 @f-size;
+		line-height: 1em;
+	}
+
+	.detail-author {
+		padding: 0 @f-size;
+		font-style: italic;
+	}
+
+	dl {
+		padding: 1em;
+		border-bottom: 1px solid @line;
+		.clearfix;
+
+		dt {
+			width: 15%;
+			float: left;
+		}
+
+		dd { 
+			width: 85%;
+			float: left;
+		}
+
+		&.detail-source {
+			padding: 0 1em;
+			line-height: 2.8em;
+			position: relative;
+
+			.detail-nav {
+				position: absolute;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				border-bottom-width: 0;
+				border-left: 1px solid @line;
+
+				* { line-height: 2.8em }
+
+				span {
+					padding: 0 2em
+				}
+			}
+		}
+	}
+
+	.detail-image {
+		width: 100%;
+		padding: 1em;
+	}
+}

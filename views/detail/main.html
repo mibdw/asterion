@@ -1,0 +1,58 @@
+<div class="loading" ng-show="detailLoading == true">
+	<i class="fa fa-refresh fa-spin"></i>
+</div>
+
+
+<div id="main" class="detail right" style="width: 72.5%" ng-show="detailLoading == false">
+	<dl class="detail-source">
+		<dt>Back to:</dt>
+		<dd><a href="/#/{{detailSource.url}}" ng-bind-html="detailSource.line"></a></dd>
+
+		<div class="detail-nav pagination">
+			<a href="/#/detail/{{prevDetail.slug}}/{{prevDetail._id}}" class="prev" ng-show="detailSource.pos > 0" ng-click="gotoDetail('prev')">
+				<i class="fa fa-angle-left"></i>
+			</a>
+			<span>{{detailSource.pos + 1}} of {{detailSource.total}}</span>
+			<a href="/#/detail/{{nextDetail.slug}}/{{nextDetail._id}}" class="next" ng-show="detailSource.pos < detailSource.total - 1" ng-click="gotoDetail('next')">
+				<i class="fa fa-angle-right"></i>
+			</a>
+		</div>
+	</dl>
+	
+	<h2 class="detail-title">{{detail.title}}</h2>
+	<div class="detail-author">{{detail.author}}</div>
+	
+	<dl class="detail-list">
+		<dt ng-show="detail.publisher">Publisher:</dt>
+		<dd ng-show="detail.publisher">{{detail.publisher}}</dd>
+		<dt ng-show="detail.place || detail.country">Place:</dt>
+		<dd ng-show="detail.place || detail.country">
+			<span ng-show="detail.place">{{detail.place}}</span><span ng-show="detail.place && detail.country">, </span><span ng-show="detail.country">{{detail.country}}</span><span ng-show="detail.date"> ({{detail.date}})</span>
+		</dd>
+		<dt>ISBN:</dt>
+		<dd>{{detail.isbn || '&nbsp;'}}</dd>
+		<dt ng-show="detail.group || detail.pages > 0">Product type:</dt>
+		<dd>
+			<span ng-show="detail.group">{{detail.group}}</span><span ng-show="detail.group && detail.pages">, </span><span ng-show="detail.pages > 0">{{detail.pages}} pages</span></dd>
+		<dt>Price:</dt>
+		<dd ng-show="detail.price > 0"><strong>{{detail.price | currency: ''}}</strong> EUR</dd>
+		<dd ng-show="detail.price == 0"><em>Price unknown</em></dd>
+		<dt>Availability:</dt>
+		<dd>{{detail.status}}</dd>
+	</dl>
+
+	<dl class="detail-description">
+		<dt>Description:</dt>
+		<dd> Meet three brand new female detectives. LIAR, LIAR: Ever suspected your husband has had his hand up someone else's skirt? Call the Pants on Fire Detective Agency to investigate the love rat in your life. Join the fabulous Cat DeLuca, avenging all cheated upon women, in this comic new crime series. THE DANGEROUS EDGE OF THINGS: You've just inherited a gun shop. You've just discovered a dead body.You're the Police's top suspect. Can things get any worse for Tai Randolph? SHADOWS IN THE NIGHT: AD 91. It is almost fifty years since the legions invaded but Britannia is still a raw, frontier province. Tensions run high, especially in the north, where Aurelia Marcella, a young Roman woman fled from the ruins of Pompeii, runs the Oak Tree Inn on the road to York. Aurelia is going to discover just how cheap life is in Roman Britain. </dd>
+	</dl>
+
+	{{nextDetail}} <br>
+	{{prevDetail}}
+
+</div>
+
+<aside class="left detail" style="width: 27.5%" ng-show="detailLoading == false">
+	
+	<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{detail.isbn}}" alt="{{detail.title}}" class="detail-image">
+
+</aside>

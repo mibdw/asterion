@@ -1,5 +1,5 @@
 var app = angular.module('asterion', [ 
-	'ngRoute', 'ngCookies', 'ngSanitize', 'global', 'drawer', 'dashboard', 'search', 'advanced', 'outside', 'isbn', 'tracing', 'standing', 'nts', 'approval', 'profile', 'help'
+	'ngRoute', 'ngCookies', 'ngSanitize', 'global', 'drawer', 'dashboard', 'search', 'detail', 'advanced', 'outside', 'isbn', 'tracing', 'standing', 'nts', 'approval', 'profile', 'help'
 ]);
 
 // Routes
@@ -11,6 +11,10 @@ app.config(['$routeProvider', function ($routeProvider) {
 	.when('/search/:query', {
 		templateUrl: 'partials/search/results',
 		controller: 'searchController'
+	})
+	.when('/detail/:slug/:id', {
+		templateUrl: 'partials/detail/main',
+		controller: 'detailController'
 	})
 	.when('/advanced-search', {
 		templateUrl: 'partials/advanced/main',

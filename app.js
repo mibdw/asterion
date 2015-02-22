@@ -34,6 +34,7 @@ app.use('/', require(__dirname + '/handlers/auth').router);
 app.use('/partials', require(__dirname + '/handlers/partials').router);
 app.use('/users', require(__dirname + '/handlers/users').router);
 app.use('/search', require(__dirname + '/handlers/search').router);
+app.use('/detail', require(__dirname + '/handlers/detail').router);
 app.use('/carts', require(__dirname + '/handlers/carts').router);
 
 passport.use(new LocalStrategy({ usernameField: 'email' }, User.authenticate()));

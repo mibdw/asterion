@@ -6,7 +6,7 @@ ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location'
 			{'name': 'Contents', 'slug': 'contents', 'url': '/partials/drawer/contents'},
 			{'name': 'Shopping carts', 'slug': 'carts', 'url': '/partials/drawer/carts'},
 		];
-
+	
 		$rootScope.drawerPin = false;
 		$scope.drawerToggle = function (pin) {
 			pin ? $rootScope.drawerPin = false : $rootScope.drawerPin = true;

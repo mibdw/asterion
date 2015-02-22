@@ -2,14 +2,11 @@
 <html lang="en" ng-app="asterion" ng-controller="globalController">
 <head>
 	<meta charset="UTF-8">
-	
 	<title ng-bind-template="{{titleLine}}">Asterion</title>
-
-	<link rel="stylesheet" href="/asterion.css">
-	<link rel="icon" type="image/x-icon" href="/asterion-icon.gif">
-
-	<script src="/asterion.js"></script>
-
+	
+	<link rel="icon" type="image/gif" href="favicon.gif">
+	<link rel="stylesheet" href="asterion.css" />
+	<script src="asterion.js"></script>
 </head>
 <body>
 	<header>
@@ -20,23 +17,23 @@
 
 		<nav tabindex="2" ng-class="{active: menuEntered == true}" ng-keypress="menuEnter($event, menuEntered)" id="menu-top">
 			<i class="fa fa-bars"></i> Menu
-			<ul class="hover-menu">
+			<ul class="hover-menu" ng-click="searchTerm = ''">
 				<li ng-repeat="option in menuSearch" ng-class="{active: option.slug == pageSlug}">
-					<a href="/#/{{option.slug}}" id="menu-{{$index}}" ng-click="searchTerm = ''" ng-keypress="menuNav($event, $index)">{{option.name}}</a>
+					<a href="/#/{{option.slug}}" id="menu-{{$index}}" ng-keypress="menuNav($event, $index)">{{option.name}}</a>
 				</li>
 				<li class="divider"></li>
 				<li ng-repeat="option in menuOrders" ng-class="{active: option.slug == pageSlug}">
-					<a href="/#/{{option.slug}}" id="menu-{{menuSearch.length + $index}}" ng-click="searchTerm = ''" ng-keypress="menuNav($event, menuSearch.length + $index)">{{option.name}}</a>
+					<a href="/#/{{option.slug}}" id="menu-{{menuSearch.length + $index}}" ng-keypress="menuNav($event, menuSearch.length + $index)">{{option.name}}</a>
 				</li>
 			</ul>
 		</nav>
 
-		<div class="user" tabindex="5">
+		<div class="user" tabindex="5" ng-class="{active: userEntered == true}" ng-keypress="userEnter($event, userEntered)" id="menu-top">
 			<i class="fa fa-user"></i>
-			<ul class="hover-menu">
+			<ul class="hover-menu" ng-click="searchTerm = ''">
 				<li ng-repeat="option in menuUser" ng-class="{active: option.slug == pageSlug, sub: option.sub}">
-					<a ng-show="option.slug" href="/#/{{option.slug}}" ng-click="searchTerm = ''">{{option.name}}</a>
-					<a ng-show="option.sub">{{option.name}}</a>
+					<a ng-show="option.slug" id="user-{{$index}}" href="/#/{{option.slug}}" ng-click="searchTerm = ''">{{option.name}}</a>
+					<a ng-show="option.sub" id="user-{{$index}}">{{option.name}}</a>
 					<ul class="hover-menu-sub">
 						<li ng-repeat="tongue in option.sub" ng-class="{active: tongue.code == currentLang}">
 							<a href="" ng-click="changeLang(tongue.code)">{{tongue.name}}</a>
@@ -44,7 +41,7 @@
 					</ul>
 				</li>
 				<li class="divider"></li>
-				<li><a href="/logout">Logout</a></li>
+				<li><a href="/logout" id="user-{{menuUser.length}}">Logout</a></li>
 			</ul>
 		</div>
 
@@ -88,15 +85,19 @@
 
 	</header>
 
-	<div class="subheader" tabindex="6">
-		<h1>{{pageTitle}}</h1>
-		<span>{{pageSubtitle}}</span>
-	</div>
-	
-	<div ng-view></div>
+	<div class="container" ng-class="{pinned: drawerPin == true}">
+		
+		<div class="subheader" tabindex="6">
+			<h1>{{pageTitle}}</h1>
+			<span>{{pageSubtitle}}</span>
+		</div>
+		
+		<div ng-view></div>
 
-	<footer>
-		Footer
-	</footer>
+		<footer>
+			Footer
+		</footer>
+	
+	</div>
 </body>
 </html>

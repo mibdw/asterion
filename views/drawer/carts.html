@@ -3,35 +3,37 @@
 		<i class="fa fa-refresh fa-spin"></i>
 	</div>
 	
-	<div class="drawer-cart" ng-repeat="cart in cartResults = (cartList | orderBy: '-created' | filter: { title: cartsQuery})" ng-show="cartsLoading == false" ng-class="{active: cart._id == user.cart}">
-		<a class="title" href="/#/cart/{{cart.slug}}" ng-bind-html="cart.title | highlight: cartsQuery">{{cart.title}}</a>
-		<div class="price" ng-show="cart.price > 0">
-			<strong>{{cart.price | currency: ''}}</strong> EUR
-		</div>
-		<div class="price zero" ng-show="cart.price =< 0">
-			No price
-		</div>
+	<div class="drawer-container">
+		<div class="drawer-cart" ng-repeat="cart in cartResults = (cartList | orderBy: '-created' | filter: { title: cartsQuery})" ng-show="cartsLoading == false" ng-class="{active: cart._id == user.cart}">
+			<a class="title" href="/#/cart/{{cart.slug}}" ng-bind-html="cart.title | highlight: cartsQuery">{{cart.title}}</a>
+			<div class="price" ng-show="cart.price > 0">
+				<strong>{{cart.price | currency: ''}}</strong> EUR
+			</div>
+			<div class="price zero" ng-show="cart.price =< 0">
+				No price
+			</div>
 
-		<dl class="meta">
-			<dt>Items:</dt>
-			<dd ng-show="cart.quantity > 0">{{cart.quantity}}</dd>
-			<dd ng-show="cart.quantity < 1">Empty</dd>
-			<dt>Account:</dt>
-			<dd>University of Nonsense, Department of Trouble (22222)</dd>
-			<dt>Created:</dt>
-			<dd>{{cart.owner.name.first}} {{cart.owner.name.last}} ({{fromNow(cart.created)}})</dd>
-			<dt ng-show="cart.editor">Modified:</dt>
-			<dd ng-show="cart.editor">{{cart.editor}} ({{cart.edited}})</dd>
-		</dl>
+			<dl class="meta">
+				<dt>Items:</dt>
+				<dd ng-show="cart.quantity > 0">{{cart.quantity}}</dd>
+				<dd ng-show="cart.quantity < 1">Empty</dd>
+				<dt>Account:</dt>
+				<dd>University of Nonsense, Department of Trouble (22222)</dd>
+				<dt>Created:</dt>
+				<dd>{{cart.owner.name.first}} {{cart.owner.name.last}} ({{fromNow(cart.created)}})</dd>
+				<dt ng-show="cart.editor">Modified:</dt>
+				<dd ng-show="cart.editor">{{cart.editor}} ({{cart.edited}})</dd>
+			</dl>
 
-		<div class="links">
-			<a href="/#/cart/{{cart.slug}}">More information</a>
-			<a href="" ng-click="removeCart(cart)">Remove</a>
+			<div class="links">
+				<a href="/#/cart/{{cart.slug}}">More information</a>
+				<a href="" ng-click="removeCart(cart)">Remove</a>
+			</div>
+
+			<button type="button" ng-click="activateCart(cart)" class="dark" ng-show="cart._id != user.cart">
+				Activate
+			</button>
 		</div>
-
-		<button type="button" ng-click="activateCart(cart)" class="dark" ng-show="cart._id != user.cart">
-			Activate
-		</button>
 	</div>
 
 	<div class="no-carts" ng-show="cartsQuery && cartResults.length < 1">No results for <em>{{cartsQuery}}</em></div>

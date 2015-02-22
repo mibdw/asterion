@@ -8,9 +8,15 @@ var Book = require(__dirname + '/../models/book');
 
 router.post('/results', task.auth, function (req, res, next) {
 
+	var from = req.body.page * req.body.limit;
+	if (req.body.mark == 'detail') from = req.body.page - 1; 
+
 	function launchSearch (payload) {	
-			elastic.search(payload).then(function (response) { 
-			return res.send(response); 
+		elastic.search(payload).then(function (response) { 
+			response.hits.hits.forEach(function (hit, i) {
+				hit['pos'] = (req.body.page * req.body.limit) + i;
+			});	
+			return res.send(response);
 		}, function (err) {
 			console.log(err);
 		});
@@ -19,7 +25,7 @@ router.post('/results', task.auth, function (req, res, next) {
 	var conditions = {
 		'index': 'bookz',
 		'type': 'book',
-		'from': req.body.page * req.body.limit,
+		'from': from,
 		'size': req.body.limit,
 		'body': {
 			'query': {
@@ -53,7 +59,7 @@ router.post('/results', task.auth, function (req, res, next) {
 	};
 
 	if (req.body.sort != 'relevance') {
-		var sorting = {}
+		var sorting = {};
 		sorting[req.body.sort] = { 'order': req.body.order };
 		conditions['body']['sort'].push(sorting);
 	}

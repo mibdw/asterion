@@ -1,7 +1,7 @@
 var ctrl = angular.module('search', []);
 
-ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore',
-	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore) {
+ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore', 'slugify',
+	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore, slugify) {
 		$rootScope.pageSlug = 'search'
 		$rootScope.pageTitle = 'Search';
 		$rootScope.pageSubtitle = '';
@@ -24,7 +24,6 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 		var sortNo = $cookieStore.get('currentSortMethod') || 0;
 		$scope.currentSortMethod = $scope.sortMethods[sortNo];
 		$scope.sortOrder = $cookieStore.get('sortOrder') || 'asc';
-
 	
 		$scope.filterState = $cookieStore.get('filterState') || { 'status': 'open', 'group': 'close', 'country': 'close' };
 		
@@ -92,6 +91,7 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 				angular.forEach($scope.results, function (result) {
 					result._source.price = parseFloat(result._source.price);
 					result._source.price = result._source.price.toFixed(2);
+					result._source['slug'] = slugify(result._source.title);
 				});
 
 				$rootScope.titleLine = 'Search results for \"' + searchTerm + '\"' + $rootScope.titleSep1 + $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
@@ -122,5 +122,17 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 			$scope.searchLoading = true;
  			$scope.getResults(searchTerm);
 		};
+
+		$scope.gotoDetail = function (pos) {
+			$cookieStore.put('detailSource', { 
+				'page': $scope.pageSlug, 
+				'source': $scope.searchedFor,
+				'pos': pos,
+				'total': $scope.total,
+				'sort': $scope.currentSortMethod.slug,
+				'order': $scope.sortOrder,
+				'filter': $scope.filter
+			});
+		}
 	}
 ]);

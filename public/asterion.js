@@ -26675,7 +26675,7 @@ if(!e)return e;for(var n,h=e,m=[],l,p;n=h.match(d);)l=n[0],n[2]==n[3]&&(l="mailt
 //# sourceMappingURL=angular-sanitize.min.js.map
 
 var app = angular.module('asterion', [ 
-	'ngRoute', 'ngCookies', 'ngSanitize', 'global', 'drawer', 'dashboard', 'search', 'advanced', 'outside', 'isbn', 'tracing', 'standing', 'nts', 'approval', 'profile', 'help'
+	'ngRoute', 'ngCookies', 'ngSanitize', 'global', 'drawer', 'dashboard', 'search', 'detail', 'advanced', 'outside', 'isbn', 'tracing', 'standing', 'nts', 'approval', 'profile', 'help'
 ]);
 
 // Routes
@@ -26687,6 +26687,10 @@ app.config(['$routeProvider', function ($routeProvider) {
 	.when('/search/:query', {
 		templateUrl: 'partials/search/results',
 		controller: 'searchController'
+	})
+	.when('/detail/:slug/:id', {
+		templateUrl: 'partials/detail/main',
+		controller: 'detailController'
 	})
 	.when('/advanced-search', {
 		templateUrl: 'partials/advanced/main',
@@ -26780,15 +26784,15 @@ app.factory('slugify', function () {
 });
 var ctrl = angular.module('global', []);
 
-ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$timeout', 'focus', 'searchify',
-	function ($scope, $rootScope, $http, $location, $timeout, focus, searchify) {
+ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$timeout', '$cookieStore', 'focus', 'searchify', 'slugify',
+	function ($scope, $rootScope, $http, $location, $timeout, $cookieStore, focus, searchify, slugify) {
 		$rootScope.masthead = 'Asterion';
 		$rootScope.titleSep1 = ' \u2012 ';
 		$rootScope.titleSep2 = ' \u00AB ';
 		$rootScope.titleLine = 'Bookselling like a pro' + $rootScope.titleSep1 + $rootScope.masthead;
 
 		$rootScope.searchTerm;
-
+		
 		$scope.menuSearch = [
 			{'name': 'Advanced search', 'slug': 'advanced-search' },
 			{'name': 'Outside database', 'slug': 'order-outside-database' },
@@ -26858,7 +26862,6 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 				}
 			} else if ($event.keyCode == 13) {
 				$scope.menuEntered = false;
-				$rootScope.searchTerm = '';
 				focus('');
 			}
 		}
@@ -26891,6 +26894,7 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 				angular.forEach($rootScope.activeCart.books, function (item) {
 					$rootScope.activeCart.quantity += item.quantity;
 					$rootScope.activeCart.price += item.book.price * item.quantity;
+					item.book['slug'] = slugify(item.book.title);
 				});
 			});
 		}
@@ -26935,7 +26939,7 @@ ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location'
 			{'name': 'Contents', 'slug': 'contents', 'url': '/partials/drawer/contents'},
 			{'name': 'Shopping carts', 'slug': 'carts', 'url': '/partials/drawer/carts'},
 		];
-
+	
 		$rootScope.drawerPin = false;
 		$scope.drawerToggle = function (pin) {
 			pin ? $rootScope.drawerPin = false : $rootScope.drawerPin = true;
@@ -27039,13 +27043,13 @@ ctrl.controller('dashboardController', ['$scope', '$rootScope', '$http', '$locat
 		$rootScope.pageSlug = 'dashboard'
 		$rootScope.pageTitle = 'Dashboard';
 		$rootScope.pageSubtitle = '';
-		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;	
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
 	}	
 ]);
 var ctrl = angular.module('search', []);
 
-ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore',
-	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore) {
+ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore', 'slugify',
+	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore, slugify) {
 		$rootScope.pageSlug = 'search'
 		$rootScope.pageTitle = 'Search';
 		$rootScope.pageSubtitle = '';
@@ -27068,7 +27072,6 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 		var sortNo = $cookieStore.get('currentSortMethod') || 0;
 		$scope.currentSortMethod = $scope.sortMethods[sortNo];
 		$scope.sortOrder = $cookieStore.get('sortOrder') || 'asc';
-
 	
 		$scope.filterState = $cookieStore.get('filterState') || { 'status': 'open', 'group': 'close', 'country': 'close' };
 		
@@ -27136,6 +27139,7 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 				angular.forEach($scope.results, function (result) {
 					result._source.price = parseFloat(result._source.price);
 					result._source.price = result._source.price.toFixed(2);
+					result._source['slug'] = slugify(result._source.title);
 				});
 
 				$rootScope.titleLine = 'Search results for \"' + searchTerm + '\"' + $rootScope.titleSep1 + $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
@@ -27166,7 +27170,76 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 			$scope.searchLoading = true;
  			$scope.getResults(searchTerm);
 		};
+
+		$scope.gotoDetail = function (pos) {
+			$cookieStore.put('detailSource', { 
+				'page': $scope.pageSlug, 
+				'source': $scope.searchedFor,
+				'pos': pos,
+				'total': $scope.total,
+				'sort': $scope.currentSortMethod.slug,
+				'order': $scope.sortOrder,
+				'filter': $scope.filter
+			});
+		}
 	}
+]);
+var ctrl = angular.module('detail', []);
+
+ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore', 'searchify', 'slugify',
+	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore, searchify, slugify) {
+		$rootScope.pageSlug = 'detail'
+		$rootScope.pageTitle = 'Detail';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
+
+		$('.container').scrollTop(0);
+
+		$scope.detail = {};
+		$scope.detailLoading = true;
+		$scope.getDetail = function (id) {
+			$http.post('/detail/id', { 'id': id }).success(function (detail) {
+				$scope.detail = detail;
+				$rootScope.titleLine = $scope.detail.title + $rootScope.titleSep1 + $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
+				$scope.detailLoading = false;
+			});
+		}
+
+		$scope.gotoDetail = function (arg) {
+			if (arg == 'prev') $scope.detailSource.pos = $scope.detailSource.pos - 1;
+			if (arg == 'next') $scope.detailSource.pos = $scope.detailSource.pos + 1;
+			console.log($scope.detailSource);
+			$cookieStore.put('detailSource', $scope.detailSource);
+		}
+
+		$scope.detailSource = $cookieStore.get('detailSource');
+
+		if ($scope.detailSource.page = 'search') {
+			var searchified = searchify($scope.detailSource.source);
+			$scope.detailSource.url = 'search/' + searchified;
+			$scope.detailSource.line = 'Search results for <em>' + $scope.detailSource.source + '</em>';
+			$http.post('/search/results', { 
+				'search': $scope.detailSource.source, 
+				'page': $scope.detailSource.pos, 
+				'limit': 3,
+				'sort': $scope.detailSource.sort,
+				'order': $scope.detailSource.order,
+				'filter': $scope.detailSource.filter,
+				'mark': 'detail'
+			}).success(function (response) { 
+				console.log(response);
+				$scope.nextDetail = response.hits.hits[2];
+				$scope.prevDetail = response.hits.hits[0];
+				
+				if ($scope.detailSource.pos == 0) $scope.nextDetail = response.hits.hits[1];
+
+				if ($scope.nextDetail) $scope.nextDetail['slug'] = slugify($scope.nextDetail._source.title);
+				if ($scope.prevDetail) $scope.prevDetail['slug'] = slugify($scope.prevDetail._source.title);
+			});
+		}
+
+		if ($routeParams.id) $scope.getDetail($routeParams.id);
+	}	
 ]);
 var ctrl = angular.module('advanced', []);
 

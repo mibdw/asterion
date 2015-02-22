@@ -1,14 +1,14 @@
 var ctrl = angular.module('global', []);
 
-ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$timeout', 'focus', 'searchify',
-	function ($scope, $rootScope, $http, $location, $timeout, focus, searchify) {
+ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location', '$timeout', '$cookieStore', 'focus', 'searchify', 'slugify',
+	function ($scope, $rootScope, $http, $location, $timeout, $cookieStore, focus, searchify, slugify) {
 		$rootScope.masthead = 'Asterion';
 		$rootScope.titleSep1 = ' \u2012 ';
 		$rootScope.titleSep2 = ' \u00AB ';
 		$rootScope.titleLine = 'Bookselling like a pro' + $rootScope.titleSep1 + $rootScope.masthead;
 
 		$rootScope.searchTerm;
-
+		
 		$scope.menuSearch = [
 			{'name': 'Advanced search', 'slug': 'advanced-search' },
 			{'name': 'Outside database', 'slug': 'order-outside-database' },
@@ -78,7 +78,6 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 				}
 			} else if ($event.keyCode == 13) {
 				$scope.menuEntered = false;
-				$rootScope.searchTerm = '';
 				focus('');
 			}
 		}
@@ -111,6 +110,7 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 				angular.forEach($rootScope.activeCart.books, function (item) {
 					$rootScope.activeCart.quantity += item.quantity;
 					$rootScope.activeCart.price += item.book.price * item.quantity;
+					item.book['slug'] = slugify(item.book.title);
 				});
 			});
 		}

@@ -5,6 +5,6 @@ ctrl.controller('dashboardController', ['$scope', '$rootScope', '$http', '$locat
 		$rootScope.pageSlug = 'dashboard'
 		$rootScope.pageTitle = 'Dashboard';
 		$rootScope.pageSubtitle = '';
-		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;	
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
 	}	
 ]);
