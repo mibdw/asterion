@@ -207,20 +207,23 @@
 
 			&:hover { background-color: @d-hover; }
 
-			img {
-				width: 2.5em;
-				position: absolute;
-				left: 1em;
-				top: .75em;
-				overflow: hidden;
-			}
-
-			.title {
-				font-size: 1.2em;
+			.detail {
 				display: block;
 				color: @d-text;
 				margin-right: 7em;
-				.text-truncate;
+
+				img {
+					width: 2.5em;
+					position: absolute;
+					left: 1em;
+					top: .75em;
+					overflow: hidden;
+				}
+
+				span {
+					display: block;
+					.text-truncate;
+				}
 			}
 
 			.author {

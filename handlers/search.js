@@ -14,7 +14,7 @@ router.post('/results', task.auth, function (req, res, next) {
 	function launchSearch (payload) {	
 		elastic.search(payload).then(function (response) { 
 			response.hits.hits.forEach(function (hit, i) {
-				hit['pos'] = (req.body.page * req.body.limit) + i;
+				hit['pos'] = from + i;
 			});	
 			return res.send(response);
 		}, function (err) {

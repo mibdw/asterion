@@ -26890,12 +26890,6 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 		$rootScope.getActiveCart = function (id) {
 			$http.post('/carts/detail', { 'id': id }).success(function (cart) {
 				$rootScope.activeCart = cart;
-				$rootScope.activeCart.quantity = 0;
-				angular.forEach($rootScope.activeCart.books, function (item) {
-					$rootScope.activeCart.quantity += item.quantity;
-					$rootScope.activeCart.price += item.book.price * item.quantity;
-					item.book['slug'] = slugify(item.book.title);
-				});
 			});
 		}
 
@@ -27017,23 +27011,36 @@ ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus', 'slugi
 	}
 ]);
 
-ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http',
-	function ($scope, $rootScope, $http) {
-
-		$scope.activateCart = function (cart) {
-			$http.post('/users/cart', cart).success(function (response) {
-				$rootScope.user.cart = response.id;
-				$rootScope.getActiveCart(response.id);
-			});
-		}
+ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStore',
+	function ($scope, $rootScope, $http, $cookieStore) {
 
 		$scope.removeCart = function () {
 			if (confirm('Are you sure you want to remove this cart?')) {
 				$rootScope.cartList.splice($rootScope.cartList.indexOf(cart), 1);
-				if ($rootScope.activeCart._id == $rootScope.user.cart && $rootScope.cartList.length > 0) $scope.activateCart($rootScope.cartList[0]);
+				if ($rootScope.activeCart._id == $rootScope.user.cart && $rootScope.cartList.length > 0) $rootScope.activateCart($rootScope.cartList[0]);
 				$http.post('/carts/remove', { 'id': $rootScope.activeCart._id });
 			}
-		}		
+		}
+
+		$scope.updateCart = function () {
+			$http.post('/carts/update', $rootScope.activeCart).success(function (response) {
+				$rootScope.activeCart.quantity = response.quantity;
+				$rootScope.activeCart.price = response.price;
+				$rootScope.activeCart.editor = response.editor;
+				$rootScope.activeCart.edited = response.edited;
+				console.log($rootScope.activeCart);
+			});
+		}
+
+		$scope.gotoDetail = function (index) {
+			$cookieStore.put('detailSource', { 
+				'page': 'cart', 
+				'source': $rootScope.activeCart.title,
+				'id': $rootScope.activeCart._id,
+				'pos': index,
+				'total': $rootScope.activeCart.books.length,
+			});
+		}
 	}
 ]);
 var ctrl = angular.module('dashboard', []);
@@ -27171,11 +27178,11 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
  			$scope.getResults(searchTerm);
 		};
 
-		$scope.gotoDetail = function (pos) {
+		$scope.gotoDetail = function (index) {
 			$cookieStore.put('detailSource', { 
 				'page': $scope.pageSlug, 
 				'source': $scope.searchedFor,
-				'pos': pos,
+				'pos': index,
 				'total': $scope.total,
 				'sort': $scope.currentSortMethod.slug,
 				'order': $scope.sortOrder,
@@ -27208,16 +27215,15 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 		$scope.gotoDetail = function (arg) {
 			if (arg == 'prev') $scope.detailSource.pos = $scope.detailSource.pos - 1;
 			if (arg == 'next') $scope.detailSource.pos = $scope.detailSource.pos + 1;
-			console.log($scope.detailSource);
 			$cookieStore.put('detailSource', $scope.detailSource);
 		}
 
 		$scope.detailSource = $cookieStore.get('detailSource');
+		if ($scope.detailSource.page == 'search') {
 
-		if ($scope.detailSource.page = 'search') {
 			var searchified = searchify($scope.detailSource.source);
 			$scope.detailSource.url = 'search/' + searchified;
-			$scope.detailSource.line = 'Search results for <em>' + $scope.detailSource.source + '</em>';
+			$scope.detailSource.line = 'Search results: <em>' + $scope.detailSource.source + '</em>';
 			$http.post('/search/results', { 
 				'search': $scope.detailSource.source, 
 				'page': $scope.detailSource.pos, 
@@ -27227,7 +27233,6 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 				'filter': $scope.detailSource.filter,
 				'mark': 'detail'
 			}).success(function (response) { 
-				console.log(response);
 				$scope.nextDetail = response.hits.hits[2];
 				$scope.prevDetail = response.hits.hits[0];
 				
@@ -27235,6 +27240,35 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 
 				if ($scope.nextDetail) $scope.nextDetail['slug'] = slugify($scope.nextDetail._source.title);
 				if ($scope.prevDetail) $scope.prevDetail['slug'] = slugify($scope.prevDetail._source.title);
+			});
+		}
+
+		if ($scope.detailSource.page == 'cart') {
+			var slugified = searchify($scope.detailSource.source);
+			$scope.detailSource.url = 'cart/' + slugified + '/' + $scope.detailSource.id;
+			$scope.detailSource.line = 'Shopping cart: <em>' + $scope.detailSource.source + '</em>';	
+
+			$http.post('/carts/detail', {'id': $scope.detailSource.id }).success(function (cart) {
+				
+				cart.books.sort(function(a, b) { 
+				  return new Date(a.added).getTime() + new Date(b.added).getTime()
+				});
+
+				$scope.currentDetail = cart.books[$scope.detailSource.pos];
+				var next = $scope.detailSource.pos + 1;
+				var prev = $scope.detailSource.pos - 1;
+
+				$scope.nextDetail = cart.books[next];
+				$scope.prevDetail = cart.books[prev];
+
+				if ($scope.nextDetail) { 
+					$scope.nextDetail['slug'] = slugify($scope.nextDetail.book.title);
+					$scope.nextDetail._id = $scope.nextDetail.book._id
+				}
+				if ($scope.prevDetail) {
+					$scope.prevDetail['slug'] = slugify($scope.prevDetail.book.title);
+					$scope.prevDetail._id = $scope.prevDetail.book._id
+				}
 			});
 		}
 

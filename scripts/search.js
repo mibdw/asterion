@@ -123,11 +123,11 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
  			$scope.getResults(searchTerm);
 		};
 
-		$scope.gotoDetail = function (pos) {
+		$scope.gotoDetail = function (index) {
 			$cookieStore.put('detailSource', { 
 				'page': $scope.pageSlug, 
 				'source': $scope.searchedFor,
-				'pos': pos,
+				'pos': index,
 				'total': $scope.total,
 				'sort': $scope.currentSortMethod.slug,
 				'order': $scope.sortOrder,

@@ -106,12 +106,6 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 		$rootScope.getActiveCart = function (id) {
 			$http.post('/carts/detail', { 'id': id }).success(function (cart) {
 				$rootScope.activeCart = cart;
-				$rootScope.activeCart.quantity = 0;
-				angular.forEach($rootScope.activeCart.books, function (item) {
-					$rootScope.activeCart.quantity += item.quantity;
-					$rootScope.activeCart.price += item.book.price * item.quantity;
-					item.book['slug'] = slugify(item.book.title);
-				});
 			});
 		}
 

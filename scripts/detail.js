@@ -22,16 +22,15 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 		$scope.gotoDetail = function (arg) {
 			if (arg == 'prev') $scope.detailSource.pos = $scope.detailSource.pos - 1;
 			if (arg == 'next') $scope.detailSource.pos = $scope.detailSource.pos + 1;
-			console.log($scope.detailSource);
 			$cookieStore.put('detailSource', $scope.detailSource);
 		}
 
 		$scope.detailSource = $cookieStore.get('detailSource');
+		if ($scope.detailSource.page == 'search') {
 
-		if ($scope.detailSource.page = 'search') {
 			var searchified = searchify($scope.detailSource.source);
 			$scope.detailSource.url = 'search/' + searchified;
-			$scope.detailSource.line = 'Search results for <em>' + $scope.detailSource.source + '</em>';
+			$scope.detailSource.line = 'Search results: <em>' + $scope.detailSource.source + '</em>';
 			$http.post('/search/results', { 
 				'search': $scope.detailSource.source, 
 				'page': $scope.detailSource.pos, 
@@ -41,7 +40,6 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 				'filter': $scope.detailSource.filter,
 				'mark': 'detail'
 			}).success(function (response) { 
-				console.log(response);
 				$scope.nextDetail = response.hits.hits[2];
 				$scope.prevDetail = response.hits.hits[0];
 				
@@ -49,6 +47,35 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 
 				if ($scope.nextDetail) $scope.nextDetail['slug'] = slugify($scope.nextDetail._source.title);
 				if ($scope.prevDetail) $scope.prevDetail['slug'] = slugify($scope.prevDetail._source.title);
+			});
+		}
+
+		if ($scope.detailSource.page == 'cart') {
+			var slugified = searchify($scope.detailSource.source);
+			$scope.detailSource.url = 'cart/' + slugified + '/' + $scope.detailSource.id;
+			$scope.detailSource.line = 'Shopping cart: <em>' + $scope.detailSource.source + '</em>';	
+
+			$http.post('/carts/detail', {'id': $scope.detailSource.id }).success(function (cart) {
+				
+				cart.books.sort(function(a, b) { 
+				  return new Date(a.added).getTime() + new Date(b.added).getTime()
+				});
+
+				$scope.currentDetail = cart.books[$scope.detailSource.pos];
+				var next = $scope.detailSource.pos + 1;
+				var prev = $scope.detailSource.pos - 1;
+
+				$scope.nextDetail = cart.books[next];
+				$scope.prevDetail = cart.books[prev];
+
+				if ($scope.nextDetail) { 
+					$scope.nextDetail['slug'] = slugify($scope.nextDetail.book.title);
+					$scope.nextDetail._id = $scope.nextDetail.book._id
+				}
+				if ($scope.prevDetail) {
+					$scope.prevDetail['slug'] = slugify($scope.prevDetail.book.title);
+					$scope.prevDetail._id = $scope.prevDetail.book._id
+				}
 			});
 		}
 

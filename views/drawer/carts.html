@@ -22,7 +22,7 @@
 				<dt>Created:</dt>
 				<dd>{{cart.owner.name.first}} {{cart.owner.name.last}} ({{fromNow(cart.created)}})</dd>
 				<dt ng-show="cart.editor">Modified:</dt>
-				<dd ng-show="cart.editor">{{cart.editor}} ({{cart.edited}})</dd>
+				<dd ng-show="cart.editor">{{cart.editor.name.first}} {{cart.editor.name.last}} ({{fromNow(cart.edited)}})</dd>
 			</dl>
 
 			<div class="links">

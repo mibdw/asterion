@@ -7,6 +7,7 @@
 	<div ng-show="searchLoading == false" ng-repeat="result in results" class="result">
 		<label class="result-select" for="{{result._source._id}}"></label>
 		<input type="checkbox" id="{{result._source._id}}">
+		
 		<a href="/#/detail/{{result._source.slug}}/{{result._source._id}}" class="result-detail" ng-click="gotoDetail(result.pos)">
 			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{result._source.isbn}}" alt="{{result._source.title}}">
 			<div class="result-title" ng-bind-html="result._source.title | highlight: searchedFor">Title</div>
@@ -34,7 +35,7 @@
 			<div class="result-price" ng-show="result._source.price > 0"><strong>{{result._source.price | currency: ''}}</strong> EUR</div>
 			<div class="result-price unknown" ng-show="result._source.price <= 0">Price unknown</div>
 
-			<div class="result-actions" ng-class="{
+			<div class="godzilla result-actions" ng-class="{
 				active: dropdownCarts == result._id || activeButton == result._id,
 				single: cartList.length < 2,
 				adding: addingToCart == result,

@@ -84,22 +84,35 @@ ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus', 'slugi
 	}
 ]);
 
-ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http',
-	function ($scope, $rootScope, $http) {
-
-		$scope.activateCart = function (cart) {
-			$http.post('/users/cart', cart).success(function (response) {
-				$rootScope.user.cart = response.id;
-				$rootScope.getActiveCart(response.id);
-			});
-		}
+ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStore',
+	function ($scope, $rootScope, $http, $cookieStore) {
 
 		$scope.removeCart = function () {
 			if (confirm('Are you sure you want to remove this cart?')) {
 				$rootScope.cartList.splice($rootScope.cartList.indexOf(cart), 1);
-				if ($rootScope.activeCart._id == $rootScope.user.cart && $rootScope.cartList.length > 0) $scope.activateCart($rootScope.cartList[0]);
+				if ($rootScope.activeCart._id == $rootScope.user.cart && $rootScope.cartList.length > 0) $rootScope.activateCart($rootScope.cartList[0]);
 				$http.post('/carts/remove', { 'id': $rootScope.activeCart._id });
 			}
-		}		
+		}
+
+		$scope.updateCart = function () {
+			$http.post('/carts/update', $rootScope.activeCart).success(function (response) {
+				$rootScope.activeCart.quantity = response.quantity;
+				$rootScope.activeCart.price = response.price;
+				$rootScope.activeCart.editor = response.editor;
+				$rootScope.activeCart.edited = response.edited;
+				console.log($rootScope.activeCart);
+			});
+		}
+
+		$scope.gotoDetail = function (index) {
+			$cookieStore.put('detailSource', { 
+				'page': 'cart', 
+				'source': $rootScope.activeCart.title,
+				'id': $rootScope.activeCart._id,
+				'pos': index,
+				'total': $rootScope.activeCart.books.length,
+			});
+		}
 	}
 ]);
