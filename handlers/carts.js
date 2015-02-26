@@ -33,6 +33,8 @@ router.post('/create', task.auth, function (req, res, next) {
 		slug: req.body.slug,
 		owner: req.user._id,
 		created: moment().format(),
+		quantity: 0,
+		price: 0
 	}, function (err, response) {
 		if (err) console.log(err);
 		return res.send(response);
@@ -45,13 +47,13 @@ router.post('/update', task.auth, function (req, res, next) {
 	var p = 0;	
 
 	for (i in bks) {
-		q = q + parseInt(bks[i].quantity);
-		if (bks[i].book.price > 0) p = p + (parseFloat(bks[i].book.price) * parseInt(bks[i].quantity));
+		q = q + Number(bks[i].quantity);
+		if (Number(bks[i].book.price) > 0) p = p + (Number(bks[i].book.price) * Number(bks[i].quantity));
+
 		bks[i].book = bks[i].book._id;
 		bks[i].user = bks[i].user._id;
 
 		if (i == bks.length - 1) {
-			console.log(bks);
 			Cart.findByIdAndUpdate(req.body._id, {
 				title: req.body.title,
 				slug: req.body.slug,
@@ -73,7 +75,6 @@ router.post('/update', task.auth, function (req, res, next) {
 			});			
 		}
 	}
-
 });
 
 router.post('/remove', task.auth, function (req, res, next) {
@@ -104,6 +105,11 @@ router.post('/add', task.auth, function (req, res, next) {
 		if (check == false) cart.books.push(add);
 
 		cart.quantity = cart.quantity + 1;
+
+		var price = 0;
+		if (req.body.book._source) price = Number(req.body.book._source.price);
+		if (req.body.book.price) price = Number(req.body.book.price);
+		cart.price = cart.price + price;
 		
 		cart.save(function (err, response) {
 			if (err) console.log(err);

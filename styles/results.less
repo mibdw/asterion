@@ -69,13 +69,21 @@
 		top: 0; 
 		right: 0; 
 		width: 12em; 
-		padding: 1em; 
+		padding: 1em;
 		
 		.result-price { 
-			margin-bottom: 1em; 
+			margin-bottom: 2em; 
 			text-align: right;
+			position: relative;
 
 			strong { font-size: 1.25em; }
+
+			small {
+				position: absolute;
+				top: 1.6em;
+				right: 0;
+				color: @vague;
+			}
 
 			&.unknown { 
 				font-size: 1.25em; 
@@ -85,9 +93,19 @@
 			}
 		}
 
+		.result-quantity {
+			text-align: right;
+
+			input {
+				display: inline-block;
+				width: 3.5em;
+			}
+		}
+
 		.result-links { 
-			margin-top: 1em;
+			margin: .75em 0 .25em;
 			list-style-type: none; 
+			line-height: 1em;
 
 			li { text-align: right;	}
 		}

@@ -1,7 +1,7 @@
 var ctrl = angular.module('detail', []);
 
-ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore', 'searchify', 'slugify',
-	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore, searchify, slugify) {
+ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore', 'searchify', 'slugify', 'orderByFilter', '$timeout',
+	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore, searchify, slugify, orderByFilter, $timeout) {
 		$rootScope.pageSlug = 'detail'
 		$rootScope.pageTitle = 'Detail';
 		$rootScope.pageSubtitle = '';
@@ -26,6 +26,7 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 		}
 
 		$scope.detailSource = $cookieStore.get('detailSource');
+		
 		if ($scope.detailSource.page == 'search') {
 
 			var searchified = searchify($scope.detailSource.source);
@@ -55,18 +56,16 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 			$scope.detailSource.url = 'cart/' + slugified + '/' + $scope.detailSource.id;
 			$scope.detailSource.line = 'Shopping cart: <em>' + $scope.detailSource.source + '</em>';	
 
-			$http.post('/carts/detail', {'id': $scope.detailSource.id }).success(function (cart) {
-				
-				cart.books.sort(function(a, b) { 
-				  return new Date(a.added).getTime() + new Date(b.added).getTime()
-				});
+			$scope.cartDetail = {};
+			$http.post('/carts/detail', {'id': $scope.detailSource.id }).success(function (cart) {	
+				$scope.cartDetail = cart;
+				$scope.cartDetail.books = orderByFilter($scope.cartDetail.books, '-added');
 
-				$scope.currentDetail = cart.books[$scope.detailSource.pos];
 				var next = $scope.detailSource.pos + 1;
 				var prev = $scope.detailSource.pos - 1;
 
-				$scope.nextDetail = cart.books[next];
-				$scope.prevDetail = cart.books[prev];
+				$scope.nextDetail = $scope.cartDetail.books[next];
+				$scope.prevDetail = $scope.cartDetail.books[prev];
 
 				if ($scope.nextDetail) { 
 					$scope.nextDetail['slug'] = slugify($scope.nextDetail.book.title);
@@ -77,6 +76,18 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 					$scope.prevDetail._id = $scope.prevDetail.book._id
 				}
 			});
+		}
+
+		var timer = false;
+		$scope.updateCart = function () {
+			if (timer) $timeout.cancel(timer);
+			timer = $timeout(function () {
+				$http.post('/carts/update', $scope.cartDetail).success(function (response) {
+					if (response._id == $rootScope.activeCart._id) {
+						$rootScope.getActiveCart(response._id);
+					}
+				});
+			}, 500);
 		}
 
 		if ($routeParams.id) $scope.getDetail($routeParams.id);

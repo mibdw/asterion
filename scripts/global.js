@@ -83,7 +83,6 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 		}
 
 		$rootScope.user = {};
-		$rootScope.activeCart = {};
 		$rootScope.getUser = function () {
 			$http.post('/users/read').success(function (user) {
 				$rootScope.user = user;
@@ -99,13 +98,23 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			$http.post('/carts/list').success(function (carts) {
 				$rootScope.cartList = carts;
 				$rootScope.cartsLoading = false;
+				$rootScope.cartList.forEach(function (cart) {
+					cart['slug'] = slugify(cart.title);
+				});
 			});
 		}
 		$rootScope.getCarts();
 
+		$rootScope.loadingActiveCart = false;
+		$rootScope.activeCart = {};
 		$rootScope.getActiveCart = function (id) {
+			$rootScope.loadingActiveCart = true;
 			$http.post('/carts/detail', { 'id': id }).success(function (cart) {
 				$rootScope.activeCart = cart;
+				$rootScope.loadingActiveCart = false;
+				$rootScope.activeCart.books.forEach(function (item) {
+					item.book['slug'] = slugify(item.book.title);
+				});
 			});
 		}
 

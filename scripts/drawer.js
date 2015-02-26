@@ -84,8 +84,8 @@ ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus', 'slugi
 	}
 ]);
 
-ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStore',
-	function ($scope, $rootScope, $http, $cookieStore) {
+ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStore', '$timeout',
+	function ($scope, $rootScope, $http, $cookieStore, $timeout) {
 
 		$scope.removeCart = function () {
 			if (confirm('Are you sure you want to remove this cart?')) {
@@ -94,15 +94,18 @@ ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStor
 				$http.post('/carts/remove', { 'id': $rootScope.activeCart._id });
 			}
 		}
-
+		
+		var timer = false;
 		$scope.updateCart = function () {
-			$http.post('/carts/update', $rootScope.activeCart).success(function (response) {
-				$rootScope.activeCart.quantity = response.quantity;
-				$rootScope.activeCart.price = response.price;
-				$rootScope.activeCart.editor = response.editor;
-				$rootScope.activeCart.edited = response.edited;
-				console.log($rootScope.activeCart);
-			});
+			if (timer) $timeout.cancel(timer);
+			timer = $timeout(function () {
+				$http.post('/carts/update', $rootScope.activeCart).success(function (response) {
+					$rootScope.activeCart.quantity = response.quantity;
+					$rootScope.activeCart.price = response.price;
+					$rootScope.activeCart.editor = response.editor;
+					$rootScope.activeCart.edited = response.edited;
+				});
+			}, 500);
 		}
 
 		$scope.gotoDetail = function (index) {

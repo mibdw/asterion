@@ -257,7 +257,7 @@ if(!e)return e;for(var n,h=e,m=[],l,p;n=h.match(d);)l=n[0],n[2]==n[3]&&(l="mailt
 //# sourceMappingURL=angular-sanitize.min.js.map
 
 var app = angular.module('asterion', [ 
-	'ngRoute', 'ngCookies', 'ngSanitize', 'global', 'drawer', 'dashboard', 'search', 'detail', 'advanced', 'outside', 'isbn', 'tracing', 'standing', 'nts', 'approval', 'profile', 'help'
+	'ngRoute', 'ngCookies', 'ngSanitize', 'global', 'drawer', 'dashboard', 'search', 'detail', 'carts', 'advanced', 'outside', 'isbn', 'tracing', 'standing', 'nts', 'approval', 'profile', 'help'
 ]);
 
 // Routes
@@ -273,6 +273,10 @@ app.config(['$routeProvider', function ($routeProvider) {
 	.when('/detail/:slug/:id', {
 		templateUrl: 'partials/detail/main',
 		controller: 'detailController'
+	})
+	.when('/cart/:slug/:id', {
+		templateUrl: 'partials/cart/main',
+		controller: 'cartController'
 	})
 	.when('/advanced-search', {
 		templateUrl: 'partials/advanced/main',
@@ -449,7 +453,6 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 		}
 
 		$rootScope.user = {};
-		$rootScope.activeCart = {};
 		$rootScope.getUser = function () {
 			$http.post('/users/read').success(function (user) {
 				$rootScope.user = user;
@@ -465,13 +468,23 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			$http.post('/carts/list').success(function (carts) {
 				$rootScope.cartList = carts;
 				$rootScope.cartsLoading = false;
+				$rootScope.cartList.forEach(function (cart) {
+					cart['slug'] = slugify(cart.title);
+				});
 			});
 		}
 		$rootScope.getCarts();
 
+		$rootScope.loadingActiveCart = false;
+		$rootScope.activeCart = {};
 		$rootScope.getActiveCart = function (id) {
+			$rootScope.loadingActiveCart = true;
 			$http.post('/carts/detail', { 'id': id }).success(function (cart) {
 				$rootScope.activeCart = cart;
+				$rootScope.loadingActiveCart = false;
+				$rootScope.activeCart.books.forEach(function (item) {
+					item.book['slug'] = slugify(item.book.title);
+				});
 			});
 		}
 
@@ -593,8 +606,8 @@ ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus', 'slugi
 	}
 ]);
 
-ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStore',
-	function ($scope, $rootScope, $http, $cookieStore) {
+ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStore', '$timeout',
+	function ($scope, $rootScope, $http, $cookieStore, $timeout) {
 
 		$scope.removeCart = function () {
 			if (confirm('Are you sure you want to remove this cart?')) {
@@ -603,15 +616,18 @@ ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStor
 				$http.post('/carts/remove', { 'id': $rootScope.activeCart._id });
 			}
 		}
-
+		
+		var timer = false;
 		$scope.updateCart = function () {
-			$http.post('/carts/update', $rootScope.activeCart).success(function (response) {
-				$rootScope.activeCart.quantity = response.quantity;
-				$rootScope.activeCart.price = response.price;
-				$rootScope.activeCart.editor = response.editor;
-				$rootScope.activeCart.edited = response.edited;
-				console.log($rootScope.activeCart);
-			});
+			if (timer) $timeout.cancel(timer);
+			timer = $timeout(function () {
+				$http.post('/carts/update', $rootScope.activeCart).success(function (response) {
+					$rootScope.activeCart.quantity = response.quantity;
+					$rootScope.activeCart.price = response.price;
+					$rootScope.activeCart.editor = response.editor;
+					$rootScope.activeCart.edited = response.edited;
+				});
+			}, 500);
 		}
 
 		$scope.gotoDetail = function (index) {
@@ -622,6 +638,62 @@ ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStor
 				'pos': index,
 				'total': $rootScope.activeCart.books.length,
 			});
+		}
+	}
+]);
+var ctrl = angular.module('carts', []);
+
+ctrl.controller('cartController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore', '$timeout', 'slugify',
+	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore, $timeout, slugify) {
+		$rootScope.pageSlug = 'cart'
+		$rootScope.pageTitle = 'Shopping cart';
+		$rootScope.pageSubtitle = '';
+		$rootScope.titleLine = $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
+
+		$scope.cartLoading = true;
+		
+		$scope.cart = {};
+		$scope.getCart = function (id) {
+			$scope.cartLoading = true;
+			$http.post('/carts/detail', { 'id': id }).success(function (cart) {
+				$scope.cart = cart;
+				$rootScope.pageSubtitle = cart.title;
+				
+				$scope.cartLoading = false;
+				$scope.cart.books.forEach(function (item) {
+					item.book['slug'] = slugify(item.book.title);
+				});
+
+				$rootScope.titleLine = $rootScope.pageSubtitle + $rootScope.titleSep1 + $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
+			});
+		}
+		$scope.getCart($routeParams.id);
+
+		$scope.gotoDetail = function (index) {
+			$cookieStore.put('detailSource', { 
+				'page': 'cart', 
+				'source': $scope.cart.title,
+				'id': $scope.cart._id,
+				'pos': index,
+				'total': $scope.cart.books.length,
+			});
+		}
+
+		var timer = false;
+		$scope.updateCart = function () {
+			if (timer) $timeout.cancel(timer);
+			timer = $timeout(function () {
+				$http.post('/carts/update', $scope.cart).success(function (response) {
+					$scope.cart.quantity = response.quantity;
+					$scope.cart.price = response.price;
+					$scope.cart.editor = response.editor;
+					$scope.cart.edited = response.edited;
+
+					if (response._id == $rootScope.activeCart._id) {
+						$rootScope.getActiveCart(response._id);
+					}
+				});
+			}, 500);
 		}
 	}
 ]);
@@ -775,8 +847,8 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 ]);
 var ctrl = angular.module('detail', []);
 
-ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore', 'searchify', 'slugify',
-	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore, searchify, slugify) {
+ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore', 'searchify', 'slugify', 'orderByFilter', '$timeout',
+	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore, searchify, slugify, orderByFilter, $timeout) {
 		$rootScope.pageSlug = 'detail'
 		$rootScope.pageTitle = 'Detail';
 		$rootScope.pageSubtitle = '';
@@ -801,6 +873,7 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 		}
 
 		$scope.detailSource = $cookieStore.get('detailSource');
+		
 		if ($scope.detailSource.page == 'search') {
 
 			var searchified = searchify($scope.detailSource.source);
@@ -830,18 +903,16 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 			$scope.detailSource.url = 'cart/' + slugified + '/' + $scope.detailSource.id;
 			$scope.detailSource.line = 'Shopping cart: <em>' + $scope.detailSource.source + '</em>';	
 
-			$http.post('/carts/detail', {'id': $scope.detailSource.id }).success(function (cart) {
-				
-				cart.books.sort(function(a, b) { 
-				  return new Date(a.added).getTime() + new Date(b.added).getTime()
-				});
+			$scope.cartDetail = {};
+			$http.post('/carts/detail', {'id': $scope.detailSource.id }).success(function (cart) {	
+				$scope.cartDetail = cart;
+				$scope.cartDetail.books = orderByFilter($scope.cartDetail.books, '-added');
 
-				$scope.currentDetail = cart.books[$scope.detailSource.pos];
 				var next = $scope.detailSource.pos + 1;
 				var prev = $scope.detailSource.pos - 1;
 
-				$scope.nextDetail = cart.books[next];
-				$scope.prevDetail = cart.books[prev];
+				$scope.nextDetail = $scope.cartDetail.books[next];
+				$scope.prevDetail = $scope.cartDetail.books[prev];
 
 				if ($scope.nextDetail) { 
 					$scope.nextDetail['slug'] = slugify($scope.nextDetail.book.title);
@@ -852,6 +923,18 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 					$scope.prevDetail._id = $scope.prevDetail.book._id
 				}
 			});
+		}
+
+		var timer = false;
+		$scope.updateCart = function () {
+			if (timer) $timeout.cancel(timer);
+			timer = $timeout(function () {
+				$http.post('/carts/update', $scope.cartDetail).success(function (response) {
+					if (response._id == $rootScope.activeCart._id) {
+						$rootScope.getActiveCart(response._id);
+					}
+				});
+			}, 500);
 		}
 
 		if ($routeParams.id) $scope.getDetail($routeParams.id);

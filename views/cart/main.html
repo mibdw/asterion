@@ -1,0 +1,52 @@
+<div id="main" class="left" style="width: 75%">
+
+	<div ng-show="cartLoading == true" class="loading">
+		<i class="fa fa-refresh fa-spin"></i>
+	</div>
+	
+	<div ng-show="cartLoading == false" ng-repeat="result in cart.books | orderBy: '-added'" class="result">
+		<label class="result-select" for="{{result.book._id}}"></label>
+		<input type="checkbox" id="{{result.book._id}}">
+		
+		<a href="/#/detail/{{result.book.slug}}/{{result.book._id}}" class="result-detail" ng-click="gotoDetail($index)">
+			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{result.book.isbn}}" alt="{{result.book.title}}">
+			<div class="result-title">{{result.book.title}}</div>
+		</a>
+		<div class="result-author" ng-show="result.book.author">{{result.book.author}}</div>
+	
+		<dl class="result-meta">
+			<dt>Publisher:</dt>
+			<dd>{{result.book.publisher}}</dd>
+			<dt>Place:</dt>
+			<dd>
+				<span>{{result.book.place}}</span><span ng-show="result.book.place && result.book.country">,</span>
+				<span>{{result.book.country}}</span>
+				<span ng-show="result.book.date">({{result.book.date}})</span>
+			</dd>
+			<dt>ISBN:</dt>
+			<dd>{{result.book.isbn || '&nbsp;'}}</dd>
+			<dt>Product type:</dt>
+			<dd>{{result.book.group}}<span ng-show="result.book.pages > 0">, {{result.book.pages}} pages</span></dd>
+			<dt>Availability:</dt>
+			<dd><i class="available"></i> {{result.book.status}}</dd>
+		</dl>
+		
+		<div class="result-sidebar">
+			<div class="result-price" ng-show="result.book.price > 0">
+				<strong>{{result.book.price * result.quantity | currency: ''}}</strong> EUR
+				<small ng-show="result.quantity > 1">({{result.quantity}} &times; <strong>{{result.book.price | currency: ''}}</strong> EUR)</small>
+			</div>
+			<div class="result-price unknown" ng-show="result.book.price <= 0">Price unknown</div>
+
+			<div class="result-quantity">
+				Qty: <input type="text" ng-model="result.quantity" maxlength="3" ng-change="updateCart()">
+			</div>
+	
+			<ul class="result-links">
+				<li><a href="/#/detail/{{result.book.slug}}/{{result.book._id}}" ng-click="gotoDetail($index)">More information</a></li>
+				<li><a href="" ng-click="removeBook($index)">Remove</a></li>
+			</ul>
+		</div>
+	</div>
+
+</div>

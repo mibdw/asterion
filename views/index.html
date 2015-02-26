@@ -46,11 +46,15 @@
 		</div>
 
 		<div class="carts" ng-controller="drawerController" ng-class="{active: drawerPin == true}">
-			<div class="cart-click no-carts" ng-click="drawerToggle(drawerPin)" tabindex="4" ng-show="cartList.length < 1">
-				<strong>No shopping carts</strong>
+			<div class="cart-loading" ng-show="loadingActiveCart == true">
+				<i class="fa fa-refresh fa-spin"></i>
 			</div>
-			
-			<div class="cart-click" ng-click="drawerToggle(drawerPin)" ng-keypress="drawerKeypress($event, drawerPin)" tabindex="4" ng-show="cartList.length > 0">
+
+			<div class="cart-click no-carts" ng-click="drawerToggle(drawerPin)" tabindex="4" ng-show="loadingActiveCart == false && cartList.length < 1">
+				<strong>No shopping carts</strong>
+			</div>	
+
+			<div class="cart-click" ng-click="drawerToggle(drawerPin)" ng-keypress="drawerKeypress($event, drawerPin)" tabindex="4" ng-show="loadingActiveCart == false && cartList.length > 0">
 				<span class="cart-title" title="{{activeCart.title}}">{{activeCart.title}}</span>
 				<span class="cart-quantity">
 					<i class="fa fa-shopping-cart"></i> {{activeCart.quantity}}

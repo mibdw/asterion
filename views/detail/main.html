@@ -2,7 +2,6 @@
 	<i class="fa fa-refresh fa-spin"></i>
 </div>
 
-
 <div id="main" class="detail right" style="width: 72.5%" ng-show="detailLoading == false">
 	<dl class="detail-source">
 		<dt>Back to:</dt>
@@ -43,14 +42,19 @@
 
 	<dl class="detail-cart" ng-show="detailSource.page == 'cart'">
 		<dt>Added:</dt>
-		<dd>{{currentDetail.user.name.first}} {{currentDetail.user.name.last}}  ({{fromNow(currentDetail.added)}})</dd>
-		<dt class="quantity">Quantity:</dt>
-		<dd class="quantity"><input type="text" ng-model="currentDetail.quantity"></dd>
+		<dd>{{cartDetail.books[detailSource.pos].user.name.first}} {{cartDetail.books[detailSource.pos].user.name.last}}  ({{fromNow(cartDetail.books[detailSource.pos].added)}})</dd>
+ 		<dt class="quantity">Quantity:</dt>
+		<dd class="quantity">
+			<input type="text" ng-model="cartDetail.books[detailSource.pos].quantity" ng-change="updateCart()" maxlength="3">
+ 		<dt class="quantity">Quantity:</dt>
+		<dd class="quantity">
+			<input type="text" ng-model="cartDetail.books[detailSource.pos].quantity" ng-change="updateCart()" maxlength="3">
+		</dd>
 	</dl>
 
 	<dl class="detail-description">
 		<dt>Description:</dt>
-		<dd> Meet three brand new female detectives. LIAR, LIAR: Ever suspected your husband has had his hand up someone else's skirt? Call the Pants on Fire Detective Agency to investigate the love rat in your life. Join the fabulous Cat DeLuca, avenging all cheated upon women, in this comic new crime series. THE DANGEROUS EDGE OF THINGS: You've just inherited a gun shop. You've just discovered a dead body.You're the Police's top suspect. Can things get any worse for Tai Randolph? SHADOWS IN THE NIGHT: AD 91. It is almost fifty years since the legions invaded but Britannia is still a raw, frontier province. Tensions run high, especially in the north, where Aurelia Marcella, a young Roman woman fled from the ruins of Pompeii, runs the Oak Tree Inn on the road to York. Aurelia is going to discover just how cheap life is in Roman Britain. </dd>
+		<dd>Meet three brand new female detectives. LIAR, LIAR: Ever suspected your husband has had his hand up someone else's skirt? Call the Pants on Fire Detective Agency to investigate the love rat in your life. Join the fabulous Cat DeLuca, avenging all cheated upon women, in this comic new crime series. THE DANGEROUS EDGE OF THINGS: You've just inherited a gun shop. You've just discovered a dead body.You're the Police's top suspect. Can things get any worse for Tai Randolph? SHADOWS IN THE NIGHT: AD 91. It is almost fifty years since the legions invaded but Britannia is still a raw, frontier province. Tensions run high, especially in the north, where Aurelia Marcella, a young Roman woman fled from the ruins of Pompeii, runs the Oak Tree Inn on the road to York. Aurelia is going to discover just how cheap life is in Roman Britain. </dd>
 	</dl>
 </div>
 

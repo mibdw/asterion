@@ -1,7 +1,7 @@
 <div ng-controller="drawerContents">
 	<div class="drawer-container">
 		<div class="drawer-header drawer-cart">
-			<a href="" class="title">{{activeCart.title}}</a>
+			<a href="/#/cart/{{activeCart.slug}}/{{activeCart._id}}" class="title" ng-click="drawerToggle(drawerPin)">{{activeCart.title}}</a>
 			<div class="price" ng-show="activeCart.price > 0">
 				<strong>{{activeCart.price | currency: ''}}</strong> EUR
 			</div>
@@ -22,7 +22,7 @@
 			</dl>
 
 			<div class="links">
-				<a href="/#/cart/{{activeCart.slug}}">More information</a>
+				<a href="/#/cart/{{activeCart.slug}}/{{activeCart._id}}" ng-click="drawerToggle(drawerPin)">More information</a>
 				<a href="" ng-click="removeCart()">Remove</a>
 			</div>
 		</div>
@@ -30,7 +30,7 @@
 		<ul class="drawer-list">
 			<li class="drawer-item" ng-repeat="item in activeCart.books | orderBy: '-added'">
 			
-				<a href="/#/detail/{{item.book.slug}}/{{item.book._id}}" class="detail"  ng-click="drawerToggle(drawerPin); gotoDetail($index)">	
+				<a href="/#/detail/{{item.book.slug}}/{{item.book._id}}" class="detail" ng-click="drawerToggle(drawerPin); gotoDetail($index)">	
 					<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{item.book.isbn}}" alt="{{item.book.title}}">
 					<span>{{item.book.title}}</span>
 				</a>
@@ -43,7 +43,7 @@
 				</div>
 				<div class="quantity">
 					<label for="quantity">Qty: </label>
-					<input id="quantity" type="text" ng-model="item.quantity" ng-change="updateCart()">
+					<input id="quantity" type="text" ng-model="item.quantity" ng-change="updateCart()" autocomplete="off" maxlength="3">
 				</div>
 
 				<dl class="meta">
