@@ -971,8 +971,8 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 ]);
 var ctrl = angular.module('detail', []);
 
-ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore', 'searchify', 'slugify', 'orderByFilter', '$timeout',
-	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore, searchify, slugify, orderByFilter, $timeout) {
+ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore', 'searchify', 'slugify', 'orderByFilter', '$timeout', 'focus',
+	function ($scope, $rootScope, $http, $location, $routeParams, $cookieStore, searchify, slugify, orderByFilter, $timeout, focus) {
 		$rootScope.pageSlug = 'detail'
 		$rootScope.pageTitle = 'Detail';
 		$rootScope.pageSubtitle = '';
@@ -1059,6 +1059,17 @@ ctrl.controller('detailController', ['$scope', '$rootScope', '$http', '$location
 					}
 				});
 			}, 500);
+		}
+
+		$scope.currentRef = false;
+		$scope.setCurrentRef = function (arg) {
+			$scope.currentRef = arg;
+			focus('ref-' + arg);
+		}
+
+		$scope.blurCurrentRef = function () { $scope.currentRef = false }
+		$scope.keypressCurrentRef = function ($event) { 
+			if ($event.keyCode == 13) $scope.currentRef = false; 
 		}
 
 		if ($routeParams.id) $scope.getDetail($routeParams.id);

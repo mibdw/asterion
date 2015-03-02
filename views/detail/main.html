@@ -41,15 +41,43 @@
 	</dl>
 
 	<dl class="detail-cart" ng-show="detailSource.page == 'cart'">
+ 		<dt ng-class="{active: currentRef == 'quantity'}">Quantity:</dt>
+		<dd style="padding-right: 67%;">
+			<span ng-click="setCurrentRef('quantity')" ng-hide="currentRef == 'quantity'">{{cartDetail.books[detailSource.pos].quantity}}</span>
+			<input id="ref-quantity" ng-show="currentRef == 'quantity'" type="text" ng-model="cartDetail.books[detailSource.pos].quantity" ng-change="updateCart()" maxlength="3" ng-blur="blurCurrentRef()" ng-keypress="keypressCurrentRef($event)">
+			<i class="fa fa-remove" ng-show="currentRef == 'quantity'"></i>
+			<a href="" ng-hide="currentRef == 'quantity'" ng-click="setCurrentRef('quantity')" class="edit">Edit</a>
+		</dd>
+ 		<dt ng-class="{active: currentRef == 'reference'}">Reference:</dt>
+		<dd>
+			<span ng-class="{empty: cartDetail.books[detailSource.pos].reference.length < 1}" ng-click="setCurrentRef('reference')" ng-hide="currentRef == 'reference'">{{cartDetail.books[detailSource.pos].reference || 'Empty'}}</span>
+			<input id="ref-reference" ng-show="currentRef == 'reference'" type="text" ng-model="cartDetail.books[detailSource.pos].reference" ng-change="updateCart()" ng-blur="blurCurrentRef()" ng-keypress="keypressCurrentRef($event)">
+			<i class="fa fa-remove" ng-show="currentRef == 'reference'"></i>
+			<a href="" ng-hide="currentRef == 'reference'" ng-click="setCurrentRef('reference')" class="edit">Edit</a>
+		</dd>
+ 		<dt ng-class="{active: currentRef == 'department'}">Department:</dt>
+		<dd>
+			<span ng-class="{empty: cartDetail.books[detailSource.pos].department.length < 1}" ng-click="setCurrentRef('department')" ng-hide="currentRef == 'department'">{{cartDetail.books[detailSource.pos].department || 'Empty'}}</span>
+			<input id="ref-department" ng-show="currentRef == 'department'" type="text" ng-model="cartDetail.books[detailSource.pos].department" ng-change="updateCart()" ng-blur="blurCurrentRef()" ng-keypress="keypressCurrentRef($event)">
+			<i class="fa fa-remove" ng-show="currentRef == 'department'"></i>
+			<a href="" ng-hide="currentRef == 'department'" ng-click="setCurrentRef('department')" class="edit">Edit</a>
+		</dd>
+ 		<dt ng-class="{active: currentRef == 'budget'}">Budget:</dt>
+		<dd>
+			<span ng-class="{empty: cartDetail.books[detailSource.pos].budget.length < 1}" ng-click="setCurrentRef('budget')" ng-hide="currentRef == 'budget'">{{cartDetail.books[detailSource.pos].budget || 'Empty'}}</span>
+			<input id="ref-budget" ng-show="currentRef == 'budget'" type="text" ng-model="cartDetail.books[detailSource.pos].budget" ng-change="updateCart()" ng-blur="blurCurrentRef()" ng-keypress="keypressCurrentRef($event)">
+			<i class="fa fa-remove" ng-show="currentRef == 'budget'"></i>
+			<a href="" ng-hide="currentRef == 'budget'" ng-click="setCurrentRef('budget')" class="edit">Edit</a>
+		</dd>
+ 		<dt ng-class="{active: currentRef == 'instructions'}">Instructions:</dt>
+		<dd>
+			<span ng-class="{empty: cartDetail.books[detailSource.pos].instructions.length < 1}" ng-click="setCurrentRef('instructions')" ng-hide="currentRef == 'instructions'">{{cartDetail.books[detailSource.pos].instructions || 'Empty'}}</span>
+			<input id="ref-instructions" ng-show="currentRef == 'instructions'" type="text" ng-model="cartDetail.books[detailSource.pos].instructions" ng-change="updateCart()" ng-blur="blurCurrentRef()" ng-keypress="keypressCurrentRef($event)">
+			<i class="fa fa-remove" ng-show="currentRef == 'instructions'"></i>
+			<a href="" ng-hide="currentRef == 'instructions'" ng-click="setCurrentRef('instructions')" class="edit">Edit</a>
+		</dd>
 		<dt>Added:</dt>
 		<dd>{{cartDetail.books[detailSource.pos].user.name.first}} {{cartDetail.books[detailSource.pos].user.name.last}} <time datetime="{{cartDetail.books[detailSource.pos].added}}">{{fromNow(cartDetail.books[detailSource.pos].added)}}</time></dd>
- 		<dt class="quantity">Quantity:</dt>
-		<dd class="quantity">
-			<input type="text" ng-model="cartDetail.books[detailSource.pos].quantity" ng-change="updateCart()" maxlength="3">
- 		<dt class="quantity">Quantity:</dt>
-		<dd class="quantity">
-			<input type="text" ng-model="cartDetail.books[detailSource.pos].quantity" ng-change="updateCart()" maxlength="3">
-		</dd>
 	</dl>
 
 	<dl class="detail-description">

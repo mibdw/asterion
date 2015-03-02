@@ -77,7 +77,8 @@
 		}
 
 		dd { 
-			width: 75%; 
+			width: 75%;
+			position: relative; 
 	
 			time {
 				margin-left: .2em;
@@ -93,7 +94,7 @@
 
 			input { 
 				display: none;
-				width: 90%;
+				width: 100%;
 			}
 
 			&:hover a {
@@ -107,10 +108,26 @@
 				a { font-style: normal }
 			}
 
+			.fa-remove {
+				position: absolute;
+				right: .5em;
+				top: -.1em;
+				color: @line;
+				font-size: 1.3em;
+				line-height: 1.9em;
+				cursor: pointer;
+				display: none;
+
+				&:hover {
+					color: @vague;
+				}
+			}
+
 			&.editing {
 				line-height: 2em;
 
 				input { display: block; }
+				.fa-remove { display: inline; }
 				span { display: none; }
 
 				&:hover a { display: none; }

@@ -18,6 +18,10 @@
 		dt {
 			width: 15%;
 			float: left;
+
+			&.active {
+				line-height: 2em;
+			}
 		}
 
 		dd { 
@@ -29,13 +33,36 @@
 				font-size: .8em;
 				color: @vague;
 			}
-		}
 
-		.quantity {
-			line-height: 2em;
-			margin-top: .3em;
+			.edit {
+				font-size: .8em;
+				margin-left: .2em;
+				display: none;
+			}
 
-			input { width: 4em }
+			.empty {
+				font-style: italic;
+				color: @vague;
+			}
+
+			.fa-remove {
+				position: relative;
+				left: -1.6em;
+				color: @line;
+				font-size: 1.3em;
+				line-height: 1.9em;
+				cursor: pointer;
+
+				&:hover {
+					color: @vague;
+				}
+			}
+
+			&:hover .edit { display: inline; }
+
+			input {
+				width: 80%
+			}
 		}
 
 		&.detail-source {
