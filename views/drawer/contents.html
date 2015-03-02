@@ -16,19 +16,20 @@
 				<dt>Account:</dt>
 				<dd>University of Nonsense, Department of Trouble (22222)</dd>
 				<dt>Created:</dt>
-				<dd>{{activeCart.owner.name.first}} {{activeCart.owner.name.last}} ({{fromNow(activeCart.created)}})</dd>
+				<dd><em>{{activeCart.owner.name.first}} {{activeCart.owner.name.last}}</em> (<time datetime="{{activeCart.created}}">{{fromNow(activeCart.created)}}</time>)</dd>
 				<dt ng-show="activeCart.editor">Modified:</dt>
-				<dd ng-show="activeCart.editor">{{activeCart.editor.name.first}} {{activeCart.editor.name.last}} ({{fromNow(activeCart.edited)}})</dd>
+				<dd ng-show="activeCart.editor"><em>{{activeCart.editor.name.first}} {{activeCart.editor.name.last}}</em> (<time datetime="{{activeCart.edited}}">{{fromNow(activeCart.edited)}}</time>)</dd>
 			</dl>
 
 			<div class="links">
 				<a href="/#/cart/{{activeCart.slug}}/{{activeCart._id}}" ng-click="drawerToggle(drawerPin)">More information</a>
+				<a href="" ng-click="renameCart()">Rename</a>
 				<a href="" ng-click="removeCart()">Remove</a>
 			</div>
 		</div>
 
 		<ul class="drawer-list">
-			<li class="drawer-item" ng-repeat="item in activeCart.books | orderBy: '-added'">
+			<li class="drawer-item" ng-repeat="item in activeCart.books | orderBy: '-added'" ng-class="{remove: removingBook == item._id}">
 			
 				<a href="/#/detail/{{item.book.slug}}/{{item.book._id}}" class="detail" ng-click="drawerToggle(drawerPin); gotoDetail($index)">	
 					<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{item.book.isbn}}" alt="{{item.book.title}}">
@@ -37,6 +38,7 @@
 
 				<div class="price" ng-show="item.book.price > 0">
 					<strong>{{(item.book.price * item.quantity) | currency: ''}}</strong> EUR
+					<small ng-show="item.quantity > 1">({{item.quantity}} &times; <strong>{{item.book.price | currency: ''}}</strong> EUR)</small>
 				</div>
 				<div class="price zero" ng-show="item.book.price == 0">
 					Price unknown
@@ -52,12 +54,12 @@
 					<dt>ISBN:</dt>
 					<dd>{{item.book.isbn || ' '}}</dd>
 					<dt>Added:</dt>
-					<dd>{{item.user.name.first}} {{item.user.name.last}} ({{fromNow(item.added)}})</dd>
+					<dd>{{item.user.name.first}} {{item.user.name.last}} (<time datetime="{{item.added}}">{{fromNow(item.added)}}</time>)</dd>
 				</dl>
 
 				<div class="links">
-					<a href="">More information</a>
-					<a href="">Remove</a>
+					<a href="/#/detail/{{item.book.slug}}/{{item.book._id}}" ng-click="drawerToggle(drawerPin); gotoDetail($index)">More information</a>
+					<a href="" ng-click="removeBook(item)">Remove</a>
 				</div>
 			</li>
 		</ul>

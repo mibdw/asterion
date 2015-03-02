@@ -20,13 +20,14 @@
 				<dt>Account:</dt>
 				<dd>University of Nonsense, Department of Trouble (22222)</dd>
 				<dt>Created:</dt>
-				<dd>{{cart.owner.name.first}} {{cart.owner.name.last}} ({{fromNow(cart.created)}})</dd>
+				<dd><em>{{cart.owner.name.first}} {{cart.owner.name.last}}</em> (<time datetime="{{cart.created}}">{{fromNow(cart.created)}}</time>)</dd>
 				<dt ng-show="cart.editor">Modified:</dt>
-				<dd ng-show="cart.editor">{{cart.editor.name.first}} {{cart.editor.name.last}} ({{fromNow(cart.edited)}})</dd>
+				<dd ng-show="cart.editor"><em>{{cart.editor.name.first}} {{cart.editor.name.last}}</em> (<time datetime="{{cart.edited}}">{{fromNow(cart.edited)}}</time>)</dd>
 			</dl>
 
 			<div class="links">
 				<a href="/#/cart/{{cart.slug}}/{{cart._id}}" ng-click="drawerToggle(drawerPin)">More information</a>
+				<a href="" ng-click="renameCart(cart)">Rename</a>
 				<a href="" ng-click="removeCart(cart)">Remove</a>
 			</div>
 

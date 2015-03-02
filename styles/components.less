@@ -162,13 +162,70 @@
 	.clearfix ();
 	
 	dd, dt { float: left } 
-	dd { width: 75% }
 	dt { width: 25% }
+	
+	dd { 
+		width: 75%;
+
+		time {
+			margin-left: .2em;
+			font-size: .8em;
+			color: @vague;
+		}
+	}
+
+	.total {
+	line-height: 1.25em;
+
+		strong { font-size: 1.25em; }
+	} 
+
+	&.references {
+
+		h3 {
+			margin-bottom: .2em;
+		}
+
+		dt.active {
+			line-height: 2em;
+		}
+		dd {
+			.empty {
+				color: @vague;
+				font-style: italic;
+			}
+
+			a { 
+				display: none;
+				font-size: .8em;
+			}
+
+			input {
+				width: 100%;
+			}
+
+			&:hover a { display: inline; }
+		}
+	}
 }
 
 .functions { 
 	padding: 0 1em 1em; 
 	border-bottom: 1px solid @line; 
+
+	a { margin-right: .5em; }
+}
+
+.accounts { 
+	padding: 1em;  
+
+	h3 { 
+		margin-bottom: .2em;
+	}
+
+	small { 
+		color: @vague; 
+	}
 }
 
 .filters { 

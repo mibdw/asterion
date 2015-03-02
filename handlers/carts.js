@@ -77,6 +77,19 @@ router.post('/update', task.auth, function (req, res, next) {
 	}
 });
 
+router.post('/rename', task.auth, function (req, res, next) {
+
+	Cart.findByIdAndUpdate(req.body._id, {
+		title: req.body.title,
+		slug: req.body.slug,
+		editor: req.user._id,
+		edited: moment().format(),
+	}, function (err, response) {
+		if (err) console.log(err);
+		return res.send(response);
+	});
+});
+
 router.post('/remove', task.auth, function (req, res, next) {
 	Cart.findByIdAndRemove(req.body.id, function (err, response) {
 		if (err) console.log(err);
@@ -110,16 +123,14 @@ router.post('/add', task.auth, function (req, res, next) {
 		if (req.body.book._source) price = Number(req.body.book._source.price);
 		if (req.body.book.price) price = Number(req.body.book.price);
 		cart.price = cart.price + price;
+		cart.editor = req.user._id;
+		cart.edited = moment().format();
 		
 		cart.save(function (err, response) {
 			if (err) console.log(err);
 			return res.send(response);
 		});
 	});
-});
-
-router.post('/add', task.auth, function (req, res, next) {
-	
 });
 
 module.exports.router = router;

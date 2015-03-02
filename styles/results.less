@@ -1,10 +1,10 @@
-
 .result { 
 	padding: 1em 15em 1em 9em; 
 	border-bottom: 1px solid @line; 
 	position: relative; 
 	min-height: 13em;	
 	.clearfix ();
+	.transition (min-height .3s ease-out, padding-top .3s ease-out, padding-bottom .3s ease-out, border-width .3s ease-out;);
 	
 	.result-select {
 		position: absolute;
@@ -57,11 +57,65 @@
 	
 	.result-meta { 
 		color: @text; 
-		margin-top: 1em; 
+		margin-top: 1em;
+		.clearfix; 
 
 		dt, dd { float: left; }
-		dt { width: 20%; }
-		dd { width: 80%; }
+		dt { width: 25%; }
+		dd { width: 75%; }
+	}
+	
+	.result-refs { 
+		color: @text; 
+		margin-top: 1.25em; 
+		.clearfix; 
+
+		dt, dd { float: left; }
+		dt { width: 25%; 
+
+			&.editing { line-height: 2em; }
+		}
+
+		dd { 
+			width: 75%; 
+	
+			time {
+				margin-left: .2em;
+				font-size: .8em; 
+				color: @vague; 
+			}
+
+			a {
+				font-size: .8em;
+				margin-left: .2em;
+				display: none;
+			}
+
+			input { 
+				display: none;
+				width: 90%;
+			}
+
+			&:hover a {
+				display: inline;
+			}
+
+			&.empty {
+				color: @vague;
+				font-style: italic;
+
+				a { font-style: normal }
+			}
+
+			&.editing {
+				line-height: 2em;
+
+				input { display: block; }
+				span { display: none; }
+
+				&:hover a { display: none; }
+			}
+		}
 	}
 
 	.result-sidebar { 
@@ -105,7 +159,7 @@
 		.result-links { 
 			margin: .75em 0 .25em;
 			list-style-type: none; 
-			line-height: 1em;
+			line-height: 1.2em;
 
 			li { text-align: right;	}
 		}
@@ -177,5 +231,14 @@
 
 			i { color: darken(@warn, 10%) }
 		}
+	}
+
+	&.remove {
+		min-height: 0;
+		height: 0;
+		padding-top: 0;
+		padding-bottom: 0;
+		border-width: 0;
+		overflow: hidden;
 	}
 }

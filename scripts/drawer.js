@@ -40,8 +40,8 @@ ctrl.controller('drawerController', ['$scope', '$http', '$rootScope','$location'
 	}
 ]);
 
-ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus', 'slugify',
-	function ($scope, $rootScope, $http, focus, slugify) {
+ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus', 'slugify', '$location',
+	function ($scope, $rootScope, $http, focus, slugify, $location) {
 		$scope.cartsSearch = false;
 		$scope.cartsSearchToggle = function (arg) {
 			arg ? $scope.cartsSearch = false : $scope.cartsSearch = true;
@@ -81,17 +81,54 @@ ctrl.controller('drawerCarts', ['$scope', '$rootScope', '$http', 'focus', 'slugi
 				$http.post('/carts/remove', { 'id': cart._id });
 			}
 		}
+
+		$scope.renameCart = function (cart) {
+			var i = $rootScope.cartList.indexOf(cart);
+			var title = prompt("Please enter new shopping cart name", $rootScope.cartList[i].title);
+			if (title != null) {
+				$rootScope.cartList[i].title = title;
+				$rootScope.cartList[i].slug = slugify(title);
+				$http.post('/carts/rename', $rootScope.cartList[i]).success(function (response) {
+					$rootScope.getCarts();
+				});
+			}
+		}
 	}
 ]);
 
-ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStore', '$timeout',
-	function ($scope, $rootScope, $http, $cookieStore, $timeout) {
+ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStore', '$timeout', 'slugify', '$routeParams',
+	function ($scope, $rootScope, $http, $cookieStore, $timeout, slugify, $routeParams) {
 
 		$scope.removeCart = function () {
 			if (confirm('Are you sure you want to remove this cart?')) {
 				$rootScope.cartList.splice($rootScope.cartList.indexOf(cart), 1);
 				if ($rootScope.activeCart._id == $rootScope.user.cart && $rootScope.cartList.length > 0) $rootScope.activateCart($rootScope.cartList[0]);
 				$http.post('/carts/remove', { 'id': $rootScope.activeCart._id });
+				$rootScope.getCarts();
+			}
+		}	
+
+		$scope.removingBook = false;
+		$scope.removeBook = function (result) {
+			$scope.removingBook = result._id;
+			$timeout(function () { 
+				$rootScope.activeCart.books.splice($rootScope.activeCart.books.indexOf(result), 1);
+				$scope.updateCart();
+			}, 295);
+		}	
+
+		$scope.renameCart = function () {
+			var title = prompt("Please enter new shopping cart name", $rootScope.activeCart.title);
+			if (title != null) {
+				$rootScope.activeCart.title = title;
+				$rootScope.activeCart.slug = slugify(title);
+				$http.post('/carts/rename', $rootScope.activeCart).success(function (response) {
+					$rootScope.activeCart.quantity = response.quantity;
+					$rootScope.activeCart.price = response.price;
+					$rootScope.activeCart.editor = response.editor;
+					$rootScope.activeCart.edited = response.edited;
+					$rootScope.getCarts();
+				});
 			}
 		}
 		
@@ -104,6 +141,7 @@ ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStor
 					$rootScope.activeCart.price = response.price;
 					$rootScope.activeCart.editor = response.editor;
 					$rootScope.activeCart.edited = response.edited;
+					$rootScope.getCarts();
 				});
 			}, 500);
 		}

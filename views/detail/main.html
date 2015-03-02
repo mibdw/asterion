@@ -42,7 +42,7 @@
 
 	<dl class="detail-cart" ng-show="detailSource.page == 'cart'">
 		<dt>Added:</dt>
-		<dd>{{cartDetail.books[detailSource.pos].user.name.first}} {{cartDetail.books[detailSource.pos].user.name.last}}  ({{fromNow(cartDetail.books[detailSource.pos].added)}})</dd>
+		<dd>{{cartDetail.books[detailSource.pos].user.name.first}} {{cartDetail.books[detailSource.pos].user.name.last}} <time datetime="{{cartDetail.books[detailSource.pos].added}}">{{fromNow(cartDetail.books[detailSource.pos].added)}}</time></dd>
  		<dt class="quantity">Quantity:</dt>
 		<dd class="quantity">
 			<input type="text" ng-model="cartDetail.books[detailSource.pos].quantity" ng-change="updateCart()" maxlength="3">
