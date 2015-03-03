@@ -88,7 +88,7 @@
 
 </div>
 
-<aside class="right" style="width: 30%">
+<aside class="sticky right" style="width: 30%">
 	<div class="buttons">
 		<button class="reset">Price quote</button>
 		<button class="submit">Place order</button>
@@ -99,6 +99,8 @@
 		<dd class="total"><strong>{{cart.price | currency: ''}}</strong> EUR</dd>
 		<dt>Quantity:</dt>
 		<dd>{{cart.quantity}}</dd>
+		<dt>Name:</dt>
+		<dd><strong>{{cart.title}}</strong></dd>
 		<dt>Created:</dt>
 		<dd><em>{{cart.owner.name.first}} {{cart.owner.name.last}}</em> <time datetime="{{cart.created}}">{{fromNow(cart.created)}}</time></dd>
 		<dt ng-show="cart.editor">Modified:</dt>

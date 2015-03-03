@@ -110,3 +110,46 @@ app.factory('slugify', function () {
 		.replace(/-+$/, '')
 	} 
 });
+
+angular.element(document).ready(function () {
+	var header = $('body > header').outerHeight();
+	var subheader = $('.subheader').outerHeight();
+	var footer =  $('.container > footer').outerHeight();
+	var top = $('.container').scrollTop();
+	var direction = 'down';
+	var marginTop = 0;
+	
+	$('.container').scroll(function () {
+		if ($('.container').scrollTop() > top) { direction = 'down' } 
+		else if ($('.container').scrollTop() < top) { direction = 'up' }
+		
+		top = $('.container').scrollTop();
+		var container = $('#main').outerHeight();
+		var aside = $('.sticky').outerHeight();
+		var viewport = $(window).height() - header;
+
+		if (top < subheader) { marginTop = 0 } 
+		else if (top > subheader) {
+			if (aside < viewport) {
+
+				if (top - subheader < container - aside) { marginTop = top - subheader } 
+				else { marginTop = container - aside }
+
+			} else if (aside >= viewport) {
+
+				if (direction == 'down') {
+					if ((top - subheader) > (container - viewport)) {
+						marginTop = marginTop;
+					} else if ((top - marginTop) > (aside - viewport + subheader)) {
+						if (top - subheader > aside - viewport) { 
+							marginTop = (top - subheader) - (aside - viewport)
+						}  
+					}
+				} else if (direction == 'up') {
+					if (marginTop > top - subheader) marginTop = top - subheader;	
+				}
+			}
+		}
+		$('.sticky').css('margin-top', marginTop); 
+	});
+});

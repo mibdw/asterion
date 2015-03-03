@@ -44,8 +44,8 @@ module.exports = function (grunt) {
 			yossarian: {
 				src: [
 					'scripts/libs/jquery-1.11.1.js',
-					'scripts/libs/moment-with-locales.js', 
 					'scripts/libs/socket.io.js', 
+					'scripts/libs/moment-with-locales.js', 
 					'scripts/annotated.js', 
 				],
 				dest: 'public/asterion.js',

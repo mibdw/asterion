@@ -39,6 +39,7 @@ mark { background-color: @mark; }
 
 aside {
 	position: relative;
+	.clearfix;
 
 	&.left {
 		border-right: 1px solid @line; 
@@ -51,4 +52,8 @@ aside {
 		float: right; 
 		left: -1px; 
 	}
+}
+
+footer {
+	height: 10em;
 }
