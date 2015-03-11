@@ -1,39 +1,46 @@
-<div id="main" class="left" style="width: 75%" ng-init="getResults(searchTerm)">
+<div id="main" class="left" style="width: 75%" ng-init="getResults(searchTerm)" ng-class="{selected: selectedTitles.books.length > 0 && searchLoading == false}">
 
 	<div ng-show="searchLoading == true" class="loading">
 		<i class="fa fa-refresh fa-spin"></i>
 	</div>
 	
-	<div ng-show="searchLoading == false" ng-repeat="result in results" class="result">
+	<div ng-show="searchLoading == false" ng-repeat="result in results" class="result" ng-class="{selected: selectedTitles.books.indexOf(result._source._id) > -1}">
 		<label class="result-select" for="{{result._source._id}}"></label>
-		<input type="checkbox" id="{{result._source._id}}">
+		<input type="checkbox" id="{{result._source._id}}" ng-click="selectTitle(result._source._id, 'search', searchedFor)" ng-checked="selectedTitles.books.indexOf(result._source._id) > -1">
 		
 		<a href="/#/detail/{{result._source.slug}}/{{result._source._id}}" class="result-detail" ng-click="gotoDetail(result.pos)">
 			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{result._source.isbn}}" alt="{{result._source.title}}">
 			<div class="result-title" ng-bind-html="result._source.title | highlight: searchedFor">Title</div>
 		</a>
-		<div class="result-author" ng-show="result._source.author" ng-bind-html="result._source.author | highlight: searchedFor">Item author(s)</div>
+		<div class="result-subheader" ng-show="result._source.author || result._source.date"> 
+			<span class="result-author" ng-bind-html="result._source.author | highlight: searchedFor">Item author(s)</span>
+			<span class="result-divider" ng-show="result._source.author && result._source.date"> &mdash;</span>
+			<time class="result-date">{{result._source.date}}</time>
+		</div>
 	
 		<dl class="result-meta">
 			<dt>Publisher:</dt>
-			<dd><span ng-bind-html="result._source.publisher | highlight: searchedFor"></span></dd>
-			<dt>Place:</dt>
 			<dd>
+				<span ng-bind-html="result._source.publisher | highlight: searchedFor"></span><span ng-show="result._source.publisher && result._source.place || result._source.country">,</span>
 				<span>{{result._source.place}}</span><span ng-show="result._source.place && result._source.country">,</span>
 				<span>{{result._source.country}}</span>
-				<span ng-show="result._source.date">({{result._source.date}})</span>
 			</dd>
 			<dt>ISBN:</dt>
 			<dd><span ng-bind-html="result._source.isbn | highlight: searchedFor" ng-show="result._source.isbn"></span><span ng-hide="result._source.isbn">&nbsp;</span></dd>
 			<dt>Product type:</dt>
 			<dd>{{result._source.group}}<span ng-show="result._source.pages > 0">, {{result._source.pages}} pages</span></dd>
-			<dt>Availability:</dt>
-			<dd><i class="available"></i> {{result._source.status}}</dd>
+			<dt>Price:</dt>
+			<dd>
+				<span class="result-price" ng-show="result._source.price > 0"><strong>{{result._source.price | currency: ''}}</strong> EUR</span>
+				<span class="result-price unknown" ng-show="result._source.price <= 0">Price unknown</span>
+				<span class="result-availability">
+					&mdash;
+					<i class="available"></i> {{result._source.status}}
+				</span>
+			</dd>
 		</dl>
 		
 		<div class="result-sidebar">
-			<div class="result-price" ng-show="result._source.price > 0"><strong>{{result._source.price | currency: ''}}</strong> EUR</div>
-			<div class="result-price unknown" ng-show="result._source.price <= 0">Price unknown</div>
 
 			<div class="godzilla result-actions" ng-class="{
 				active: dropdownCarts == result._id || activeButton == result._id,
@@ -153,7 +160,8 @@
 	<div class="filters">
 		<div class="filter" ng-class="filterState.status">
 			<h3 ng-click="filterDisplay('status')">
-				<i class="fa fa-chevron-up" ng-class="{'fa-chevron-down': filterState.status == 'open'}"></i> 
+				<i class="fa fa-minus" ng-show="filterState.status == 'close'"></i> 
+				<i class="fa fa-plus" ng-show="filterState.status == 'open'"></i> 
 				Availability
 				<span ng-show="filter.status.length > 0 && filterState.status == 'close'">{{filter.status.length}} active</span>
 			</h3>
@@ -171,7 +179,8 @@
 
 		<div class="filter" ng-class="filterState.group">
 			<h3 ng-click="filterDisplay('group')">
-				<i class="fa fa-chevron-up" ng-class="{'fa-chevron-down': filterState.group == 'open'}"></i> 
+				<i class="fa fa-minus" ng-show="filterState.group == 'close'"></i> 
+				<i class="fa fa-plus" ng-show="filterState.group == 'open'"></i> 
 				Product type
 				<span ng-show="filter.group.length > 0 && filterState.group == 'close'">{{filter.group.length}} active</span>
 			</h3>
@@ -189,7 +198,8 @@
 
 		<div class="filter" ng-class="filterState.country">
 			<h3 ng-click="filterDisplay('country')">
-				<i class="fa fa-chevron-up" ng-class="{'fa-chevron-down': filterState.country == 'open'}"></i> 
+				<i class="fa fa-minus" ng-show="filterState.country == 'close'"></i> 
+				<i class="fa fa-plus" ng-show="filterState.country == 'open'"></i> 
 				Countries
 				<span ng-show="filter.country.length > 0 && filterState.country == 'close'">{{filter.country.length}} active</span>
 			</h3>
@@ -210,4 +220,25 @@
 
 <div ng-show="noResults == true" class="kong">
 	No results for <em>{{searchedFor}}</em>
+</div>
+
+<div class="selection" ng-class="{active: selectedTitles.books.length > 0 && selectedTitles.source == searchedFor}">
+	<div class="selection-quantity">
+		<i class="fa fa-check-square-o"></i>
+		{{selectedTitles.books.length}}
+	</div>
+
+	<div class="selection-source">
+		<strong>Current selection:</strong>
+		Search results for <em>{{selectedTitles.source}}</em>
+	</div>
+
+	<ul class="selection-options">
+		<li>
+			<a href="">Add to cart</a>
+		</li>
+		<li>
+			<a href="" ng-click="initSelection()"><i class="fa fa-trash"></i></a>
+		</li>
+	</ul>
 </div>

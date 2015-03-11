@@ -58,8 +58,8 @@
 		}
 
 		a:hover, a:focus { 
-			background-color: @sh-back; 
-			color: @text;
+			background-color: @h-back; 
+			color: @h-text;
 		}
 
 		&.sub {
@@ -340,10 +340,11 @@ nav {
 }
 
 .subheader { 
-	border-bottom: 1px solid @line; 
+	border-bottom: 1px solid @sh-line; 
 	background-color: @sh-back; 
 	padding: 1em; 
 	text-align: center;
+	color: @sh-text;
 
 	h1 { 
 		font-size: 2em; 
@@ -354,7 +355,7 @@ nav {
 	span { 
 		font-size: 1.4em; 
 		line-height: 1em; 
-		color: @vague; 
+		color: @sh-vague; 
 		margin-left: .3em; 
 	}
 }

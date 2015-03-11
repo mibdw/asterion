@@ -1,15 +1,24 @@
+#main.selected {
+	background-color: @s-back;
+}
+
 .result { 
-	padding: 1em 15em 1em 9em; 
+	padding: 1.2em 15em 1.2em 9em; 
 	border-bottom: 1px solid @line; 
 	position: relative; 
 	min-height: 13em;	
+	background-color: @back;
 	.clearfix ();
-	.transition (min-height .3s ease-out, padding-top .3s ease-out, padding-bottom .3s ease-out, border-width .3s ease-out;);
+	.transition (min-height .3s ease-out, padding-top .3s ease-out, padding-bottom .3s ease-out, border-width .3s ease-out, margin-left .15s ease-out;);
+
+	&.selected {
+		margin-left: 1em;
+	}
 	
 	.result-select {
 		position: absolute;
 		top: 0;
-		left: 0;
+		left: -1em;
 		bottom: 0;
 		width: 2em;
 		cursor: pointer;
@@ -17,7 +26,7 @@
 
 	input[type="checkbox"] { 
 		position: absolute; 
-		top: 1em; 
+		top: 1.2em; 
 		left: .7em;
 	}
 
@@ -26,7 +35,7 @@
 		img { 
 			width: 6em; 
 			position: absolute; 
-			top: 1em; 
+			top: 1.2em; 
 			left: 2em;
 
 			&:focus { outline-width: 0; } 
@@ -51,9 +60,8 @@
 		}
 	}
 
-	.result-author { 
-		color: @text; 
-	}
+	.result-author { color: @text; }
+	.result-divider, .result-date { color: @vague; }
 	
 	.result-meta { 
 		color: @text; 
@@ -63,6 +71,12 @@
 		dt, dd { float: left; }
 		dt { width: 25%; }
 		dd { width: 75%; }
+
+		.result-availability { color: @vague; }
+
+		.result-price {
+			small { color: @vague; }
+		}
 	}
 	
 	.result-refs { 
@@ -103,7 +117,6 @@
 
 			&.empty {
 				color: @vague;
-				font-style: italic;
 
 				a { font-style: normal }
 			}
@@ -140,29 +153,7 @@
 		top: 0; 
 		right: 0; 
 		width: 12em; 
-		padding: 1em;
-		
-		.result-price { 
-			margin-bottom: 2em; 
-			text-align: right;
-			position: relative;
-
-			strong { font-size: 1.25em; }
-
-			small {
-				position: absolute;
-				top: 1.6em;
-				right: 0;
-				color: @vague;
-			}
-
-			&.unknown { 
-				font-size: 1.25em; 
-				font-weight: bold;
-				font-style: italic;
-				color: @line;
-			}
-		}
+		padding: 1.2em ;
 
 		.result-quantity {
 			text-align: right;

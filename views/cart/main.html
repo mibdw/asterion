@@ -16,23 +16,35 @@
 			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{result.book.isbn}}" alt="{{result.book.title}}">
 			<div class="result-title">{{result.book.title}}</div>
 		</a>
-		<div class="result-author" ng-show="result.book.author">{{result.book.author}}</div>
+		<div class="result-subheader">
+			<span ng-show="result.book.author">{{result.book.author}}</span>
+			<span class="result-divider" ng-show="result.book.author && result.book.date"> &mdash;</span>
+			<time class="result-date">{{result.book.date}}</time>
+		</div>
 	
 		<dl class="result-meta">
 			<dt>Publisher:</dt>
-			<dd>{{result.book.publisher}}</dd>
-			<dt>Place:</dt>
-			<dd>
-				<span>{{result.book.place}}</span><span ng-show="result.book.place && result.book.country">,</span>
+			<dd> 
+				<span ng-show="result.book.publisher">{{result.book.publisher}}</span><span ng-show="result.book.publisher && result.book.place">,</span>
+				<span ng-show="result.book.place">{{result.book.place}}</span><span ng-show="result.book.place && result.book.country">,</span>
 				<span>{{result.book.country}}</span>
-				<span ng-show="result.book.date">({{result.book.date}})</span>
 			</dd>
 			<dt>ISBN:</dt>
 			<dd>{{result.book.isbn || '&nbsp;'}}</dd>
 			<dt>Product type:</dt>
 			<dd>{{result.book.group}}<span ng-show="result.book.pages > 0">, {{result.book.pages}} pages</span></dd>
-			<dt>Availability:</dt>
-			<dd><i class="available"></i> {{result.book.status}}</dd>
+			<dt>Price:</dt>
+			<dd>
+				<span class="result-price" ng-show="result.book.price > 0">
+					<strong>{{result.book.price * result.quantity | currency: ''}}</strong> EUR
+					<small ng-show="result.quantity > 1">({{result.quantity}} &times; <strong>{{result.book.price | currency: ''}}</strong> EUR)</small>
+				</span>
+				<span class="result-price unknown" ng-show="result.book.price <= 0">Price unknown</span>
+				<span class="result-availability">
+					&mdash;
+					<i class="available"></i> {{result.book.status}}
+				</span>
+			</dd>
 		</dl>
 	
 		<dl class="result-refs">
@@ -69,12 +81,6 @@
 		</dl>
 		
 		<div class="result-sidebar">
-			<div class="result-price" ng-show="result.book.price > 0">
-				<strong>{{result.book.price * result.quantity | currency: ''}}</strong> EUR
-				<small ng-show="result.quantity > 1">({{result.quantity}} &times; <strong>{{result.book.price | currency: ''}}</strong> EUR)</small>
-			</div>
-			<div class="result-price unknown" ng-show="result.book.price <= 0">Price unknown</div>
-
 			<div class="result-quantity">
 				Qty: <input type="text" ng-model="result.quantity" maxlength="3" ng-change="updateCart()">
 			</div>
@@ -98,65 +104,79 @@
 		<dt class="total">Total:</dt>
 		<dd class="total"><strong>{{cart.price | currency: ''}}</strong> EUR</dd>
 		<dt>Quantity:</dt>
-		<dd>{{cart.quantity}}</dd>
+		<dd>{{cart.quantity}} <span class="sidenote" ng-show="cart.quantity != cart.books.length">/ {{cart.books.length}} titles</span></dd>
 		<dt>Name:</dt>
-		<dd><strong>{{cart.title}}</strong></dd>
+		<dd>{{cart.title}}</dd>
 		<dt>Created:</dt>
-		<dd><em>{{cart.owner.name.first}} {{cart.owner.name.last}}</em> <time datetime="{{cart.created}}">{{fromNow(cart.created)}}</time></dd>
+		<dd>{{cart.owner.name.first}} {{cart.owner.name.last}} <time datetime="{{cart.created}}">{{fromNow(cart.created)}}</time></dd>
 		<dt ng-show="cart.editor">Modified:</dt>
-		<dd ng-show="cart.editor"><em>{{cart.editor.name.first}} {{cart.editor.name.last}}</em> <time datetime="{{cart.edited}}">{{fromNow(cart.edited)}}</time></dd>
+		<dd ng-show="cart.editor">{{cart.editor.name.first}} {{cart.editor.name.last}} <time datetime="{{cart.edited}}">{{fromNow(cart.edited)}}</time></dd>
 
 	</dl>
 	<div class="functions">
 		<a href="" ng-click="removeCart()">Remove</a>
 		<a href="" ng-click="renameCart()">Rename</a>
 		<a href="" ng-show="cart._id != activeCart._id" ng-click="activateCart()">Activate</a>
+		<span class="dropdown">
+			<a href="">More&hellip;</a>
+			<ul>
+				<li><a href="">Print</a></li>
+				<li><a href="">E-mail</a></li>
+				<li><a href="">Save as PDF</a></li>
+				<li><a href="">Save as CSV</a></li>
+				<li><a href="">Save as MARC21</a></li>
+			</ul>
+		</span>
 	</div>
 
 	<div class="accounts">
 		<h3>Account </h3>
-		WOODLAND MEDIA / IBS (Air Link) <small>22222</small><br>
-		Attn.: Erasmus, Amsterdam <br>
-		5 Logistics Drive <br>
-		Doors 50-55 <br>
-		Kearny, NJ 07032, USA<br>
+		<div class="content">
+			WOODLAND MEDIA / IBS (Air Link) <small>22222</small><br>
+			Attn.: Erasmus, Amsterdam <br>
+			5 Logistics Drive <br>
+			Doors 50-55 <br>
+			Kearny, NJ 07032, USA<br>
+		</div>
 	</div>
 	<div class="functions">
 		<a href="" ng-click="changeAccount()">Change</a>
 		<a href="">Account management</a>
 	</div>
 
-	<dl class="detail-list references">
+	<div class="references">
 		<h3>References</h3>
-		<dt ng-class="{active: activeAllRefs == 'reference'}">Reference:</dt>
-		<dd>
-			<span ng-class="{empty: allRefs.reference.length < 1}" ng-show="activeAllRefs != 'reference'" ng-click="activateAllRef('reference')">{{allRefs.reference || 'Empty'}}</span>
-			<input type="text" ng-model="allRefs.reference" ng-show="activeAllRefs == 'reference'" ng-blur="blurAllRefs()" id="allref-reference">
-			<i class="fa fa-remove" ng-show="activeAllRefs == 'reference'"></i>
-			<a href="" ng-show="activeAllRefs != 'reference'" ng-click="activateAllRef('reference')">Edit</a>
-		</dd>
-		<dt ng-class="{active: activeAllRefs == 'department'}">Department:</dt>
-		<dd>
-			<span ng-class="{empty: allRefs.department.length < 1}" ng-show="activeAllRefs != 'department'" ng-click="activateAllRef('department')">{{allRefs.department || 'Empty'}}</span>
-			<input type="text" ng-model="allRefs.department" ng-show="activeAllRefs == 'department'" ng-blur="blurAllRefs()" id="allref-department">
-			<i class="fa fa-remove" ng-show="activeAllRefs == 'department'"></i>
-			<a href="" ng-show="activeAllRefs != 'department'" ng-click="activateAllRef('department')">Edit</a>
-		</dd>
-		<dt ng-class="{active: activeAllRefs == 'budget'}">Budget:</dt>
-		<dd>
-			<span ng-class="{empty: allRefs.budget.length < 1}" ng-show="activeAllRefs != 'budget'" ng-click="activateAllRef('budget')">{{allRefs.budget || 'Empty'}}</span>
-			<input type="text" ng-model="allRefs.budget" ng-show="activeAllRefs == 'budget'" ng-blur="blurAllRefs()" id="allref-budget">
-			<i class="fa fa-remove" ng-show="activeAllRefs == 'budget'"></i>
-			<a href="" ng-show="activeAllRefs != 'budget'" ng-click="activateAllRef('budget')">Edit</a>
-		</dd>
-		<dt ng-class="{active: activeAllRefs == 'instructions'}">Instructions:</dt>
-		<dd>
-			<span ng-class="{empty: allRefs.instructions.length < 1}" ng-show="activeAllRefs != 'instructions'" ng-click="activateAllRef('instructions')">{{allRefs.instructions || 'Empty'}}</span>
-			<input type="text" ng-model="allRefs.instructions" ng-show="activeAllRefs == 'instructions'" ng-blur="blurAllRefs()" id="allref-instructions">
-			<i class="fa fa-remove" ng-show="activeAllRefs == 'instructions'"></i>
-			<a href="" ng-show="activeAllRefs != 'instructions'" ng-click="activateAllRef('instructions')">Edit</a>
-		</dd>
-	</dl>
+		<dl class="detail-list">
+			<dt ng-class="{active: activeAllRefs == 'reference'}">Reference:</dt>
+			<dd>
+				<span ng-class="{empty: allRefs.reference.length < 1}" ng-show="activeAllRefs != 'reference'" ng-click="activateAllRef('reference')">{{allRefs.reference || 'Empty'}}</span>
+				<input type="text" ng-model="allRefs.reference" ng-show="activeAllRefs == 'reference'" ng-blur="blurAllRefs()" id="allref-reference">
+				<i class="fa fa-remove" ng-show="activeAllRefs == 'reference'"></i>
+				<a href="" ng-show="activeAllRefs != 'reference'" ng-click="activateAllRef('reference')">Edit</a>
+			</dd>
+			<dt ng-class="{active: activeAllRefs == 'department'}">Department:</dt>
+			<dd>
+				<span ng-class="{empty: allRefs.department.length < 1}" ng-show="activeAllRefs != 'department'" ng-click="activateAllRef('department')">{{allRefs.department || 'Empty'}}</span>
+				<input type="text" ng-model="allRefs.department" ng-show="activeAllRefs == 'department'" ng-blur="blurAllRefs()" id="allref-department">
+				<i class="fa fa-remove" ng-show="activeAllRefs == 'department'"></i>
+				<a href="" ng-show="activeAllRefs != 'department'" ng-click="activateAllRef('department')">Edit</a>
+			</dd>
+			<dt ng-class="{active: activeAllRefs == 'budget'}">Budget:</dt>
+			<dd>
+				<span ng-class="{empty: allRefs.budget.length < 1}" ng-show="activeAllRefs != 'budget'" ng-click="activateAllRef('budget')">{{allRefs.budget || 'Empty'}}</span>
+				<input type="text" ng-model="allRefs.budget" ng-show="activeAllRefs == 'budget'" ng-blur="blurAllRefs()" id="allref-budget">
+				<i class="fa fa-remove" ng-show="activeAllRefs == 'budget'"></i>
+				<a href="" ng-show="activeAllRefs != 'budget'" ng-click="activateAllRef('budget')">Edit</a>
+			</dd>
+			<dt ng-class="{active: activeAllRefs == 'instructions'}">Instructions:</dt>
+			<dd>
+				<span ng-class="{empty: allRefs.instructions.length < 1}" ng-show="activeAllRefs != 'instructions'" ng-click="activateAllRef('instructions')">{{allRefs.instructions || 'Empty'}}</span>
+				<input type="text" ng-model="allRefs.instructions" ng-show="activeAllRefs == 'instructions'" ng-blur="blurAllRefs()" id="allref-instructions">
+				<i class="fa fa-remove" ng-show="activeAllRefs == 'instructions'"></i>
+				<a href="" ng-show="activeAllRefs != 'instructions'" ng-click="activateAllRef('instructions')">Edit</a>
+			</dd>
+		</dl>
+	</div>
 	<div class="functions">
 		<a href="" ng-click="applyAllRefs(cart)">Apply to all</a>
 		<a href="" ng-click="initAllRefs()">Clear</a>

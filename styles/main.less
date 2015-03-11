@@ -25,7 +25,11 @@
 @h-height: 55px;
 
 // SUB-HEADER
-@sh-back: #EEE;
+@sh-back: #F9F9F9;
+@sh-line: @line;
+@sh-text: #000;
+@sh-vague: #999;
+@sh-hover: darken(@sh-back, 1%);
 
 // DARK
 @d-back: #2B2B2B;
@@ -33,6 +37,15 @@
 @d-text: #FFF;
 @d-vague: #666;
 @d-hover: #242424;
+
+// SELECTION
+
+@s-height: 40px;
+@s-back: #E74C3C;
+@s-line: darken(@s-back, 10%);
+@s-text: #FFF;
+@s-vague: darken(@s-back, 15%);;
+@s-hover: darken(@s-back, 5%);;
 
 // BUTTON
 @b-back: @asterion;
@@ -60,4 +73,6 @@
 @import 'header';
 @import 'drawer';
 @import 'footer';
+@import 'selection';
 @import 'login';
+

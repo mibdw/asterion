@@ -1,0 +1,77 @@
+.selection {
+	background-color: @s-back;
+	color: @s-text;
+	border-width: 3px 3px 0 3px;
+	border-style: solid;
+	border-color: @s-line;
+	border-radius: 3px 3px 0 0;
+	height: @s-height;
+	position: fixed;
+	left: 0;
+	right: 0;
+	margin: 0 10%;
+	bottom: -@s-height;
+	.transition (bottom .25s ease, left .5s ease, right .5s ease;);
+
+	&.active { bottom: 0; }
+
+	.selection-quantity {
+		float: left;
+		font-size: 1.2em;
+		font-weight: bold;
+		line-height: @s-height * .85;
+		padding: 0 1em .1em;
+		border-right: 1px solid @s-line;
+
+		i { 
+			color: @s-vague; 
+			position: relative;
+			top: 2px;
+		}
+	}
+
+	.selection-source {
+		float: left;
+		line-height: @s-height * .85;;
+		padding: 0 1em .1em;
+
+	}
+
+	.selection-options {
+		float: right;
+		list-style-type: none;
+
+		li {
+			display: inline-block;
+			margin: 0 0 0 -4px;
+			padding: 0;
+
+			a { 
+				display: block;
+				line-height: @s-height * .85;
+				padding: 0 1em .1em;
+				color: @s-text;
+				border-left: 1px solid @s-line;
+
+				i {
+					color: @s-vague;
+					font-size: 1.2em;
+					line-height: @s-height * .85;
+				}
+
+				&:hover { 
+					background-color: @s-hover;
+					text-decoration: none;
+
+					i { color: @s-text; }
+				}
+
+			}
+		}
+	}
+}
+
+.pinned .selection {
+	 left: -45%;
+	 right: 45%;
+}
