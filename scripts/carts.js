@@ -58,6 +58,7 @@ ctrl.controller('cartController', ['$scope', '$rootScope', '$http', '$location',
 			$scope.removingBook = result._id;
 			$timeout(function () { 
 				$scope.cart.books.splice($scope.cart.books.indexOf(result), 1);
+				if ($rootScope.selectedTitles.books.indexOf(result.book) > -1) $rootScope.selectTitle(result.book, 'cart', $scope.cart._id);
 				$scope.updateCart();
 			}, 295);
 		}
@@ -135,8 +136,18 @@ ctrl.controller('cartController', ['$scope', '$rootScope', '$http', '$location',
 				if ($scope.allRefs.instructions.length > 0) $scope.cart.books[i].instructions = $scope.allRefs.instructions;
 			}
 			$scope.updateCart();
+		}	
+
+		$scope.removeAllRefs = function () {
+			if (confirm("Are you sure you want to remove all references from all titles in this cart?")) {
+				for (i in $scope.cart.books) {
+					$scope.cart.books[i].reference = '';
+					$scope.cart.books[i].department = '';
+					$scope.cart.books[i].budget = '';
+					$scope.cart.books[i].instructions = '';
+				}
+				$scope.updateCart();
+			}
 		}
-
-
 	}
 ]);

@@ -7,9 +7,7 @@
 	border-radius: 3px 3px 0 0;
 	height: @s-height;
 	position: fixed;
-	left: 0;
-	right: 0;
-	margin: 0 10%;
+	right: 2em;
 	bottom: -@s-height;
 	.transition (bottom .25s ease, left .5s ease, right .5s ease;);
 
@@ -21,7 +19,6 @@
 		font-weight: bold;
 		line-height: @s-height * .85;
 		padding: 0 1em .1em;
-		border-right: 1px solid @s-line;
 
 		i { 
 			color: @s-vague; 
@@ -30,48 +27,310 @@
 		}
 	}
 
-	.selection-source {
-		float: left;
-		line-height: @s-height * .85;;
-		padding: 0 1em .1em;
-
-	}
-
 	.selection-options {
 		float: right;
 		list-style-type: none;
 
 		li {
-			display: inline-block;
-			margin: 0 0 0 -4px;
+			float: left;
 			padding: 0;
+			position: relative;
 
 			a { 
 				display: block;
-				line-height: @s-height * .85;
-				padding: 0 1em .1em;
-				color: @s-text;
-				border-left: 1px solid @s-line;
+				height: @s-height;
+				line-height: @s-height - 3px;
+				padding: 0 2em .1em;
+				color: @s-vague;
+				border-left: 3px solid @s-line; 
+				
+				text-align: center;	
 
 				i {
 					color: @s-vague;
-					font-size: 1.2em;
-					line-height: @s-height * .85;
 				}
 
 				&:hover { 
+					color: @s-text;
 					background-color: @s-hover;
 					text-decoration: none;
 
 					i { color: @s-text; }
 				}
 
+				&.selection-clear {
+					min-width: auto;
+					padding: 0 1em;
+				}
+			}
+
+			button {
+				height: @s-height * .9;
+				background-color: transparent;
+				border-width: 0 0 0 1px;
+				border-color: @s-line;
+				border-style: solid;
+				border-radius: 0;
+				color: @s-vague;
+				padding: 0 1em;
+				margin: 0 0 0 -4px;
+				font-size: @f-size;
+
+				&:first-child {
+					border-left-width: 3px;  
+				}
+
+				&.more { padding: 0 .5em }
+
+				&:hover, &:focus {
+					background-color: @s-hover;
+					color: @s-text;
+				}
+			}
+
+			&.selection-actions:hover, &.selection-actions:focus {
+
+				.selection-hover {
+					display: block;
+				}
+
+				& > a {
+					background-color: @s-hover; 
+					color: @s-text;
+					text-decoration: none;
+
+					i { color: @s-text; }
+				}
+			}
+
+			.selection-hover {
+				display: none;
+				position: absolute; 
+				bottom: @s-height; 
+				left: 50%;
+				margin-left: -7em;
+				font-size: @f-size; 
+				line-height: 1.4em; 
+				padding: 0 0 19px;
+				list-style-type: none; 
+				z-index: 999;
+				
+				li { 
+					border-width: 0 1px; 
+					border-color: @vague; 
+					border-style: solid; 
+					position: relative;
+					height: auto;
+					float: none;
+
+					&:first-child { 
+						padding-top: .5em; 
+						background-color: @back; 
+						border-top-width: 1px; 
+					}
+
+					&:last-child { 
+						padding-bottom: .5em; 
+						background-color: @back;
+						border-bottom-width: 1px; 
+					}
+					
+					&.divider { 
+						height: 1em; 
+						position: relative; 
+						background-color: @back;
+
+						&:after { 
+							content: ""; 
+							display: block; 
+							width: 100%; 
+							height: 1px; 
+							background-color: @vague; 
+							position: absolute; 
+							top: 50%;
+						}
+					}
+					
+					a { 
+						display: block; 
+						background-color: @back; 
+						padding: .2em .8em; 
+						text-decoration: none; 
+						color: @text; 
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						min-width: 14em;
+						border-left-width: 0;
+						line-height: 1.4em;
+						height: auto;
+						text-align: left;
+					}
+
+					a:hover, a:focus { 
+						background-color: @s-hover; 
+						color: @s-text;
+						text-decoration: none;
+					}
+
+					&.sub {
+						.hover-menu-sub {
+							display: none;
+							position: absolute;
+							padding: 1em;
+							width: 10em;
+							top: -2em;
+							left: 1em;
+							margin-left: -10em;
+							list-style-type: none;
+
+							li:first-child { border-top: 1px solid @vague; }
+							li:last-child { border-bottom: 1px solid @vague; }
+						}
+
+						&:hover, &:focus {
+							
+							a {
+								background-color: @sh-back;
+								color: @text;
+							}
+
+							.hover-menu-sub { 
+								display: block; 
+
+								li a {
+									background-color: @back;
+									color: @text;
+
+									&:hover, &:focus {
+										background-color: @sh-back;
+										color: @text;
+									}
+								}
+
+								li.active a, li.active a:hover, li.active a:focus {
+									background-color: @h-back;
+									color: @h-text;
+								}
+							}
+						}
+					}
+				}
+
+				&:after { 
+					content: ''; 
+					display: block; 
+					position: absolute; 
+					background-color: @back; 
+					border-width: 1px 1px 0 0; 
+					border-color: @vague; 
+					border-style: solid; 
+					width: 1em; 
+					height: 1em; 
+					bottom: .7em; 
+					margin-left: -.6em; 
+					left: 50%; 
+					background: -moz-linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,1) 50%, rgba(255,255,255,1) 100%); /* FF3.6+ */
+					background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+					background: -webkit-linear-gradient(45deg, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 50%,rgba(255,255,255,1) 50%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+					background: -o-linear-gradient(45deg, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 50%,rgba(255,255,255,1) 50%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+					background: -ms-linear-gradient(45deg, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 50%,rgba(255,255,255,1) 50%,rgba(255,255,255,1) 100%); /* IE10+ */
+					background: linear-gradient(45deg, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 50%,rgba(255,255,255,1) 50%,rgba(255,255,255,1) 100%); /* W3C */
+					filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+					.rotate (135deg);
+				}
+			}
+
+			.carts-list {
+				position: absolute;
+				bottom: @s-height + 15px; 
+				right: -1em; 
+				list-style-type: none; 
+				z-index: 998;
+				background-color: @back;
+				border-width: 1px;
+				border-style: solid;
+				border-color: @vague;
+				max-height: 20em;
+				width: 20em;
+				overflow-y: auto;
+				
+				li { 
+					background-color: @back;
+					display: block;
+					float: none; 
+
+					&:first-child a { border-top: .5em solid @back; }
+					&:last-child a { border-bottom: .5em solid @back; }
+				
+					&.loading { font-size: 1.75em;}
+
+					a {
+						display: block; 
+						text-align: left;
+						float: none;
+						padding: .4em .5em .4em 1em;
+						color: @text;
+						background-color: @back;
+						border-bottom: 1px solid @line;
+						border-left-width: 0;
+						height: auto;
+						line-height: 1.3em;
+						position: relative;
+						z-index: 1111;
+
+						.cart-title {
+							font-size: 1.1em;
+							.text-truncate;
+						}
+
+						.cart-meta {
+							font-size: .9em;
+							color: @vague;
+
+							i { color: @vague; }
+							.fa-credit-card { margin-left: 1em; }
+						}
+
+						&:hover, &.active { 
+							background-color: @s-hover; 
+							color: @s-text; 
+							text-decoration: none; 
+
+							.cart-meta, .cart-meta i {
+								color: @s-text;
+							}
+						}
+					}
+				}
+			}
+
+			.indicator { 
+				display: block; 
+				position: absolute; 
+				z-index: 999;
+				background-color: @back; 
+				border-width: 1px 1px 0 0; 
+				border-color: @vague; 
+				border-style: solid; 
+				width: 1em; 
+				height: 1em; 
+				bottom: @s-height + 8px; 
+				right: .5em;
+				background: -moz-linear-gradient(45deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0) 51%, rgba(255,255,255,1) 51%, rgba(255,255,255,1) 100%); /* FF3.6+ */
+				background: -webkit-gradient(linear, left bottom, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(51%,rgba(255,255,255,0)), color-stop(51%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+				background: -webkit-linear-gradient(45deg, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 51%,rgba(255,255,255,1) 51%,rgba(255,255,255,1) 100%); /* Chrome10+,Safari5.1+ */
+				background: -o-linear-gradient(45deg, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 51%,rgba(255,255,255,1) 51%,rgba(255,255,255,1) 100%); /* Opera 11.10+ */
+				background: -ms-linear-gradient(45deg, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 51%,rgba(255,255,255,1) 51%,rgba(255,255,255,1) 100%); /* IE10+ */
+				background: linear-gradient(45deg, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 51%,rgba(255,255,255,1) 51%,rgba(255,255,255,1) 100%); /* W3C */
+				filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+				.rotate (135deg);
 			}
 		}
 	}
 }
 
 .pinned .selection {
-	 left: -45%;
 	 right: 45%;
+	 margin-right: 2em;
 }

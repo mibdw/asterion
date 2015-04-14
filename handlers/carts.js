@@ -4,7 +4,7 @@ var moment = require('moment');
 var task = require(__dirname + '/tasks');
 var User = require(__dirname + '/../models/user');
 var Cart = require(__dirname + '/../models/cart');
-
+var Book = require(__dirname + '/../models/book');
 
 router.post('/detail', task.auth, function (req, res, next) {
 	Cart.findById(req.body.id)	
@@ -130,6 +130,50 @@ router.post('/add', task.auth, function (req, res, next) {
 			if (err) console.log(err);
 			return res.send(response);
 		});
+	});
+});
+
+router.post('/selection', task.auth, function (req, res, next) {
+	console.log(req.body)	
+
+	Cart.findById(req.body.cart, function (err, cart) {
+		if (err) console.log(err);
+
+		for (i in req.body.books) {
+			var add = { 
+				'book': req.body.books[i], 
+				'quantity': 1,
+				'added': moment().format(),
+				'user': req.user._id
+			};
+
+			var check = false;
+			for (j in cart.books) {
+				if (cart.books[j].book == add.book) {
+					cart.books[j].quantity++;
+					check = true;
+				}
+			}
+			if (check == false) cart.books.push(add);
+
+			cart.quantity = cart.quantity + 1;
+
+			Book.findById(add.book, function (err, tome) {
+				if (err) console.log(err);
+				var price = Number(tome.price);
+				cart.price = cart.price + price;
+			});
+
+			if (i == req.body.books.length - 1) {
+				cart.editor = req.user._id;
+				cart.edited = moment().format();
+
+				cart.save(function (err, response) {
+					if (err) console.log(err);
+					return res.send(response);
+				});
+			} 
+		}
 	});
 });
 

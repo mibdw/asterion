@@ -149,35 +149,10 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			$rootScope.getActiveCart($rootScope.user.cart);
 		}
 
-
-		$rootScope.initSelection = function () {
-			$rootScope.selectedTitles = {
-				page: '',
-				source: '',
-				slug: '',
-				id: '',
-				books: []
-			};
-			$cookieStore.put('selectedTitles', $rootScope.selectedTitles);
-		}	
-
-		if ($cookieStore.get('selectedTitles')) {
-			$rootScope.selectedTitles = $cookieStore.get('selectedTitles');
-		} else {
-			$rootScope.initSelection();
-		}
-
-		$rootScope.selectTitle = function (id, page, source, slug) {
-			if ($rootScope.selectedTitles.source != source) $rootScope.initSelection();
-			$rootScope.selectedTitles.source = source;
-			
-			if ($rootScope.selectedTitles.books.indexOf(id) < 0) {
-				$rootScope.selectedTitles.books.push(id);
-			} else {
-				$rootScope.selectedTitles.books.splice($rootScope.selectedTitles.books.indexOf(id), 1);
-			}
-
-			$cookieStore.put('selectedTitles', $rootScope.selectedTitles);
+		$rootScope.checkIfSelected = function (book) {
+			angular.forEach($rootScope.selectedTitles.books, function (obj) {
+				if (obj._id == book._id);
+			});
 		}
 	}
 ]);

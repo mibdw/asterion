@@ -1,5 +1,5 @@
 var app = angular.module('asterion', [ 
-	'ngRoute', 'ngCookies', 'ngSanitize', 'global', 'drawer', 'dashboard', 'search', 'detail', 'carts', 'advanced', 'outside', 'isbn', 'tracing', 'standing', 'nts', 'approval', 'profile', 'help'
+	'ngRoute', 'ngCookies', 'ngSanitize', 'global', 'drawer', 'selection', 'dashboard', 'search', 'detail', 'carts', 'advanced', 'outside', 'isbn', 'tracing', 'standing', 'nts', 'approval', 'profile', 'help'
 ]);
 
 // Routes

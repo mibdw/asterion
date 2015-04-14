@@ -22,6 +22,7 @@ module.exports = function (grunt) {
 						'scripts/config.js',
 						'scripts/global.js',
 						'scripts/drawer.js',
+						'scripts/selection.js',
 						'scripts/carts.js',
 						'scripts/dash.js',
 						'scripts/search.js',

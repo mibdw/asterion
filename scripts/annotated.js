@@ -257,7 +257,7 @@ if(!e)return e;for(var n,h=e,m=[],l,p;n=h.match(d);)l=n[0],n[2]==n[3]&&(l="mailt
 //# sourceMappingURL=angular-sanitize.min.js.map
 
 var app = angular.module('asterion', [ 
-	'ngRoute', 'ngCookies', 'ngSanitize', 'global', 'drawer', 'dashboard', 'search', 'detail', 'carts', 'advanced', 'outside', 'isbn', 'tracing', 'standing', 'nts', 'approval', 'profile', 'help'
+	'ngRoute', 'ngCookies', 'ngSanitize', 'global', 'drawer', 'selection', 'dashboard', 'search', 'detail', 'carts', 'advanced', 'outside', 'isbn', 'tracing', 'standing', 'nts', 'approval', 'profile', 'help'
 ]);
 
 // Routes
@@ -562,35 +562,10 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			$rootScope.getActiveCart($rootScope.user.cart);
 		}
 
-
-		$rootScope.initSelection = function () {
-			$rootScope.selectedTitles = {
-				page: '',
-				source: '',
-				slug: '',
-				id: '',
-				books: []
-			};
-			$cookieStore.put('selectedTitles', $rootScope.selectedTitles);
-		}	
-
-		if ($cookieStore.get('selectedTitles')) {
-			$rootScope.selectedTitles = $cookieStore.get('selectedTitles');
-		} else {
-			$rootScope.initSelection();
-		}
-
-		$rootScope.selectTitle = function (id, page, source, slug) {
-			if ($rootScope.selectedTitles.source != source) $rootScope.initSelection();
-			$rootScope.selectedTitles.source = source;
-			
-			if ($rootScope.selectedTitles.books.indexOf(id) < 0) {
-				$rootScope.selectedTitles.books.push(id);
-			} else {
-				$rootScope.selectedTitles.books.splice($rootScope.selectedTitles.books.indexOf(id), 1);
-			}
-
-			$cookieStore.put('selectedTitles', $rootScope.selectedTitles);
+		$rootScope.checkIfSelected = function (book) {
+			angular.forEach($rootScope.selectedTitles.books, function (obj) {
+				if (obj._id == book._id);
+			});
 		}
 	}
 ]);
@@ -753,6 +728,67 @@ ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStor
 		}
 	}
 ]);
+var ctrl = angular.module('selection', []);
+
+ctrl.controller('selectionController', ['$scope', '$rootScope', '$http', '$cookieStore',
+	function ($scope, $rootScope, $http, $cookieStore) {
+
+		$scope.selectionCarts = false;
+		$rootScope.selectUrl = '/partials/selection/main';
+
+		$rootScope.initSelection = function () {
+			$rootScope.selectedTitles = {
+				page: '',
+				source: '',
+				slug: '',
+				id: '',
+				books: []
+			};
+			$cookieStore.put('selectedTitles', $rootScope.selectedTitles);
+		}	
+
+		if ($cookieStore.get('selectedTitles')) {
+			$rootScope.selectedTitles = $cookieStore.get('selectedTitles');
+			console.log($rootScope.selectedTitles);
+		} else {
+			$rootScope.initSelection();
+		}
+
+		$rootScope.selectTitle = function (book, page, source) {
+
+			if ($rootScope.selectedTitles.source != source) $rootScope.initSelection();
+			$rootScope.selectedTitles.source = source;
+			$rootScope.selectedTitles.page = page;
+			
+			if ($rootScope.selectedTitles.books.indexOf(book._id) < 0) {
+				$rootScope.selectedTitles.books.push(book._id);
+			} else {
+				$rootScope.selectedTitles.books.splice($rootScope.selectedTitles.books.indexOf(book._id), 1);
+			}
+
+			$cookieStore.put('selectedTitles', $rootScope.selectedTitles);
+		}
+
+		$rootScope.addSelectionToCart = function (books, cart) {
+			$rootScope.addingSelectionToCart = true;
+
+			$http.post('/carts/selection', { 'books': books, 'cart': cart }).success(function (response) {
+				$rootScope.getActiveCart($rootScope.user.cart);
+				$rootScope.getCarts();
+
+				$timeout(function () {
+					$rootScope.addingSelectionToCart = false;
+					$rootScope.addedSelectionToCart = true;
+
+					$timeout(function () {
+						$rootScope.addedSelectionToCart = false;
+						$rootScope.initSelection();
+					}, 2000);
+				}, 1000);
+			});
+		}
+	}
+]);
 var ctrl = angular.module('carts', []);
 
 ctrl.controller('cartController', ['$scope', '$rootScope', '$http', '$location', '$routeParams', '$cookieStore', '$timeout', 'slugify', 'focus',
@@ -813,6 +849,7 @@ ctrl.controller('cartController', ['$scope', '$rootScope', '$http', '$location',
 			$scope.removingBook = result._id;
 			$timeout(function () { 
 				$scope.cart.books.splice($scope.cart.books.indexOf(result), 1);
+				if ($rootScope.selectedTitles.books.indexOf(result.book) > -1) $rootScope.selectTitle(result.book, 'cart', $scope.cart._id);
 				$scope.updateCart();
 			}, 295);
 		}
@@ -890,9 +927,19 @@ ctrl.controller('cartController', ['$scope', '$rootScope', '$http', '$location',
 				if ($scope.allRefs.instructions.length > 0) $scope.cart.books[i].instructions = $scope.allRefs.instructions;
 			}
 			$scope.updateCart();
+		}	
+
+		$scope.removeAllRefs = function () {
+			if (confirm("Are you sure you want to remove all references from all titles in this cart?")) {
+				for (i in $scope.cart.books) {
+					$scope.cart.books[i].reference = '';
+					$scope.cart.books[i].department = '';
+					$scope.cart.books[i].budget = '';
+					$scope.cart.books[i].instructions = '';
+				}
+				$scope.updateCart();
+			}
 		}
-
-
 	}
 ]);
 var ctrl = angular.module('dashboard', []);

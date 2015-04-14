@@ -1,4 +1,4 @@
-<div id="main" class="left" style="width: 70%">
+<div id="main" class="left" style="width: 70%" ng-class="{selected: selectedTitles.books.length > 0 && cartLoading == false}">
 
 	<div ng-show="cartLoading == true" class="loading">
 		<i class="fa fa-refresh fa-spin"></i>
@@ -8,9 +8,9 @@
 		This shopping cart is empty
 	</div>
 	
-	<div ng-show="cartLoading == false" ng-repeat="result in cart.books | orderBy: '-added'" class="result" ng-class="{remove: removingBook == result._id}">
+	<div ng-show="cartLoading == false" ng-repeat="result in cart.books | orderBy: '-added'" class="result" ng-class="{remove: removingBook == result._id, selected: selectedTitles.books.indexOf(result.book._id) > -1}">
 		<label class="result-select" for="{{result.book._id}}"></label>
-		<input type="checkbox" id="{{result.book._id}}">
+		<input type="checkbox" id="{{result.book._id}}" ng-click="selectTitle(result.book, 'cart', cart._id)" ng-checked="selectedTitles.books.indexOf(result.book._id) > -1">
 		
 		<a href="/#/detail/{{result.book.slug}}/{{result.book._id}}" class="result-detail" ng-click="gotoDetail($index)">
 			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{result.book.isbn}}" alt="{{result.book.title}}">
@@ -115,13 +115,16 @@
 	</dl>
 	<div class="functions">
 		<a href="" ng-click="removeCart()">Remove</a>
-		<a href="" ng-click="renameCart()">Rename</a>
 		<a href="" ng-show="cart._id != activeCart._id" ng-click="activateCart()">Activate</a>
 		<span class="dropdown">
 			<a href="">More&hellip;</a>
 			<ul>
+				<li><a href="">Select all</a></li>
+				<li><a href="" ng-click="renameCart()">Rename</a></li>
+				<li class="divider"></li>
 				<li><a href="">Print</a></li>
 				<li><a href="">E-mail</a></li>
+				<li class="divider"></li>
 				<li><a href="">Save as PDF</a></li>
 				<li><a href="">Save as CSV</a></li>
 				<li><a href="">Save as MARC21</a></li>
@@ -179,6 +182,11 @@
 	</div>
 	<div class="functions">
 		<a href="" ng-click="applyAllRefs(cart)">Apply to all</a>
+		<a href="" ng-click="removeAllRefs()">Remove all</a>
 		<a href="" ng-click="initAllRefs()">Clear</a>
 	</div>
 </aside>
+
+
+<div class="selection" ng-controller="selectionController" ng-class="{active: selectedTitles.books.length > 0 && selectedTitles.source == cart._id}" ng-include="selectUrl">
+</div>
