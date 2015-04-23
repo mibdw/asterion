@@ -22,6 +22,9 @@
 					<a href="/#/{{option.slug}}" id="menu-{{$index}}" ng-keypress="menuNav($event, $index)">{{option.name}}</a>
 				</li>
 				<li class="divider"></li>
+				<li ng-repeat="option in menuServices" ng-class="{active: option.slug == pageSlug}">
+					<a href="/#/{{option.slug}}" id="menu-{{menuSearch.length + $index}}" ng-keypress="menuNav($event, menuSearch.length + $index)">{{option.name}}</a>
+				</li><li class="divider"></li>
 				<li ng-repeat="option in menuOrders" ng-class="{active: option.slug == pageSlug}">
 					<a href="/#/{{option.slug}}" id="menu-{{menuSearch.length + $index}}" ng-keypress="menuNav($event, menuSearch.length + $index)">{{option.name}}</a>
 				</li>

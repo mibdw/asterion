@@ -1,12 +1,12 @@
-<div id="main" class="left" style="width: 75%" ng-init="getResults(searchTerm)" ng-class="{selected: selectedTitles.books.length > 0 && searchLoading == false}">
+<div id="main" class="left" style="width: 75%" ng-init="getResults(searchTerm)" ng-class="{selected: user.select.books.length > 0 && searchLoading == false}">
 
 	<div ng-show="searchLoading == true" class="loading">
 		<i class="fa fa-refresh fa-spin"></i>
 	</div>
 	
-	<div ng-show="searchLoading == false" ng-repeat="result in results" class="result" ng-class="{selected: selectedTitles.books.indexOf(result._source._id) > -1}">
+	<div ng-show="searchLoading == false" ng-repeat="result in results" class="result" ng-class="{selected: user.select.source == searchedFor && user.select.books.indexOf(result._source._id) > -1}">
 		<label class="result-select" for="{{result._source._id}}"></label>
-		<input type="checkbox" id="{{result._source._id}}" ng-click="selectTitle(result._source, 'search', searchedFor)" ng-checked="selectedTitles.books.indexOf(result._source._id) > -1">
+		<input type="checkbox" id="{{result._source._id}}" ng-click="selectTitle(result._source, 'search', searchedFor)" ng-checked="user.select.source == searchedFor && user.select.books.indexOf(result._source._id) > -1">
 		
 		<a href="/#/detail/{{result._source.slug}}/{{result._source._id}}" class="result-detail" ng-click="gotoDetail(result.pos)">
 			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{result._source.isbn}}" alt="{{result._source.title}}">
@@ -115,7 +115,7 @@
 		<dt>Criteria:</dt>
 		<dd><em>{{searchedFor}}</em><span ng-hide="searchedFor">&nbsp;</span></dd>
 		<dt>Results:</dt>
-		<dd>{{total}}<span ng-hide="results.count">&nbsp;</span></dd>
+		<dd>{{total || ' '}}</dd>
 		<dt>Sort by:</dt>
 		<dd>
 			<span href="" class="dropdown"><a>{{currentSortMethod.name}}</a>
@@ -153,7 +153,7 @@
 	</dl>
 
 	<div class="functions">
-		<a href="">Select all</a>
+		<a href="" ng-click="selectAllResults(total, searchedFor, currentSortMethod, sortorder, filter)">Select all</a>
 	</div>
 
 	<div class="filters">
@@ -221,5 +221,5 @@
 	No results for <em>{{searchedFor}}</em>
 </div>
 
-<div class="selection" ng-controller="selectionController" ng-class="{active: selectedTitles.books.length > 0 && selectedTitles.source == searchedFor}" ng-include="selectUrl">
+<div class="selection" ng-controller="selectionController" ng-class="{active: user.select.books.length > 0 && user.select.source == searchedFor}" ng-include="selectUrl">
 </div>

@@ -14,12 +14,17 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			{'name': 'Outside database', 'slug': 'order-outside-database' },
 			{'name': 'ISBN upload', 'slug': 'isbn-upload' },
 		];
+
+		$scope.menuServices = [
+			{'name': 'Standing orders and journals', 'slug': 'standing-orders' },
+			{'name': 'New title service', 'slug': 'new-title-service' },
+			{'name': 'Approval plans', 'slug': 'approval-plans' }
+		];
 		
 		$scope.menuOrders = [
 			{'name': 'Order tracing', 'slug': 'order-tracing' },
-			{'name': 'Standing orders and journals', 'slug': 'standing-orders' },
-			{'name': 'New title service', 'slug': 'new-title-service' },
-			{'name': 'Approval plans', 'slug': 'approval-plans' },
+			{'name': 'Cart manager', 'slug': 'cart-manager' },
+			{'name': 'Price quotations', 'slug': 'price-quotations' }
 		];
 
 		$scope.menuUser = [
@@ -123,7 +128,7 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 		$rootScope.addToCart = function (book, cart) {
 			$rootScope.addingToCart = book;
 
-			$http.post('/carts/add', { 'book': book, 'cart': cart }).success(function (response) {
+			$http.post('/carts/add/single', { 'book': book, 'cart': cart }).success(function (response) {
 				$rootScope.getActiveCart($rootScope.user.cart);
 				$rootScope.getCarts();
 

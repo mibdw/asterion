@@ -50,9 +50,9 @@
 
 				<dl class="meta">
 					<dt>Author:</dt>
-					<dd>{{item.book.author}}</dd>
+					<dd>{{item.book.author || '&nbsp;'}}</dd>
 					<dt>ISBN:</dt>
-					<dd>{{item.book.isbn || ' '}}</dd>
+					<dd>{{item.book.isbn || '&nbsp;'}}</dd>
 					<dt>Added:</dt>
 					<dd>{{item.user.name.first}} {{item.user.name.last}} (<time datetime="{{item.added}}">{{fromNow(item.added)}}</time>)</dd>
 				</dl>

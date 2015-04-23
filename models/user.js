@@ -17,7 +17,14 @@ var userSchema = mongoose.Schema({
 	accounts: [String],
 	lang: { type: String, default: 'en' },
 	confirmation: { type: Boolean, default: true },
-	cart: String
+	cart: String,
+	select: {
+		page: String,
+		source: String,
+		slug: String,
+		books: [String],
+		selection: [mongoose.Schema.Types.Mixed],
+	}
 });
 
 userSchema.plugin(passportLocalMongoose, { usernameField: 'email' });

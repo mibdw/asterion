@@ -1,4 +1,4 @@
-<div id="main" class="left" style="width: 70%" ng-class="{selected: selectedTitles.books.length > 0 && cartLoading == false}">
+<div id="main" class="left" style="width: 70%" ng-class="{selected: user.select.books.length > 0 && cartLoading == false}">
 
 	<div ng-show="cartLoading == true" class="loading">
 		<i class="fa fa-refresh fa-spin"></i>
@@ -8,9 +8,9 @@
 		This shopping cart is empty
 	</div>
 	
-	<div ng-show="cartLoading == false" ng-repeat="result in cart.books | orderBy: '-added'" class="result" ng-class="{remove: removingBook == result._id, selected: selectedTitles.books.indexOf(result.book._id) > -1}">
+	<div ng-show="cartLoading == false" ng-repeat="result in cart.books | orderBy: '-added'" class="result" ng-class="{remove: removingBook.indexOf(result._id) > -1, selected: user.select.source == cart._id && user.select.books.indexOf(result.book._id) > -1}">
 		<label class="result-select" for="{{result.book._id}}"></label>
-		<input type="checkbox" id="{{result.book._id}}" ng-click="selectTitle(result.book, 'cart', cart._id)" ng-checked="selectedTitles.books.indexOf(result.book._id) > -1">
+		<input type="checkbox" id="{{result.book._id}}" ng-click="selectTitle(result.book, 'cart', cart._id)" ng-checked="user.select.source == cart._id && user.select.books.indexOf(result.book._id) > -1">
 		
 		<a href="/#/detail/{{result.book.slug}}/{{result.book._id}}" class="result-detail" ng-click="gotoDetail($index)">
 			<img src="http://www.erasmusbooks.nl/main/tools/Scale.aspx?size=1&PR={{result.book.isbn}}" alt="{{result.book.title}}">
@@ -96,8 +96,17 @@
 
 <aside class="sticky right" style="width: 30%">
 	<div class="buttons">
-		<button class="reset">Price quote</button>
-		<button class="submit">Place order</button>
+		<button class="reset" ng-click="quoteCart()" ng-class="{success: quotedCart == true}">
+			<span ng-hide="quotingCart == true || quotedCart == true">Price quote</span>
+			<span ng-show="quotingCart == true"><i class="fa fa-refresh fa-spin"></i> Sending</span>
+			<span ng-show="quotedCart == true"><i class="fa fa-check"></i> Request sent</span>
+		</button>
+
+		<button class="submit" ng-click="orderCart()" ng-class="{success: orderedCart == true}">
+			<span ng-hide="orderingCart == true || orderedCart == true">Place order</span>
+			<span ng-show="orderingCart == true"><i class="fa fa-refresh fa-spin"></i> Ordering</span>
+			<span ng-show="orderedCart == true"><i class="fa fa-check"></i> Ordered</span>
+		</button>
 	</div>
 
 	<dl class="detail-list">
@@ -119,7 +128,7 @@
 		<span class="dropdown">
 			<a href="">More&hellip;</a>
 			<ul>
-				<li><a href="">Select all</a></li>
+				<li><a href="" ng-click="selectCart()">Select all</a></li>
 				<li><a href="" ng-click="renameCart()">Rename</a></li>
 				<li class="divider"></li>
 				<li><a href="">Print</a></li>
@@ -188,5 +197,5 @@
 </aside>
 
 
-<div class="selection" ng-controller="selectionController" ng-class="{active: selectedTitles.books.length > 0 && selectedTitles.source == cart._id}" ng-include="selectUrl">
+<div class="selection" ng-controller="selectionController" ng-class="{active: user.select.books.length > 0 && user.select.source == cart._id}" ng-include="selectUrl">
 </div>

@@ -97,7 +97,7 @@ router.post('/remove', task.auth, function (req, res, next) {
 	});
 });
 
-router.post('/add', task.auth, function (req, res, next) {
+router.post('/add/single', task.auth, function (req, res, next) {
 	var add = { 
 		'book': req.body.book._id, 
 		'quantity': 1,
@@ -133,15 +133,14 @@ router.post('/add', task.auth, function (req, res, next) {
 	});
 });
 
-router.post('/selection', task.auth, function (req, res, next) {
-	console.log(req.body)	
+router.post('/add/multiple', task.auth, function (req, res, next) {
 
 	Cart.findById(req.body.cart, function (err, cart) {
 		if (err) console.log(err);
 
 		for (i in req.body.books) {
 			var add = { 
-				'book': req.body.books[i], 
+				'book': req.body.books[i]._id, 
 				'quantity': 1,
 				'added': moment().format(),
 				'user': req.user._id
@@ -157,13 +156,9 @@ router.post('/selection', task.auth, function (req, res, next) {
 			if (check == false) cart.books.push(add);
 
 			cart.quantity = cart.quantity + 1;
-
-			Book.findById(add.book, function (err, tome) {
-				if (err) console.log(err);
-				var price = Number(tome.price);
-				cart.price = cart.price + price;
-			});
-
+			var price = Number(req.body.books[i].price);
+			cart.price = cart.price + price;
+			
 			if (i == req.body.books.length - 1) {
 				cart.editor = req.user._id;
 				cart.edited = moment().format();
@@ -173,6 +168,7 @@ router.post('/selection', task.auth, function (req, res, next) {
 					return res.send(response);
 				});
 			} 
+
 		}
 	});
 });

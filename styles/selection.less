@@ -81,10 +81,17 @@
 				}
 
 				&.more { padding: 0 .5em }
+				&.cart { min-width: 10em }
 
 				&:hover, &:focus {
 					background-color: @s-hover;
 					color: @s-text;
+				}
+
+				&.solo {
+					color: @s-text;
+					border-left-width: 3px; 
+					min-width: 12em; 
 				}
 			}
 

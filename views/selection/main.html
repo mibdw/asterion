@@ -1,17 +1,22 @@
 <div class="selection-quantity">
 	<i class="fa fa-check-square-o"></i>
-	{{selectedTitles.books.length}}
+	{{user.select.books.length}}
 </div>
 
 <ul class="selection-options">
-	<li class="selection-search">
-		<button type="button" class="cart" ng-click="addSelectionToCart(selectedTitles.books, user.cart)">Add to cart</button>
-		<button type="button" class="more" ng-focus="selectionCarts = true" ng-blur="selectionCarts = false"><i class="fa fa-caret-up"></i></button>
+	<li ng-hide="user.select.page == 'cart'">
+
+		<button type="button" class="cart" ng-click="addSelectionToCart(user.select.selection, user.cart)" ng-hide="addingSelectionToCart == true || addedSelectionToCart == true">
+			Add to cart
+			</button>
+		<button type="button" class="more" ng-focus="selectionCartsToggle(true)" ng-blur="selectionCartsToggle(false)" ng-hide="addingSelectionToCart == true || addedSelectionToCart == true">
+			<i class="fa fa-caret-up"></i>
+		</button>
 
 		<span class="indicator" ng-show="selectionCarts == true"></span>
 		<ul class="carts-list" ng-show="selectionCarts == true">
 			<li ng-repeat="cart in cartList">
-				<a href="" title="{{cart.title}}" ng-click="addToCart(result, cart._id)">
+				<a href="" title="{{cart.title}}" ng-click="addSelectionToCart(user.select.selection, cart._id)">
 					<div class="cart-title">{{cart.title}}</div>
 					<div class="cart-meta">	
 						<i class="fa fa-shopping-cart"></i> {{cart.quantity}}
@@ -20,7 +25,19 @@
 				</a>
 			</li>
 		</ul>
+		
+		<button class="solo" ng-show="addingSelectionToCart == true">
+			<i class="fa fa-refresh fa-spin"></i> Adding
+		</button>
+		<button class="solo" ng-show="addedSelectionToCart == true">
+			<i class="fa fa-check"></i> Added to cart
+		</button>
 	</li>
+
+	<li ng-show="user.select.page == 'cart'">
+		<button type="button" ng-click="removeSelectionFromCart(user.select.books)">Remove from cart</button>
+	</li>
+
 	<li class="selection-actions">
 		<a href="">
 			<i class="fa fa-bars"></i>
@@ -28,8 +45,6 @@
 		</a>
 
 		<ul class="selection-hover">
-			<li ng-show="selectedTitles.page == 'cart'"><a href="">Remove from cart</a></li>
-			<li ng-show="selectedTitles.page == 'cart'" class="divider"></li>	
 			<li><a href="">E-mail</a></li>
 			<li><a href="">Print</a></li>
 			<li class="divider"></li>			

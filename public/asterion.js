@@ -26845,12 +26845,17 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 			{'name': 'Outside database', 'slug': 'order-outside-database' },
 			{'name': 'ISBN upload', 'slug': 'isbn-upload' },
 		];
+
+		$scope.menuServices = [
+			{'name': 'Standing orders and journals', 'slug': 'standing-orders' },
+			{'name': 'New title service', 'slug': 'new-title-service' },
+			{'name': 'Approval plans', 'slug': 'approval-plans' }
+		];
 		
 		$scope.menuOrders = [
 			{'name': 'Order tracing', 'slug': 'order-tracing' },
-			{'name': 'Standing orders and journals', 'slug': 'standing-orders' },
-			{'name': 'New title service', 'slug': 'new-title-service' },
-			{'name': 'Approval plans', 'slug': 'approval-plans' },
+			{'name': 'Cart manager', 'slug': 'cart-manager' },
+			{'name': 'Price quotations', 'slug': 'price-quotations' }
 		];
 
 		$scope.menuUser = [
@@ -26954,7 +26959,7 @@ ctrl.controller('globalController', ['$scope', '$rootScope', '$http', '$location
 		$rootScope.addToCart = function (book, cart) {
 			$rootScope.addingToCart = book;
 
-			$http.post('/carts/add', { 'book': book, 'cart': cart }).success(function (response) {
+			$http.post('/carts/add/single', { 'book': book, 'cart': cart }).success(function (response) {
 				$rootScope.getActiveCart($rootScope.user.cart);
 				$rootScope.getCarts();
 
@@ -27148,49 +27153,56 @@ ctrl.controller('drawerContents', ['$scope', '$rootScope', '$http', '$cookieStor
 ]);
 var ctrl = angular.module('selection', []);
 
-ctrl.controller('selectionController', ['$scope', '$rootScope', '$http', '$cookieStore',
-	function ($scope, $rootScope, $http, $cookieStore) {
+ctrl.controller('selectionController', ['$scope', '$rootScope', '$http', '$cookieStore', '$timeout',
+	function ($scope, $rootScope, $http, $cookieStore, $timeout) {
 
 		$scope.selectionCarts = false;
+		$scope.selectionCartsToggle = function (toggle) {
+			if (toggle == true) $scope.selectionCarts = true;
+			if (toggle == false) {
+				$timeout(function () {
+					$scope.selectionCarts = false;
+				}, 250);
+			}
+		}
 		$rootScope.selectUrl = '/partials/selection/main';
 
 		$rootScope.initSelection = function () {
-			$rootScope.selectedTitles = {
+			$rootScope.user.select = {
 				page: '',
 				source: '',
 				slug: '',
 				id: '',
-				books: []
+				books: [],
+				selection: [],
 			};
-			$cookieStore.put('selectedTitles', $rootScope.selectedTitles);
+			$http.post('/users/selection', { 'selection': $rootScope.user.select });
 		}	
-
-		if ($cookieStore.get('selectedTitles')) {
-			$rootScope.selectedTitles = $cookieStore.get('selectedTitles');
-			console.log($rootScope.selectedTitles);
-		} else {
-			$rootScope.initSelection();
-		}
 
 		$rootScope.selectTitle = function (book, page, source) {
 
-			if ($rootScope.selectedTitles.source != source) $rootScope.initSelection();
-			$rootScope.selectedTitles.source = source;
-			$rootScope.selectedTitles.page = page;
+			if ($rootScope.user.select.source != source) $rootScope.initSelection();
+			$rootScope.user.select.source = source;
+			$rootScope.user.select.page = page;
 			
-			if ($rootScope.selectedTitles.books.indexOf(book._id) < 0) {
-				$rootScope.selectedTitles.books.push(book._id);
+			if ($rootScope.user.select.books.indexOf(book._id) < 0) {
+				$rootScope.user.select.books.push(book._id);
+				$rootScope.user.select.selection.push(book);
 			} else {
-				$rootScope.selectedTitles.books.splice($rootScope.selectedTitles.books.indexOf(book._id), 1);
+				$rootScope.user.select.books.splice($rootScope.user.select.books.indexOf(book._id), 1);
+				for (i in $rootScope.user.select.selection) {
+					if ($rootScope.user.select.selection[i]._id == book._id)
+					$rootScope.user.select.selection.splice(i, 1);
+				}
 			}
 
-			$cookieStore.put('selectedTitles', $rootScope.selectedTitles);
+			$http.post('/users/selection', { 'selection': $rootScope.user.select });
 		}
 
 		$rootScope.addSelectionToCart = function (books, cart) {
 			$rootScope.addingSelectionToCart = true;
 
-			$http.post('/carts/selection', { 'books': books, 'cart': cart }).success(function (response) {
+			$http.post('/carts/add/multiple', { 'books': books, 'cart': cart }).success(function (response) {
 				$rootScope.getActiveCart($rootScope.user.cart);
 				$rootScope.getCarts();
 
@@ -27202,7 +27214,7 @@ ctrl.controller('selectionController', ['$scope', '$rootScope', '$http', '$cooki
 						$rootScope.addedSelectionToCart = false;
 						$rootScope.initSelection();
 					}, 2000);
-				}, 1000);
+				}, 1250);
 			});
 		}
 	}
@@ -27262,14 +27274,37 @@ ctrl.controller('cartController', ['$scope', '$rootScope', '$http', '$location',
 			}, 500);
 		}
 
-		$scope.removingBook = false;
-		$scope.removeBook = function (result) {
-			$scope.removingBook = result._id;
+		$rootScope.removingBook = [];
+		$rootScope.removeBook = function (result) {
+			$rootScope.removingBook.push(result._id);
 			$timeout(function () { 
 				$scope.cart.books.splice($scope.cart.books.indexOf(result), 1);
-				if ($rootScope.selectedTitles.books.indexOf(result.book) > -1) $rootScope.selectTitle(result.book, 'cart', $scope.cart._id);
+				if ($rootScope.user.select.books.indexOf(result.book._id) > -1) $rootScope.selectTitle(result.book, 'cart', $scope.cart._id);
 				$scope.updateCart();
+				$rootScope.removingBook.splice($rootScope.removingBook.indexOf(result._id), 1);
 			}, 295);
+		}
+
+		$rootScope.removeSelectionFromCart = function (books) {
+			var spartans = [];
+			for (i in $scope.cart.books) {
+				if (books.indexOf($scope.cart.books[i].book._id) > -1) {
+					$rootScope.removingBook.push($scope.cart.books[i]._id);
+					spartans.push($scope.cart.books[i]);
+				}
+
+				if (i == $scope.cart.books.length - 1) {
+					$timeout(function () {
+						for (j in spartans) {
+							$scope.cart.books.splice($scope.cart.books.indexOf(spartans[j]), 1);
+						}
+
+						$scope.updateCart();
+						$rootScope.initSelection();
+						$rootScope.removingBook= [];
+					}, 295);
+				}
+			}
 		}
 
 		$scope.activateCart = function () {
@@ -27357,6 +27392,44 @@ ctrl.controller('cartController', ['$scope', '$rootScope', '$http', '$location',
 				}
 				$scope.updateCart();
 			}
+		}
+
+		$scope.selectCart = function () {
+			for (i in $scope.cart.books) {
+				if ($rootScope.user.select.books.indexOf($scope.cart.books[i].book._id) < 0) {
+					$rootScope.selectTitle($scope.cart.books[i].book, 'cart', $scope.cart._id)
+				}
+			}
+		}
+
+		$scope.orderingCart = false;
+		$scope.orderedCart = false;
+		$scope.orderCart = function () {
+			$scope.orderingCart = true;
+
+				$timeout(function () {
+				$scope.orderingCart = false;
+				$scope.orderedCart = true;
+
+				$timeout(function() {
+					$scope.orderedCart = false;
+					$location.path('/');
+				}, 2000);
+			}, 1000)
+		}
+
+		$scope.quotingCart = false;
+		$scope.quotedCart = false;
+		$scope.quoteCart = function () {
+			$scope.quotingCart = true;
+			$timeout(function () {
+				$scope.quotingCart = false;
+				$scope.quotedCart = true;
+
+				$timeout(function() {
+					$scope.quotedCart = false;
+				}, 2000);
+			}, 1000)
 		}
 	}
 ]);
@@ -27469,6 +27542,10 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 				$rootScope.titleLine = 'Search results for \"' + searchTerm + '\"' + $rootScope.titleSep1 + $rootScope.pageTitle + $rootScope.titleSep2 + $rootScope.masthead;
 			});
 		};
+
+		$scope.selectAllResults = function (count, search, sort, order, filter) {
+			console.log(count + " - " + search + " - " + sort + " - " + order + " - " + filter);
+		}
 
 		$scope.searchPage = function (arg, searchTerm) {
 			$scope.searchLoading = true;

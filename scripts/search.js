@@ -98,6 +98,10 @@ ctrl.controller('searchController', ['$scope', '$rootScope', '$http', '$location
 			});
 		};
 
+		$scope.selectAllResults = function (count, search, sort, order, filter) {
+			console.log(count + " - " + search + " - " + sort + " - " + order + " - " + filter);
+		}
+
 		$scope.searchPage = function (arg, searchTerm) {
 			$scope.searchLoading = true;
 			if (arg == 'next') $scope.pagination.page = $scope.pagination.page + 1;

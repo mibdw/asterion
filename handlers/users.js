@@ -8,8 +8,7 @@ router.post('/read', task.auth, function (req, res, next) {
 	var id = req.body.id || req.user._id;
 
 	User.findById(id)
-	.select('_id email name confirmation accounts cart')
-	.populate('_id title slug amount price')
+	.select('_id email name confirmation accounts cart select')
 	.exec(function (err, user) {
 		if (err) return console.log(err);
 		return res.send(user);
@@ -60,6 +59,14 @@ router.post('/cart', task.auth, function (req, res, next) {
 		if (err) console.log(err);
 		return res.send({ 'id': user.cart });
 	});	
+});
+
+
+router.post('/selection', task.auth, function (req, res, next) {
+	User.findByIdAndUpdate(req.user._id, { 'select': req.body.selection }, function (err, user) {
+		if (err) console.log(err);
+		return res.send({ 'selection': user.selection })
+	});
 });
 
 module.exports.router = router;

@@ -2,7 +2,7 @@
 	<i class="fa fa-refresh fa-spin"></i>
 </div>
 
-<div id="main" class="detail right" style="width: 65%" ng-show="detailLoading == false">
+<div id="main" class="detail right" style="width: 70%" ng-show="detailLoading == false">
 	<dl class="detail-source">
 		<dt>Back to:</dt>
 		<dd><a href="/#/{{detailSource.url}}" ng-bind-html="detailSource.line"></a></dd>
@@ -86,7 +86,7 @@
 	</dl>
 </div>
 
-<aside class="left detail" style="width: 35%" ng-show="detailLoading == false">
+<aside class="left detail" style="width: 30%" ng-show="detailLoading == false">
 	
 	<div class="godzilla" ng-class="{
 		active: dropdownCarts == detail._id || activeButton == detail._id,

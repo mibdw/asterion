@@ -53,14 +53,37 @@ ctrl.controller('cartController', ['$scope', '$rootScope', '$http', '$location',
 			}, 500);
 		}
 
-		$scope.removingBook = false;
-		$scope.removeBook = function (result) {
-			$scope.removingBook = result._id;
+		$rootScope.removingBook = [];
+		$rootScope.removeBook = function (result) {
+			$rootScope.removingBook.push(result._id);
 			$timeout(function () { 
 				$scope.cart.books.splice($scope.cart.books.indexOf(result), 1);
-				if ($rootScope.selectedTitles.books.indexOf(result.book) > -1) $rootScope.selectTitle(result.book, 'cart', $scope.cart._id);
+				if ($rootScope.user.select.books.indexOf(result.book._id) > -1) $rootScope.selectTitle(result.book, 'cart', $scope.cart._id);
 				$scope.updateCart();
+				$rootScope.removingBook.splice($rootScope.removingBook.indexOf(result._id), 1);
 			}, 295);
+		}
+
+		$rootScope.removeSelectionFromCart = function (books) {
+			var spartans = [];
+			for (i in $scope.cart.books) {
+				if (books.indexOf($scope.cart.books[i].book._id) > -1) {
+					$rootScope.removingBook.push($scope.cart.books[i]._id);
+					spartans.push($scope.cart.books[i]);
+				}
+
+				if (i == $scope.cart.books.length - 1) {
+					$timeout(function () {
+						for (j in spartans) {
+							$scope.cart.books.splice($scope.cart.books.indexOf(spartans[j]), 1);
+						}
+
+						$scope.updateCart();
+						$rootScope.initSelection();
+						$rootScope.removingBook= [];
+					}, 295);
+				}
+			}
 		}
 
 		$scope.activateCart = function () {
@@ -148,6 +171,44 @@ ctrl.controller('cartController', ['$scope', '$rootScope', '$http', '$location',
 				}
 				$scope.updateCart();
 			}
+		}
+
+		$scope.selectCart = function () {
+			for (i in $scope.cart.books) {
+				if ($rootScope.user.select.books.indexOf($scope.cart.books[i].book._id) < 0) {
+					$rootScope.selectTitle($scope.cart.books[i].book, 'cart', $scope.cart._id)
+				}
+			}
+		}
+
+		$scope.orderingCart = false;
+		$scope.orderedCart = false;
+		$scope.orderCart = function () {
+			$scope.orderingCart = true;
+
+				$timeout(function () {
+				$scope.orderingCart = false;
+				$scope.orderedCart = true;
+
+				$timeout(function() {
+					$scope.orderedCart = false;
+					$location.path('/');
+				}, 2000);
+			}, 1000)
+		}
+
+		$scope.quotingCart = false;
+		$scope.quotedCart = false;
+		$scope.quoteCart = function () {
+			$scope.quotingCart = true;
+			$timeout(function () {
+				$scope.quotingCart = false;
+				$scope.quotedCart = true;
+
+				$timeout(function() {
+					$scope.quotedCart = false;
+				}, 2000);
+			}, 1000)
 		}
 	}
 ]);

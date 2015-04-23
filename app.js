@@ -56,7 +56,7 @@ http.listen(port, function () {
 // Seed User
 User.find({}, function (err, result) {
 	if (result.length < 1) {
-		var seedEmail = 'admin@asterion.club';
+		var seedEmail = 'maarten@erasmusbooks.nl';
 		var seedPassword = 'secret';
 		User.register(new User({ email: seedEmail }), seedPassword, function(err) {
 			
